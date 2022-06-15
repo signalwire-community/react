@@ -1,0 +1,24 @@
+{
+  "name": "@signalwire-community/react",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/signalwire-community/react.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/signalwire-community/react/issues"
+  },
+  "homepage": "https://github.com/signalwire-community/react#readme",
+  "devDependencies": {
+    "@types/react": "^18.0.12",
+    "react": "^18.2.0",
+    "typescript": "^4.7.3"
+  }
+}
