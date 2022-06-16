@@ -1,5 +1,4 @@
 import React from "react";
-import { useEffect, useRef } from "react";
 
 type VideoConferenceProps = {
     onRoomReady?: (roomSession: any) => void,
@@ -22,9 +21,9 @@ export default function VideoConference({
   memberList,
   prejoin
 }: VideoConferenceProps) {
-  let container = useRef<HTMLDivElement>(null);
+  const container = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (container.current === null) return;
 
     let c = container.current;
@@ -40,7 +39,7 @@ Object.assign(e.swvr.p=e.swvr.p||{},r)}
 ;let t=r.currentScript,n=r.createElement("script")
 ;n.type="module",n.src="https://cdn.signalwire.com/video/rooms/index.js",
 n.onload=function(){let n=r.createElement("ready-room")
-;n.params=e.swvr.p,t.parentNode.appendChild(n)},t.parentNode.insertBefore(n,t)
+;n.params=e.swvr.p,t.parentNode?.appendChild(n)},t.parentNode.insertBefore(n,t)
 ;let i=r.createElement("link")
 ;i.type="text/css",i.rel="stylesheet",i.href="https://cdn.signalwire.com/video/rooms/signalwire.css",
 t.parentNode.insertBefore(i,t),
@@ -71,6 +70,6 @@ e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
     return () => {
       c.removeChild(script);
     };
-  }, []);
+  }, [container, token, userName, memberList, prejoin, audio, video, theme]);
   return <div ref={container}></div>;
 }
