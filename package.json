@@ -1,36 +1,23 @@
 {
-  "name": "@signalwire-community/react",
+  "name": "react",
+  "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "index.js",
+  "dependencies": {
+  },
+  "devDependencies": {},
   "scripts": {
-    "rollup": "rollup -c"
+    "build": "npm run build-react",
+    "build-react": "cd packages/react && npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/signalwire-community/react.git"
   },
-  "private": false,
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/signalwire-community/react/issues"
   },
-  "homepage": "https://github.com/signalwire-community/react#readme",
-  "peerDependencies": {
-    "react": "^18.2.0"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-typescript": "^8.3.3",
-    "@types/react": "^18.0.12",
-    "rollup": "^2.75.6",
-    "rollup-plugin-dts": "^4.2.2",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "tslib": "^2.4.0",
-    "typescript": "^4.7.3"
-  }
+  "homepage": "https://github.com/signalwire-community/react#readme"
 }

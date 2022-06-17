@@ -24,4 +24,4 @@ import { VideoConference } from '@signalwire-community/react';
 
 ## Supported components
 
- - [Video Conferences](./src/components/VideoConference)
+ - [Video Conferences](./packages/react/src/components/VideoConference)
