@@ -2,7 +2,11 @@
 
 ![@signalwire-community/react](https://img.shields.io/npm/v/@signalwire-community/react)
 
-Collection of unofficial React packages for [SignalWire](https://signalwire.com).
+Collection of unofficial React components and tools for [SignalWire](https://signalwire.com).
+
+> ⚠️ Disclaimer:
+> 
+> The libraries in this repository are NOT supported by SignalWire. SignalWire will _not_ answer support questions about the code in this repository, and is not responsible for fixing issues.
 
 ## Install
 
@@ -20,4 +24,4 @@ import { VideoConference } from '@signalwire-community/react';
 
 ## Supported components
 
- - Video Conferences
+ - [Video Conferences](./src/components/VideoConference)
