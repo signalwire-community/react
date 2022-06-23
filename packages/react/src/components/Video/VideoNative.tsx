@@ -1,6 +1,4 @@
-import "react-native-get-random-values";
-import { WebRTC } from "react-native-webrtc";
-import VideoBase from "./VideoBase";
+import VideoBase from "./Video";
 import { IVideoCommonProps } from "./IVideoCommonProps";
 import { Video } from "@signalwire/js";
 import { useState } from "react";
@@ -25,28 +23,29 @@ const VideoNative: React.FC<IVideoNativeProps> = ({
   const [roomSession, setRoomSession] = useState<Video.RoomSession | null>(
     null
   );
-  return (
-    <VideoBase
-      token={token}
-      onRoomJoined={(roomSession, memberId) => {
-        console.log("Room was joined");
-        setRoomSession(roomSession);
-      }}
-      onEvent={(eventName, event) => {
-        // eventName handler here if any
-        onEvent(eventName, event);
-      }}
-    >
-      <div {...props}>
-        {roomSession !== null && roomSession.remoteStream && (
-          <RTCView
-            streamURL={roomSession.remoteStream.toURL()}
-            style={{ ...rtcViewStyle }}
-          />
-        )}
-      </div>
-    </VideoBase>
-  );
+  return <div></div>;
+  // return (
+  //   <VideoBase
+  //     token={token}
+  //     onRoomJoined={(roomSession, memberId) => {
+  //       console.log("Room was joined");
+  //       setRoomSession(roomSession);
+  //     }}
+  //     onEvent={(eventName, event) => {
+  //       // eventName handler here if any
+  //       onEvent(eventName, event);
+  //     }}
+  //   >
+  //     <div {...props}>
+  //       {roomSession !== null && roomSession.remoteStream && (
+  //         <RTCView
+  //           streamURL={roomSession.remoteStream.toURL()}
+  //           style={{ ...rtcViewStyle }}
+  //         />
+  //       )}
+  //     </div>
+  //   </VideoBase>
+  // );
 };
 
 export default VideoNative;

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Video, WebRTC } from "@signalwire/js";
-import VideoBase from "./VideoBase";
+import VideoBase from "./Video";
 import { IVideoCommonProps } from "./IVideoCommonProps";
+import useRoomSession from "./useRoomSession";
 
 interface IVideoWebProps extends IVideoCommonProps {}
 
@@ -17,6 +18,8 @@ const VideoWeb: React.FC<IVideoWebProps> = ({
   const [roomSession, setRoomSession] = useState<Video.RoomSession | null>(
     null
   );
+
+  let {} = useRoomSession(roomSession, []);
 
   useEffect(() => {
     async function setupDevices() {
@@ -64,8 +67,11 @@ const VideoWeb: React.FC<IVideoWebProps> = ({
     <VideoBase
       token={token}
       rootElement={rootElement}
-      onRoomJoined={(roomSession, memberId) => {
-        console.log("Room was joined");
+      // onRoomJoined={(roomSession, memberId) => {
+      //   console.log("Room was joined");
+      //   setRoomSession(roomSession);
+      // }}
+      onRoomSessionInit={(roomSession) => {
         setRoomSession(roomSession);
       }}
       onEvent={(eventName, event) => {
