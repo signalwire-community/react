@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CoreVideoConference from "./CoreVideoConference";
 
 type VideoConferenceProps = {
@@ -28,7 +28,7 @@ type VideoConferenceProps = {
 
 export default function VideoConference(props: VideoConferenceProps) {
 
-  const [roomSession, setRoomSession] = React.useState<any>()
+  const [roomSession, setRoomSession] = useState<any>()
 
   const eventMap = {
     'layout.changed': props.onLayoutChanged,
@@ -48,16 +48,18 @@ export default function VideoConference(props: VideoConferenceProps) {
   }
 
   // Attach event handlers
-  for (const [key, value] of Object.entries(eventMap)) {
-    React.useEffect(() => {
-      if (roomSession && value) {
-        roomSession.on(key, value)
+  useEffect(() => {
+    for (const [eventName, eventHandler] of Object.entries(eventMap)) {
+      if (roomSession && eventHandler) {
+        roomSession.on(eventName as any, eventHandler);
       }
-      return () => {
-        roomSession?.off(value)
+    }
+    return () => {
+      for (const [eventName, eventHandler] of Object.entries(eventMap)) {
+        roomSession?.off(eventName as any, eventHandler);
       }
-    }, [roomSession, value])
-  }
+    };
+  }, [...Object.values(eventMap), roomSession, eventMap]);
 
   function onRoomReady(roomSession: any) {
     setRoomSession(roomSession)
