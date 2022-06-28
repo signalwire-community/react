@@ -4,8 +4,8 @@ import * as SignalWire from '@signalwire/js';
 interface IVideoProps {
   token: string;
   logLevel?: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
-  audio?: boolean;
-  video?: boolean;
+  audio?: boolean | MediaTrackConstraints;
+  video?: boolean | MediaTrackConstraints;
   children?: JSX.Element;
   rootElement?: React.RefObject<HTMLDivElement>;
   onRoomReady?: (roomSession: any) => void;
