@@ -1,51 +1,49 @@
-import { MutableRefObject, useEffect, useState } from "react";
-import { Video } from "@signalwire/js";
+import React, { useEffect, useState } from 'react';
+import * as SignalWire from '@signalwire/js';
 
-interface IVideoRequiredProps {
+interface IVideoProps {
   token: string;
-}
-
-interface IVideoOptionalProps {
-  logLevel?: "trace" | "debug" | "info" | "warn" | "error" | "silent";
+  logLevel?: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
   audio?: boolean;
   video?: boolean;
   children?: JSX.Element;
-  rootElement?: MutableRefObject<HTMLElement | null>;
-  onEvent?: (eventName: string, event: any) => void;
-  onRoomSessionInit?: (roomSession: Video.RoomSession) => void;
-  onRoomJoined?: (
-    room: Video.RoomSession,
-    memberId: string,
-    //details is of this format: https://developer2.signalwire.com/sdks/reference/browser-sdk/video/video-roomsession/#roomjoined
-    details: any
-  ) => void;
+  rootElement?: React.RefObject<HTMLDivElement>;
+  onRoomReady?: (roomSession: any) => void;
+  onLayoutChanged?: (e: any) => void;
+  onMemberJoined?: (e: any) => void;
+  onMemberLeft?: (e: any) => void;
+  onMemberTalking?: (e: any) => void;
+  onMemberUpdated?: (e: any) => void;
+  onMemberListUpdated?: (e: any) => void;
+  onPlaybackEnded?: (e: any) => void;
+  onPlaybackStarted?: (e: any) => void;
+  onPlaybackUpdated?: (e: any) => void;
+  onRecordingEnded?: (e: any) => void;
+  onRecordingStarted?: (e: any) => void;
+  onRecordingUpdated?: (e: any) => void;
+  onRoomJoined?: (e: any) => void;
+  onRoomUpdated?: (e: any) => void;
 }
 
-interface IVideoProps extends IVideoRequiredProps, IVideoOptionalProps {}
-
-const VideoBase: React.FC<IVideoProps> = ({
+const Video: React.FC<IVideoProps> = ({
   token,
-  logLevel = "silent",
+  logLevel = 'silent',
   audio = true,
   video = true,
   children,
   rootElement,
-  onRoomSessionInit = () => {},
-  onRoomJoined = () => {},
-  onEvent = (eventName, event) => {
-    console.log(eventName, event);
-  },
+  onRoomReady,
+  ...props
 }) => {
   let [setupComplete, setSetupComplete] = useState<boolean>(false);
-  const [roomSession, setRoomSession] = useState<Video.RoomSession | null>(
-    null
-  );
+  const [roomSession, setRoomSession] =
+    useState<SignalWire.Video.RoomSession | null>(null);
   useEffect(() => {
     if (setupComplete) return;
     setSetupComplete(true);
-    let curRoomSession: Video.RoomSession | null = null;
+    let curRoomSession: SignalWire.Video.RoomSession | null = null;
     async function setup() {
-      curRoomSession = new Video.RoomSession({
+      curRoomSession = new SignalWire.Video.RoomSession({
         token,
         rootElement: rootElement?.current ?? undefined,
         audio,
@@ -54,35 +52,7 @@ const VideoBase: React.FC<IVideoProps> = ({
       });
       setRoomSession(curRoomSession);
       (window as any).roomSession = curRoomSession; //expose room session for debugging
-      onRoomSessionInit(curRoomSession);
-
-      curRoomSession.on("room.joined", (e) => {
-        if (curRoomSession !== null)
-          onRoomJoined(curRoomSession, (e as any).memberId, e);
-      });
-
-      // These events don't need special treatment yet
-      [
-        "layout.changed",
-        "memberList.updated",
-
-        "member.joined",
-        "member.updated",
-        "member.left",
-
-        "playback.started",
-        "playback.stopped",
-        "playback.paused",
-
-        "recording.started",
-        "recording.ended",
-        "recording.updated",
-
-        "room.updated",
-      ].forEach((eventName) => {
-        curRoomSession?.on(eventName as any, (e) => onEvent(eventName, e));
-      });
-
+      onRoomReady && onRoomReady(curRoomSession);
       await curRoomSession.join();
     }
     try {
@@ -99,7 +69,36 @@ const VideoBase: React.FC<IVideoProps> = ({
       }
     };
   }, [token, setupComplete]);
+
+  const eventMap = {
+    'layout.changed': props.onLayoutChanged ?? null,
+    'member.joined': props.onMemberJoined ?? null,
+    'member.left': props.onMemberLeft ?? null,
+    'member.talking': props.onMemberTalking ?? null,
+    'member.updated': props.onMemberUpdated ?? null,
+    'memberList.updated': props.onMemberListUpdated ?? null,
+    'playback.ended': props.onPlaybackEnded ?? null,
+    'playback.started': props.onPlaybackStarted ?? null,
+    'playback.updated': props.onPlaybackUpdated ?? null,
+    'recording.ended': props.onRecordingEnded ?? null,
+    'recording.started': props.onRecordingStarted ?? null,
+    'recording.updated': props.onRecordingUpdated ?? null,
+    'room.joined': props.onRoomJoined ?? null,
+    'room.updated': props.onRoomUpdated ?? null,
+  };
+
+  for (const [eventName, eventValue] of Object.entries(eventMap)) {
+    React.useEffect(() => {
+      if (roomSession && eventValue)
+        roomSession.on(eventName as any, eventValue);
+
+      return () => {
+        roomSession?.off(eventValue as any);
+      };
+    }, [roomSession, eventValue]);
+  }
+
   return <>{children}</>;
 };
 
-export default VideoBase;
+export default Video;

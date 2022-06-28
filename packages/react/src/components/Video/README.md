@@ -10,7 +10,7 @@ Example usage:
 <VideoWeb
   style={{ width: 800, height: 600 }}
   token="<YOUR TOKEN HERE>"
-  onRoomUpdate={(roomVars) => {
+  onRoomUpdated={(roomVars) => {
     setLoading(false);
     setRoomSession((r) => roomVars.roomSession ?? r);
     setRoomVariables((r) => ({ ...r, ...roomVars }));
