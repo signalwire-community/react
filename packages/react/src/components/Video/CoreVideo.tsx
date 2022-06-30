@@ -52,7 +52,6 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
 
     return () => {
       try {
-        console.log(curRoomSession, 'BINGO');
         curRoomSession?.leave();
       } catch (e) {
         console.log("The room wasn't joined yet.");
