@@ -3,6 +3,7 @@ import * as SignalWire from '@signalwire/js';
 import { IVideoProps } from './IVideoProps';
 
 interface ICoreVideoProps extends IVideoProps {
+  rootElement?: RefObject<HTMLElement>;
   children?: JSX.Element;
 }
 
