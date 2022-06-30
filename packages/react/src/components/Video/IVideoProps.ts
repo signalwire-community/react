@@ -3,7 +3,6 @@ import { RefObject } from 'react';
 type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
 
 export interface IVideoProps extends Omit<RoomSessionOptions, 'rootElement'> {
-  rootElement?: RefObject<HTMLElement>;
   onRoomReady?: (roomSession: Video.RoomSession) => void;
   onLayoutChanged?: (e: any) => void;
   onMemberJoined?: (e: any) => void;
