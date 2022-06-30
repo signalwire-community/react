@@ -7,16 +7,12 @@ This React component lets you join and manage SignalWire Video rooms.
 Example usage:
 
 ```jsx
-<VideoWeb
-  style={{ width: 800, height: 600 }}
-  token="<YOUR TOKEN HERE>"
-  onRoomUpdated={(roomVars) => {
-    setLoading(false);
-    setRoomSession((r) => roomVars.roomSession ?? r);
-    setRoomVariables((r) => ({ ...r, ...roomVars }));
-  }}
+<Video
+  token={import.meta.env.VITE_ROOM_TOKEN}
+  onRoomReady={(roomSession) => {
+    setRoomSession(roomSession);
+  }}          
 />
-<button onClick={e=>roomSession?.leave}>Leave</button>
 ```
 
 See `demo/videoweb` for a full example.
