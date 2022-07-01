@@ -10,7 +10,7 @@ export default function Video({ token, ...props }: IVideoProps) {
       rootElement={ref as RefObject<HTMLElement>}
       {...props}
     >
-      <div className="rootEl" ref={ref}></div>
+      <div ref={ref}></div>
     </CoreVideo>
   ) : null;
 }
