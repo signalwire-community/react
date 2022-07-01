@@ -9,7 +9,6 @@ function DemoVideo() {
     <div>
       {import.meta.env.VITE_ROOM_TOKEN ? (
         <Video
-          video={false}
           token={import.meta.env.VITE_ROOM_TOKEN}
           onRoomReady={(roomSession) => {
             setRoomSession(roomSession);

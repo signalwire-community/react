@@ -1,8 +1,8 @@
-import { Video } from '@signalwire/js';
-import { RefObject } from 'react';
-type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
+import { Video } from "@signalwire/js";
+import { RefObject } from "react";
+export type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
 
-export interface IVideoProps extends Omit<RoomSessionOptions, 'rootElement'> {
+export interface IVideoProps extends Omit<RoomSessionOptions, "rootElement"> {
   onRoomReady?: (roomSession: Video.RoomSession) => void;
   onLayoutChanged?: (e: any) => void;
   onMemberJoined?: (e: any) => void;
