@@ -54,7 +54,7 @@ export default function VideoConference(props: VideoConferenceProps) {
         roomSession.on(key, value)
       }
       return () => {
-        roomSession?.off(value)
+        roomSession?.off(key, value)
       }
     }, [roomSession, value])
   }

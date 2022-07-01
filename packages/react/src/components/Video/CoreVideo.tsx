@@ -13,36 +13,31 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   onRoomReady,
   ...props
 }) => {
-  const [roomSession, setRoomSession] =
-    useState<SignalWire.Video.RoomSession | null>(null);
+  const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
+
   useEffect(() => {
     let curRoomSession: SignalWire.Video.RoomSession | null = null;
+
     async function setup() {
-      const {
-        applyLocalVideoOverlay,
-        audio,
-        iceServers,
-        logLevel,
-        speakerId,
-        stopCameraWhileMuted,
-        stopMicrophoneWhileMuted,
-        video,
-        rootElement,
-      } = props;
+      // Cleanup
+      if (props.rootElement?.current?.innerHTML) {
+        props.rootElement.current.innerHTML = ""
+      }
+
       curRoomSession = new SignalWire.Video.RoomSession({
         token,
-        rootElement: rootElement?.current ?? undefined,
-        applyLocalVideoOverlay,
-        audio,
-        iceServers,
-        logLevel,
-        speakerId,
-        stopCameraWhileMuted,
-        stopMicrophoneWhileMuted,
-        video,
+        rootElement: props.rootElement?.current ?? undefined,
+        applyLocalVideoOverlay: props.applyLocalVideoOverlay,
+        audio: props.audio,
+        iceServers: props.iceServers,
+        logLevel: props.logLevel,
+        speakerId: props.speakerId,
+        stopCameraWhileMuted: props.stopCameraWhileMuted,
+        stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
+        video: props.video,
       });
       setRoomSession(curRoomSession);
-      onRoomReady && onRoomReady(curRoomSession);
+      onRoomReady?.(curRoomSession);
       await curRoomSession.join();
     }
     try {
@@ -53,9 +48,15 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
 
     return () => {
       try {
+        curRoomSession?.removeAllListeners();
         curRoomSession?.leave();
       } catch (e) {
         console.log("The room wasn't joined yet.");
+      }
+
+      // Cleanup
+      if (props.rootElement?.current?.innerHTML) {
+        props.rootElement.current.innerHTML = ""
       }
     };
   }, [token]);
@@ -79,8 +80,9 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {
     React.useEffect(() => {
-      if (roomSession && eventValue)
+      if (roomSession && eventValue) {
         roomSession.on(eventName as any, eventValue);
+      }
 
       return () => {
         roomSession?.off(eventName as any, eventValue as any);
