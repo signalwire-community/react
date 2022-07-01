@@ -25,3 +25,4 @@ import { VideoConference } from '@signalwire-community/react';
 ## Supported components
 
  - [Video Conferences](/packages/react/src/components/VideoConference)
+ - [Video Component](./packages/react/src/components/Video)
