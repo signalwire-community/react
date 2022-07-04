@@ -67,7 +67,8 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
 
 /**
  * We need an in-memory Image object because a native Image object pre-fetches
- * the new image before replacing the previous one using `img.src = x`, unlike using React.
+ * the new image before replacing the previous one when using `img.src = x`. You
+ * cannot do that using React.
  */
 function getDefaultImage() {
   const img = new Image();
