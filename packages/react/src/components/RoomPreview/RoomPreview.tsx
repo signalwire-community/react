@@ -17,17 +17,35 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
   const container = useRef<HTMLDivElement>(null);
   const currImg = useRef<HTMLImageElement>(getDefaultImage());
 
-  // Initialization
+  // Append the image to the DOM when the component is mounted.
   useEffect(() => {
     if (container.current) {
       container.current.appendChild(currImg.current);
-      if (loadingUrl) {
-        currImg.current.src = loadingUrl;
-        currImg.current.addEventListener("error", () => {
-          if (currImg.current.src !== loadingUrl) {
-            currImg.current.src = loadingUrl;
-          }
-        });
+    }
+  }, [])
+
+  // Image initialization
+  useEffect(() => {
+    let imageErrorListener: (() => void) | undefined;
+
+    if (loadingUrl) {
+      currImg.current.src = loadingUrl;
+      imageErrorListener = () => {
+        if (currImg.current.src !== loadingUrl) {
+          currImg.current.src = loadingUrl;
+        }
+      }
+      currImg.current.addEventListener("error", imageErrorListener);
+    } else {
+      // User removed loadingUrl; if we are displaying it, let's remove it.
+      if (currImg.current.src === loadingUrl) {
+        currImg.current.src = '';
+      }
+    }
+
+    return () => {
+      if (imageErrorListener) {
+        currImg.current.removeEventListener("error", imageErrorListener)
       }
     }
   }, [loadingUrl]);
