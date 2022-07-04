@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useState } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import * as SignalWire from '@signalwire/js';
 import { IVideoProps } from './IVideoProps';
 import { debounce } from 'lodash'
@@ -15,9 +15,14 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
 }) => {
   const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
 
+  // This is used to access the current roomSession from useEffect without it
+  // becoming a dependency.
+  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>()
+  roomSessionRef.current = roomSession
+
   useEffect(() => {
     try {
-      setup(roomSession, props)
+      setup(props)
     } catch (e) {
       console.error("Couldn't join room", e);
     }
@@ -28,8 +33,8 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
    */
   const setup = useCallback(
     debounce(async (roomSession: SignalWire.Video.RoomSession | null, props: ICoreVideoProps) => {
-      if (roomSession) {
-        await quitSession(roomSession)
+      if (roomSessionRef.current) {
+        await quitSession(roomSessionRef.current)
         setRoomSession(null)
         if (props.rootElement?.current?.innerHTML) {
           props.rootElement.current.innerHTML = ""
