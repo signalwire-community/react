@@ -8,7 +8,8 @@ function DemoConference() {
   // useRoomPreview() would be helpful here. Since `roomSession` never changes,
   // this component doesn't know when its inner `previewUrl` prop changes. This
   // means that this component won't rerender, and our RoomPreview will always
-  // see the first `previewUrl` (which is undefined).
+  // see the first `previewUrl` (which is undefined). For now, we just manually
+  // update `previewUrl` by manually subscribing to the events.
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined)
 
   useEffect(() => {
