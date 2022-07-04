@@ -1,4 +1,4 @@
-# VideoConference
+# Video
 
 This React component lets you join and manage SignalWire Video rooms.
 
