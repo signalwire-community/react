@@ -1,6 +1,7 @@
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import * as SignalWire from '@signalwire/js';
 import { IVideoProps } from './IVideoProps';
+import { debounce } from 'lodash'
 
 interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
@@ -8,24 +9,40 @@ interface ICoreVideoProps extends IVideoProps {
 }
 
 const CoreVideo: React.FC<ICoreVideoProps> = ({
-  token,
   children,
   onRoomReady,
   ...props
 }) => {
   const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
 
-  useEffect(() => {
-    let curRoomSession: SignalWire.Video.RoomSession | null = null;
+  // This is used to access the current roomSession from useEffect without it
+  // becoming a dependency.
+  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>()
+  roomSessionRef.current = roomSession
 
-    async function setup() {
-      // Cleanup
-      if (props.rootElement?.current?.innerHTML) {
-        props.rootElement.current.innerHTML = ""
+  useEffect(() => {
+    try {
+      setup(props)
+    } catch (e) {
+      console.error("Couldn't join room", e);
+    }
+  }, [props.token]); // changing the other props won't result in a rejoin
+
+  /**
+   * Establish a new RoomSession connection
+   */
+  const setup = useCallback(
+    debounce(async (props: ICoreVideoProps) => {
+      if (roomSessionRef.current) {
+        await quitSession(roomSessionRef.current)
+        setRoomSession(null)
+        if (props.rootElement?.current?.innerHTML) {
+          props.rootElement.current.innerHTML = ""
+        }
       }
 
-      curRoomSession = new SignalWire.Video.RoomSession({
-        token,
+      const curRoomSession = new SignalWire.Video.RoomSession({
+        token: props.token,
         rootElement: props.rootElement?.current ?? undefined,
         applyLocalVideoOverlay: props.applyLocalVideoOverlay,
         audio: props.audio,
@@ -39,27 +56,46 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
       setRoomSession(curRoomSession);
       onRoomReady?.(curRoomSession);
       await curRoomSession.join();
-    }
-    try {
-      setup();
-    } catch (e) {
-      console.log("Couldn't join room", e);
-    }
 
+      return curRoomSession
+    }, 100),
+    []
+  )
+
+  /** Cleanup when the component is unmounted */
+  useEffect(() => {
     return () => {
-      try {
-        curRoomSession?.removeAllListeners();
-        curRoomSession?.leave();
-      } catch (e) {
-        console.log("The room wasn't joined yet.");
+      if (roomSessionRef.current) {
+        quitSession(roomSessionRef.current)
+        setRoomSession(null)
+        if (props.rootElement?.current?.innerHTML) {
+          props.rootElement.current.innerHTML = ""
+        }
       }
+    }
+  }, [])
 
-      // Cleanup
-      if (props.rootElement?.current?.innerHTML) {
-        props.rootElement.current.innerHTML = ""
-      }
-    };
-  }, [token]);
+  /**
+   * Robust way for disconnecting a RoomSession
+   */
+  const quitSession = async (roomSession: SignalWire.Video.RoomSession) => {
+    // Ensure the room is in a joined state first, since we don't have a way to
+    // abort an in-progress join.
+    try {
+      await roomSession.join()
+    } catch (e) {}
+
+    // Initiate disconnection
+    try {
+      roomSession.removeAllListeners();
+      roomSession.on('room.joined', async () => {
+        await roomSession?.leave()
+        roomSession.destroy();
+      })
+      await roomSession.leave();
+      roomSession.destroy();
+    } catch (e) { console.log(e) }
+  }
 
   const eventMap = {
     'layout.changed': props.onLayoutChanged ?? null,
