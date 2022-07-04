@@ -62,6 +62,19 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     []
   )
 
+  /** Cleanup when the component is unmounted */
+  useEffect(() => {
+    return () => {
+      if (roomSessionRef.current) {
+        quitSession(roomSessionRef.current)
+        setRoomSession(null)
+        if (props.rootElement?.current?.innerHTML) {
+          props.rootElement.current.innerHTML = ""
+        }
+      }
+    }
+  }, [])
+
   /**
    * Robust way for disconnecting a RoomSession
    */
