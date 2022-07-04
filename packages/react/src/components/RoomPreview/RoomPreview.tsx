@@ -15,12 +15,12 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
   style,
 }) => {
   const container = useRef<HTMLDivElement>(null);
-  const currImg = useRef<HTMLImageElement>(getDefaultImage(loadingUrl));
+  const currImg = useRef<HTMLImageElement>(getDefaultImage());
 
   // Initialization
   useEffect(() => {
     if (container.current) {
-      container.current?.appendChild(currImg.current);
+      container.current.appendChild(currImg.current);
       if (loadingUrl) {
         currImg.current.src = loadingUrl;
         currImg.current.addEventListener("error", () => {
@@ -30,7 +30,7 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
         });
       }
     }
-  }, [container.current]);
+  }, [loadingUrl]);
 
   useEffect(() => {
     if (previewUrl) {
@@ -69,7 +69,7 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
  * We need an in-memory Image object because a native Image object pre-fetches
  * the new image before replacing the previous one using `img.src = x`, unlike using React.
  */
-function getDefaultImage(loadingUrl?: string) {
+function getDefaultImage() {
   const img = new Image();
   img.style.height = "100%";
   img.style.width = "100%";
