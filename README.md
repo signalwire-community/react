@@ -26,3 +26,7 @@ import { VideoConference } from "@signalwire-community/react";
 
 - [Video Conferences](./packages/react/src/components/VideoConference)
 - [Video Component](./packages/react/src/components/Video)
+
+## Contributing
+
+Want to help make signalwire-community better? Take a look at [CONTRIBUTING.md](https://github.com/signalwire-community/react/blob/main/CONTRIBUTING.md) to learn how to get started.
