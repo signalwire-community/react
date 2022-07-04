@@ -32,7 +32,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
    * Establish a new RoomSession connection
    */
   const setup = useCallback(
-    debounce(async (roomSession: SignalWire.Video.RoomSession | null, props: ICoreVideoProps) => {
+    debounce(async (props: ICoreVideoProps) => {
       if (roomSessionRef.current) {
         await quitSession(roomSessionRef.current)
         setRoomSession(null)
