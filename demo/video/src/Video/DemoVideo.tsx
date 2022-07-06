@@ -1,6 +1,6 @@
 import SignalWire from '@signalwire/js';
 import { Video } from '@signalwire-community/react';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 function DemoVideo() {
   const [roomSession, setRoomSession] =

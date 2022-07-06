@@ -3,7 +3,7 @@ import * as SignalWire from '@signalwire/js';
 import { IVideoProps } from './IVideoProps';
 import { debounce } from 'lodash'
 
-interface ICoreVideoProps extends IVideoProps {
+export interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
   children?: JSX.Element;
 }
