@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^18.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
