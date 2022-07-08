@@ -1,6 +1,6 @@
 # Video
 
-This React component lets you join and manage SignalWire Video rooms.
+This React component lets you join and manage SignalWire Video rooms. To use this component, you need a Video Room Token obtained from the [REST API](https://developer.signalwire.com/apis/reference/create_room_token). This is different from a Video Conference Token.
 
 ## Example
 
