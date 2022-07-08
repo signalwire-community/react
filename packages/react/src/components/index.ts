@@ -5,6 +5,8 @@ export { default as RoomPreview } from './RoomPreview';
 export { default as Video } from './Video';
 export { default as VideoConference } from './VideoConference';
 
+export { IVideoProps } from './Video'
+
 /** @ignore */
 export namespace __internal {
     export namespace Video {
