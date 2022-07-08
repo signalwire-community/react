@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/signalwire-community/react.git"
   },
-  "private": true,
+  "private": false,
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@signalwire/js": "^3.12.1",
-    "@signalwire-community/react": "*",
+    "@signalwire-community/react": "^1.2.5",
     "lodash": "^4.17.21"
   }
 }
