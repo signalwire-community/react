@@ -13,7 +13,7 @@
     "postinstall": "npm-run-all --serial _install-react _install-demo",
     "_install-react": "cd packages/react && echo 'Installing react deps...' && npm install",
     "_install-demo": "cd demo/video && echo 'Installing demo/video deps...' && npm install",
-    "build-react": "cd packages/react && npm run build"
+    "build": "lerna run build"
   },
   "repository": {
     "type": "git",
