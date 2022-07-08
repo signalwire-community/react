@@ -16,7 +16,7 @@
   },
   "private": false,
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/signalwire-community/react/issues"
   },

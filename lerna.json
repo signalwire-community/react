@@ -1,8 +1,10 @@
 {
-  "packages": [
-    "packages/*",
-    "demo/*"
-  ],
+  "useWorkspaces": true,
   "useNx": true,
-  "version": "independent"
+  "version": "independent",
+  "command": {
+    "version": {
+      "noPrivate": true
+    }
+  }
 }
