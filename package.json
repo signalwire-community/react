@@ -10,9 +10,7 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "postinstall": "npm-run-all --serial _install-react _install-demo",
-    "_install-react": "cd packages/react && echo 'Installing react deps...' && npm install",
-    "_install-demo": "cd demo/video && echo 'Installing demo/video deps...' && npm install",
+    "postinstall": "lerna bootstrap",
     "build": "lerna run build"
   },
   "repository": {

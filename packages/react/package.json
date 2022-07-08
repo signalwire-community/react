@@ -39,5 +39,6 @@
   "dependencies": {
     "@signalwire/js": "^3.12.1",
     "lodash": "^4.17.21"
-  }
+  },
+  "gitHead": "b55edac81ec425da87d08eefc1fe72a77a869957"
 }

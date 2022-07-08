@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/signalwire-community/react.git"
   },
-  "private": true,
+  "private": false,
   "author": "",
   "license": "ISC",
   "bugs": {
