@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "react-native": "^0.69.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
