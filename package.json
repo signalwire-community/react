@@ -1,9 +1,5 @@
 {
   "name": "root",
-  "workspaces": [
-    "packages/*",
-    "demo/*"
-  ],
   "private": true,
   "version": "1.0.0",
   "main": "index.js",
@@ -14,6 +10,7 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
+    "postinstall": "lerna bootstrap",
     "build": "lerna run build"
   },
   "repository": {

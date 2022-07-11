@@ -1,5 +1,9 @@
 {
-  "useWorkspaces": true,
+  "packages": [
+    "packages/*",
+    "demo/*"
+  ],
+  "useWorkspaces": false,
   "useNx": true,
   "version": "independent",
   "command": {
