@@ -1,7 +1,7 @@
 {
   "packages": [
     "packages/*",
-    "demo/*"
+    "demo/video"
   ],
   "useWorkspaces": false,
   "useNx": true,
