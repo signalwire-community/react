@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "@config-plugins/react-native-webrtc": "^2.0.1"
+    "@config-plugins/react-native-webrtc": "^3.0.0"
   },
   "name": "expo-webrtc",
   "version": "1.0.0",
