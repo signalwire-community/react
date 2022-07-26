@@ -7,6 +7,9 @@ import type { IVideoProps } from './IVideoProps';
 import type { MediaStream } from 'react-native-webrtc';
 import type { Video } from '@signalwire/js';
 
+// import { registerGlobals } from 'react-native-webrtc';
+// registerGlobals();
+
 interface IVideoNativeProps extends IVideoProps {
   style: any;
 }
