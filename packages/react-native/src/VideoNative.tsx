@@ -49,7 +49,6 @@ export default function VideoNative({ token }: IVideoNativeProps) {
     >
       <View style={{ flex: 1 }}>
         <RTCViewHack streamURL={remoteStream} style={{ flex: 1 }} />
-        <Text>{remoteStream}</Text>
       </View>
     </CoreVideo>
   );
