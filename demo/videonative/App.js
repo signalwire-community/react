@@ -6,7 +6,7 @@ import { SafeAreaView, View } from 'react-native';
 
 import { registerGlobals } from 'react-native-webrtc';
 registerGlobals();
-import VideoNative from './VideoNative';
+import VideoNative from '@signalwire-community/react-native';
 
 const App = () => {
   return (
