@@ -10,7 +10,7 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --no-ci",
     "build": "lerna run build"
   },
   "repository": {
