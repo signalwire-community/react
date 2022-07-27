@@ -17,26 +17,20 @@ export default function Video({ token, style }: IVideoNativeProps) {
   const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(
     null
   );
+
+  // TODO: Expose the local stream
   const [_, setLocalStream] = useState<string | null>(null);
   const [remoteStream, setRemoteStream] = useState<string | null>(null);
 
   useEffect(() => {
     if (roomSession === null) return;
     roomSession.on('room.joined', () => {
-      console.log(
-        'Room was joined. Webrtc:',
-        (roomSession.remoteStream as any as MediaStream)?.toURL()
-      );
       setRemoteStream(
         (roomSession?.remoteStream as any as MediaStream).toURL()
       );
       setLocalStream((roomSession?.localStream as any as MediaStream).toURL());
     });
   }, [roomSession]);
-
-  function RTCViewHack(props: any) {
-    return <RTCView {...props} />;
-  }
 
   return (
     <Internal.Video.CoreVideo
@@ -45,7 +39,8 @@ export default function Video({ token, style }: IVideoNativeProps) {
       }}
       token={token}
     >
-      <RTCViewHack streamURL={remoteStream} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
+      {/* @ts-expect-error */}
+      <RTCView streamURL={remoteStream} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
     </Internal.Video.CoreVideo>
   );
 }
