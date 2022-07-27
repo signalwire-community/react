@@ -22,7 +22,7 @@ npx create-react-native-app -t with-webrtc
 
 This will allow you to use the SignalWire Video component within an [Expo Dev Client](https://docs.expo.dev/clients/introduction/).
 
-### If you already have an Expo app
+### If you already have an Expo or Bare Workflow app
 
 Please follow the [instructions to enable WebRTC](https://github.com/expo/config-plugins/tree/main/packages/react-native-webrtc) in an [Expo Dev Client](https://docs.expo.dev/clients/introduction/).
 
@@ -56,36 +56,3 @@ export default function App() {
 ## Supported components
 
  - [Video Component](./packages/react-native/src/components/Video)
-
-
-# @signalwire-community/react-native
-
-Generated with https://www.npmjs.com/package/create-react-native-library
-
-## Installation
-
-```sh
-npm install @signalwire-community/react-native
-```
-
-## Usage
-
-```js
-import { multiply } from "@signalwire-community/react-native";
-
-// ...
-
-const result = await multiply(3, 7);
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
