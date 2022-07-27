@@ -10,9 +10,11 @@ const App = () => {
   console.log("Started")
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView>
       <Text>===========</Text>
-      <VideoNative token={TOKEN} />
+      <View style={{ borderWidth: 5, borderColor: 'red' }}>
+        <VideoNative token={TOKEN} />
+      </View>
       <Text>===========</Text>
     </SafeAreaView>
   );
