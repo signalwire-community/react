@@ -1,7 +1,7 @@
 {
   "name": "@signalwire-community/react-native",
   "version": "0.1.0",
-  "description": "test",
+  "description": "",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -25,25 +25,20 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "build": "bob build",
-    "example": "cd example && npm install",
-    "bootstrap": "npm run example"
+    "build": "bob build"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "repository": "https://github.com/danieleds/signalwire-community-react-native",
-  "author": "Daniele Di Sarli <danieleds0@gmail.com> (https://github.com/danieleds)",
+  "repository": "git+https://github.com/signalwire-community/react.git",
+  "author": "SignalWire Community",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/danieleds/signalwire-community-react-native/issues"
+    "url": "https://github.com/signalwire-community/react/issues"
   },
-  "homepage": "https://github.com/danieleds/signalwire-community-react-native#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
+  "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
     "@signalwire/js": "^3.12.1",
     "@signalwire-community/react": "^1.2.5",

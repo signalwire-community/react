@@ -15,7 +15,7 @@
     "url": "git+https://github.com/signalwire-community/react.git"
   },
   "private": false,
-  "author": "",
+  "author": "SignalWire Community",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/signalwire-community/react/issues"
