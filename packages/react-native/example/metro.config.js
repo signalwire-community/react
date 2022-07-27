@@ -3,7 +3,8 @@ const escape = require('escape-string-regexp');
 const exclusionList = require('metro-config/src/defaults/exclusionList');
 const pak = require('../package.json');
 
-const root = path.resolve(__dirname, '..');
+// The root must include all packages for lerna symlinks to work
+const root = path.resolve(__dirname, '../..');
 
 const modules = Object.keys({
   ...pak.peerDependencies,
@@ -14,12 +15,12 @@ module.exports = {
   watchFolders: [root],
 
   // We need to make sure that only one version is loaded for peerDependencies
-  // So we block them at the root, and alias them to the versions in example's node_modules
+  // So we block them at each package's root, and alias them to the versions in example's node_modules
   resolver: {
     blacklistRE: exclusionList(
       modules.map(
         (m) =>
-          new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`)
+          new RegExp(`^${escape(path.join(root, './'))}[a-zA-Z\-_]+${escape(path.join('/', 'node_modules', m))}\\/.*$`)
       )
     ),
 

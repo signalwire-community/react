@@ -1,11 +1,10 @@
 import 'react-native-get-random-values';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
-import CoreVideo from './CoreVideo';
-import type { IVideoProps } from './IVideoProps';
 import type { MediaStream } from 'react-native-webrtc';
 import type { Video } from '@signalwire/js';
+import { __internal as Internal, IVideoProps } from '@signalwire-community/react'
 
 // import { registerGlobals } from 'react-native-webrtc';
 // registerGlobals();
@@ -41,7 +40,7 @@ export default function VideoNative({ token }: IVideoNativeProps) {
   }
 
   return (
-    <CoreVideo
+    <Internal.Video.CoreVideo
       onRoomReady={(r: Video.RoomSession) => {
         setRoomSession(r);
       }}
@@ -50,6 +49,6 @@ export default function VideoNative({ token }: IVideoNativeProps) {
       <View style={{ flex: 1 }}>
         <RTCViewHack streamURL={remoteStream} style={{ flex: 1 }} />
       </View>
-    </CoreVideo>
+    </Internal.Video.CoreVideo>
   );
 }
