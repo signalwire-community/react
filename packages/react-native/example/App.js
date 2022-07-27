@@ -14,7 +14,14 @@ const App = () => {
     <SafeAreaView>
       <Text>===========</Text>
       <View style={{ borderWidth: 5, borderColor: 'red' }}>
-        <Video token={TOKEN} />
+        <Video
+          token={TOKEN}
+          onRoomReady={(roomSession) =>
+            console.log("Raw room session object:", roomSession)
+          }
+          onMemberTalking={(e) => console.log(`Member ${e.member.id} is talking.`)}
+          onMemberJoined={(e) => console.log(`${e.member.name} joined the room!`)}
+        />
       </View>
       <Text>===========</Text>
     </SafeAreaView>

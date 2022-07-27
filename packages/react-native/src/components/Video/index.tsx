@@ -12,11 +12,9 @@ interface IVideoNativeProps extends IVideoProps {
   style: any;
 }
 
-export default function Video({ token, style }: IVideoNativeProps) {
+export default function Video({ token, style, onRoomReady, ...props }: IVideoNativeProps) {
   // TODO: useStream Hook
-  const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(
-    null
-  );
+  const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
 
   // TODO: Expose the local stream
   const [_, setLocalStream] = useState<string | null>(null);
@@ -34,8 +32,10 @@ export default function Video({ token, style }: IVideoNativeProps) {
 
   return (
     <Internal.Video.CoreVideo
+      {...props}
       onRoomReady={(r: SignalWire.Video.RoomSession) => {
         setRoomSession(r);
+        onRoomReady?.(r)
       }}
       token={token}
     >
