@@ -43,7 +43,7 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
         onRoomReady?.(r)
       }}
     >
-      {/* @ts-expect-error */}
+      {/* prettier-ignore */ /* @ts-expect-error */}
       <RTCView streamURL={remoteStream} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
     </Internal.Video.CoreVideo>
   );
