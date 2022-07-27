@@ -4,7 +4,7 @@ const TOKEN = `eyJ0eXAiOiJWUlQiLCJjaCI6InJlbGF5LnNpZ25hbHdpcmUuY29tIiwiYWxnIjoiS
 import React from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
-import { VideoNative } from '@signalwire-community/react-native';
+import { Video } from '@signalwire-community/react-native';
 
 const App = () => {
 
@@ -14,7 +14,7 @@ const App = () => {
     <SafeAreaView>
       <Text>===========</Text>
       <View style={{ borderWidth: 5, borderColor: 'red' }}>
-        <VideoNative token={TOKEN} />
+        <Video token={TOKEN} />
       </View>
       <Text>===========</Text>
     </SafeAreaView>
