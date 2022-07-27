@@ -22,12 +22,17 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
 
   useEffect(() => {
     if (roomSession === null) return;
-    roomSession.on('room.joined', () => {
-      setRemoteStream(
-        (roomSession?.remoteStream as any as MediaStream).toURL()
-      );
-      setLocalStream((roomSession?.localStream as any as MediaStream).toURL());
-    });
+
+    const onJoined = () => {
+      setRemoteStream((roomSession.remoteStream as any as MediaStream).toURL());
+      setLocalStream((roomSession.localStream as any as MediaStream).toURL());
+    }
+
+    roomSession.on('room.joined', onJoined);
+
+    return () => {
+      roomSession.off('room.joined', onJoined)
+    }
   }, [roomSession]);
 
   return (
