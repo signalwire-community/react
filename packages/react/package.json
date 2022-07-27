@@ -15,7 +15,7 @@
     "url": "git+https://github.com/signalwire-community/react.git"
   },
   "private": false,
-  "author": "",
+  "author": "SignalWire Community",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/signalwire-community/react/issues"
@@ -29,8 +29,8 @@
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.3",
     "@types/lodash": "^4.14.182",
-    "@types/react": ">=17.0.0",
-    "react": ">=17.0.0",
+    "@types/react": "^17.0.0",
+    "react": "^17.0.0",
     "rollup": "^2.75.6",
     "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-node-externals": "^4.1.1",

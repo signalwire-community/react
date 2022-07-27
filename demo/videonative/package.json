@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "postinstall": "cd ../../packages/react-native/example && npm install",
+    "start": "cd ../../packages/react-native/example && npm run start",
+    "android": "cd ../../packages/react-native/example && npm run android",
+    "ios": "cd ../../packages/react-native/example && npm run ios"
+  },
+  "name": "expo-webrtc-demo-wrapper",
+  "version": "0.0.0",
+  "private": true
+}
