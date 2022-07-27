@@ -12,7 +12,7 @@ interface IVideoNativeProps extends IVideoProps {
   style: any;
 }
 
-export default function Video({ token, style, onRoomReady, ...props }: IVideoNativeProps) {
+export default function Video({ style, onRoomReady, ...props }: IVideoNativeProps) {
   // TODO: useStream Hook
   const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
 
@@ -37,7 +37,6 @@ export default function Video({ token, style, onRoomReady, ...props }: IVideoNat
         setRoomSession(r);
         onRoomReady?.(r)
       }}
-      token={token}
     >
       {/* @ts-expect-error */}
       <RTCView streamURL={remoteStream} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
