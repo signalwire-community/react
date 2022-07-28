@@ -1,6 +1,6 @@
 # @signalwire-community/react-native
 
-![@signalwire-community/react](https://img.shields.io/npm/v/@signalwire-community/react-native)
+[![@signalwire-community/react](https://img.shields.io/npm/v/@signalwire-community/react-native)](https://www.npmjs.com/package/@signalwire-community/react-native)
 
 Collection of unofficial React Native components and tools for [SignalWire](https://signalwire.com).
 
