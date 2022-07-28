@@ -1,6 +1,6 @@
 # @signalwire-community/react
 
-![@signalwire-community/react](https://img.shields.io/npm/v/@signalwire-community/react)
+[![@signalwire-community/react](https://img.shields.io/npm/v/@signalwire-community/react)](https://www.npmjs.com/package/@signalwire-community/react)
 
 Collection of unofficial React components and tools for [SignalWire](https://signalwire.com).
 
