@@ -6,7 +6,7 @@ Collection of unofficial React components and tools for [SignalWire](https://sig
 
 > ⚠️ Disclaimer:
 >
-> The libraries in this repository are NOT supported by SignalWire. SignalWire will _not_ answer support questions about the code in this repository, and is not responsible for fixing issues.
+> The libraries in this repository are NOT supported by SignalWire.
 
 ## Install
 
@@ -24,9 +24,15 @@ import { VideoConference } from "@signalwire-community/react";
 
 ## Supported components
 
+### React
+
 - [Video Conferences](./packages/react/src/components/VideoConference)
 - [Video Component](./packages/react/src/components/Video)
 - [Room Preview](./packages/react/src/components/RoomPreview)
+
+### React Native
+
+- [Video Component](./packages/react-native/src/components/Video)
 
 ## Contributing
 

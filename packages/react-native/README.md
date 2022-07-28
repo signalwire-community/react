@@ -6,7 +6,7 @@ Collection of unofficial React Native components and tools for [SignalWire](http
 
 > ⚠️ Disclaimer:
 > 
-> The libraries in this repository are NOT supported by SignalWire. SignalWire will _not_ answer support questions about the code in this repository, and is not responsible for fixing issues.
+> The libraries in this repository are NOT supported by SignalWire.
 
 ## Preparing the environment
 
