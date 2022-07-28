@@ -55,4 +55,4 @@ export default function App() {
 
 ## Supported components
 
- - [Video Component](./packages/react-native/src/components/Video)
+ - [Video Component](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/Video)
