@@ -37,9 +37,7 @@ export default function App() {
     <div>
       <Video
         token="eyJ0eXAiOiJWUlQiLCJj..."
-        onRoomReady={(roomSession) =>
-          console.log("Raw room session object:", roomSession)
-        }
+        onRoomReady={setRoomSession}
       />
 
       <button onClick={() => roomSession?.audioMute()}>Mute</button>
