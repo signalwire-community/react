@@ -28,7 +28,7 @@ Calling a method (e.g. for muting the mic):
 
 ```jsx
 import React from "react";
-import { VideoConference } from "@signalwire-community/react";
+import { Video } from "@signalwire-community/react";
 
 export default function App() {
   const [roomSession, setRoomSession] = React.useState();
