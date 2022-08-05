@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import React, { useEffect, useState } from 'react';
 import type * as SignalWire from '@signalwire/js';
 import type { MediaStream } from 'react-native-webrtc';
