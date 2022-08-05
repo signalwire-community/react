@@ -8,6 +8,9 @@ export type ILocalStreamProps = {
   url?: string;
 };
 
+/**
+ * Displays a local stream. You can pass either a RoomSession, or a stream URL.
+ */
 export default function LocalStream(params: ILocalStreamProps) {
   return <BaseStream {...params} streamSource="local" />;
 }
