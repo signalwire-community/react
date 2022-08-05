@@ -4,7 +4,7 @@ import type { MediaStream } from 'react-native-webrtc';
 import { RTCView } from 'react-native-webrtc';
 
 export type ILocalStreamProps = {
-  style: any;
+  style?: any;
 
   /** If set, the stream is extracted from the RoomSession. */
   roomSession?: SignalWire.Video.RoomSession;
