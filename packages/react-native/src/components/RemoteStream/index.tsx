@@ -14,5 +14,5 @@ export type ILocalStreamProps = {
 );
 
 export default function LocalStream(params: ILocalStreamProps) {
-  return <BaseStream {...params} streamSource="local" />;
+  return <BaseStream {...params} streamSource="remote" />;
 }
