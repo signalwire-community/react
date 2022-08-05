@@ -16,8 +16,6 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
   // TODO: useStream Hook
   const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
 
-  // TODO: Expose the local stream
-  const [_, setLocalStream] = useState<string | null>(null);
   const [remoteStream, setRemoteStream] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,7 +23,6 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
 
     const onJoined = () => {
       setRemoteStream((roomSession.remoteStream as any as MediaStream).toURL());
-      setLocalStream((roomSession.localStream as any as MediaStream).toURL());
     }
 
     roomSession.on('room.joined', onJoined);
