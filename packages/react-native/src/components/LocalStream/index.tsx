@@ -5,11 +5,10 @@ import BaseStream from '../BaseStream';
 export type ILocalStreamProps = {
   style?: any;
   roomSession?: SignalWire.Video.RoomSession;
-  url?: string;
 };
 
 /**
- * Displays a local stream. You can pass either a RoomSession, or a stream URL.
+ * Displays a local RoomSession stream.
  */
 export default function LocalStream(params: ILocalStreamProps) {
   return <BaseStream {...params} streamSource="local" />;
