@@ -4,7 +4,7 @@ const TOKEN = ''
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 
-import { Video, LocalStream, RemoteStream } from '@signalwire-community/react-native';
+import { Video, LocalStream } from '@signalwire-community/react-native';
 
 const App = () => {
 
