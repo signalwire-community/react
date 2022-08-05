@@ -22,7 +22,7 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
         onRoomReady?.(r);
       }}
     >
-      <RemoteStream roomSession={roomSession ?? undefined} />
+      <RemoteStream roomSession={roomSession ?? undefined} style={style} />
     </Internal.Video.CoreVideo>
   );
 }
