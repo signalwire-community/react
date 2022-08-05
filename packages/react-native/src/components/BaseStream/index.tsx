@@ -36,14 +36,13 @@ export default function BaseStream({
   const [streamUrl, setStreamUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (roomSession && roomSession.active) {
-      // The Room Session is already active, let's take the stream.
-      setStreamUrl(extractStreamUrl(roomSession, streamSource));
-      return () => {
-        setStreamUrl(null);
-      };
-    } else if (roomSession && !roomSession.active) {
-      // The Room Session still needs to bootstrap, let's subscribe to `room.joined`.
+    if (roomSession) {
+      if (roomSession.active) {
+        // The Room Session is already active, let's take the stream.
+        setStreamUrl(extractStreamUrl(roomSession, streamSource));
+      }
+
+      // Let's subscribe to `room.joined`.
       const onJoined = () => {
         setStreamUrl(extractStreamUrl(roomSession, streamSource));
       };
