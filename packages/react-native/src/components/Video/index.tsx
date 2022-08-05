@@ -19,7 +19,7 @@ export default function Video({ style, onRoomReady, ...props }: IVideoNativeProp
       {...props}
       onRoomReady={(r: SignalWire.Video.RoomSession) => {
         setRoomSession(r);
-        onRoomReady?.(r)
+        onRoomReady?.(r);
       }}
     >
       <RemoteStream roomSession={roomSession ?? undefined} />

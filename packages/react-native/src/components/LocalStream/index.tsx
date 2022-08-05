@@ -4,7 +4,7 @@ import BaseStream from '../BaseStream';
 
 export type ILocalStreamProps = {
   style?: any;
-  roomSession?: SignalWire.Video.RoomSession
+  roomSession?: SignalWire.Video.RoomSession;
   url?: string;
 };
 
