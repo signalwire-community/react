@@ -5,7 +5,7 @@
 Collection of unofficial React Native components and tools for [SignalWire](https://signalwire.com).
 
 > ⚠️ Disclaimer:
-> 
+>
 > The libraries in this repository are NOT supported by SignalWire.
 
 ## Preparing the environment
@@ -50,9 +50,11 @@ export default function App() {
       <Video token="<Your SignalWire Room Token>" />
     </SafeAreaView>
   );
-};
+}
 ```
 
 ## Supported components
 
- - [Video Component](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/Video)
+- [`<LocalStream>](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/LocalStream)
+- [`<RemoteStream>](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/RemoteStream)
+- [`<Video>`](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/Video)

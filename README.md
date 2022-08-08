@@ -29,10 +29,12 @@ import { VideoConference } from "@signalwire-community/react";
 - [Video Conferences](./packages/react/src/components/VideoConference)
 - [Video Component](./packages/react/src/components/Video)
 - [Room Preview](./packages/react/src/components/RoomPreview)
+- [... more](./packages/react#readme)
 
 ### React Native
 
 - [Video Component](./packages/react-native/src/components/Video)
+- [... more](./packages/react-native#readme)
 
 ## Contributing
 

@@ -5,7 +5,7 @@
 Collection of unofficial React components and tools for [SignalWire](https://signalwire.com).
 
 > ⚠️ Disclaimer:
-> 
+>
 > The libraries in this repository are NOT supported by SignalWire.
 
 ## Install
@@ -19,11 +19,13 @@ npm install @signalwire-community/react
 Import and use the component, for example:
 
 ```js
-import { VideoConference } from '@signalwire-community/react';
+import { VideoConference } from "@signalwire-community/react";
 ```
 
 ## Supported components
 
- - [Video Conferences](/packages/react/src/components/VideoConference)
- - [Video Component](/packages/react/src/components/Video)
- - [Room Preview](/packages/react/src/components/RoomPreview)
+- [`<LocalStream>`](/packages/react/src/components/LocalStream)
+- [`<RemoteStream>`](/packages/react/src/components/RemoteStream)
+- [`<RoomPreview>`](/packages/react/src/components/RoomPreview)
+- [`<Video>`](/packages/react/src/components/Video)
+- [`<VideoConference>`](/packages/react/src/components/VideoConference)
