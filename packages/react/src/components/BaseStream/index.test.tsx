@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ReactDOMTest from "react-dom/test-utils";
 import renderer from "react-test-renderer";
-import LocalStream from "./index";
+import BaseStream from "./index";
 
-describe("LocalStream", () => {
+describe("BaseStream", () => {
   let container: any;
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe("LocalStream", () => {
     await ReactDOMTest.act(async () => {
       ReactDOM.render(
         // @ts-expect-error
-        <LocalStream roomSession={roomSessionMock} />,
+        <BaseStream roomSession={roomSessionMock} streamSource="local" />,
         container
       );
     });
@@ -48,7 +48,7 @@ describe("LocalStream", () => {
     expect(offSpy).toHaveBeenCalledWith("room.joined", expect.anything());
   });
 
-  it("should extract the correct stream", async () => {
+  it("should extract the local stream", async () => {
     const roomSessionMock = {
       active: true,
       localStream: "local stream",
@@ -60,7 +60,7 @@ describe("LocalStream", () => {
     await ReactDOMTest.act(async () => {
       ReactDOM.render(
         // @ts-expect-error
-        <LocalStream roomSession={roomSessionMock} />,
+        <BaseStream roomSession={roomSessionMock} streamSource="local" />,
         container
       );
     });
@@ -70,16 +70,39 @@ describe("LocalStream", () => {
       "local stream"
     );
   });
+
+  it("should extract the remote stream", async () => {
+    const roomSessionMock = {
+      active: true,
+      localStream: "local stream",
+      remoteStream: "remote stream",
+      on: jest.fn(),
+      off: jest.fn(),
+    };
+
+    await ReactDOMTest.act(async () => {
+      ReactDOM.render(
+        // @ts-expect-error
+        <BaseStream roomSession={roomSessionMock} streamSource="remote" />,
+        container
+      );
+    });
+
+    expect(container.querySelector("video")).toHaveProperty(
+      "srcObject",
+      "remote stream"
+    );
+  });
 });
 
-describe("LocalStream", () => {
+describe("BaseStream", () => {
   it("Should render a video component", async () => {
     const roomSessionMock = {};
 
     // We don't need an actual DOM, so we use react-test-renderer.
     const component = renderer.create(
       // @ts-expect-error
-      <LocalStream roomSession={roomSessionMock} />
+      <BaseStream roomSession={roomSessionMock} streamSource="local" />
     );
 
     expect(component.toJSON()).toHaveProperty("type", "video");
