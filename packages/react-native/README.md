@@ -55,6 +55,6 @@ export default function App() {
 
 ## Supported components
 
-- [`<LocalStream>](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/LocalStream)
-- [`<RemoteStream>](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/RemoteStream)
+- [`<LocalStream>`](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/LocalStream)
+- [`<RemoteStream>`](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/RemoteStream)
 - [`<Video>`](https://github.com/signalwire-community/react/tree/main/packages/react-native/src/components/Video)
