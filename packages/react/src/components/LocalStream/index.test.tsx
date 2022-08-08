@@ -71,13 +71,7 @@ describe("LocalStream", () => {
 
 describe("LocalStream", () => {
   it("Should render a video component", async () => {
-    const roomSessionMock = {
-      active: true,
-      localStream: 'local stream',
-      remoteStream: 'remote stream',
-      on: jest.fn(),
-      off: jest.fn(),
-    }
+    const roomSessionMock = { }
 
     // We don't need an actual DOM, so we use react-test-renderer.
     const component = renderer.create(
