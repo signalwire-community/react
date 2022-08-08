@@ -1,6 +1,6 @@
-import SignalWire from '@signalwire/js';
-import { Video } from '@signalwire-community/react';
-import { useState } from 'react';
+import SignalWire from "@signalwire/js";
+import { LocalStream, Video } from "@signalwire-community/react";
+import { useState } from "react";
 
 function DemoVideo() {
   const [roomSession, setRoomSession] =
@@ -16,8 +16,12 @@ function DemoVideo() {
           }}
         />
       ) : (
-        'No Token Present. Please set your env variable'
+        "No Token Present. Please set your env variable"
       )}
+      <LocalStream
+        roomSession={roomSession ?? undefined}
+        style={{ position: "absolute", top: 0, right: 0, width: 200 }}
+      />
     </div>
   );
 }
