@@ -105,6 +105,10 @@ function permissionObjectFromPermissions(permissions: string[]) {
     };
   });
 
+  // This permission is always present, so making it symmetric
+  // to permissionObj.member.remove
+  permissionObj.self.remove = true;
+
   permissionObj.full_video_muted =
     permissionObj.show_video_muted && permissionObj.hide_video_muted;
   permissionObj.full =
