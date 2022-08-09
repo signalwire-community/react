@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ReactDOMTest from "react-dom/test-utils";
-import renderer from "react-test-renderer";
 import CoreVideoConference from "./CoreVideoConference";
 
 describe("CoreVideoConference", () => {
