@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Video } from "@signalwire/js";
 import {
-  useControls,
   useMembers,
   usePermissions,
   Video as VideoWeb,
