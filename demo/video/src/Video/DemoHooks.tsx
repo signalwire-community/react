@@ -70,7 +70,7 @@ function DemoHooks() {
         </div>
       )}
       {members.members.map((m: any) => (
-        <div>
+        <div key={m.id}>
           {m.id !== members.self.id && <>{controlButtons(m, P.member)}</>}
         </div>
       ))}

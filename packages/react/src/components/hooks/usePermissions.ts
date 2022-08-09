@@ -1,4 +1,4 @@
-import { RoomSession } from "@signalwire/js/dist/js/src/RoomSession";
+import { Video } from "@signalwire/js";
 import jwt_decode from "jwt-decode";
 
 const allPermissions = [
@@ -122,7 +122,9 @@ function permissionObjectFromPermissions(permissions: string[]) {
   return permissionObj;
 }
 
-export default function usePermissions(tokenProvider: RoomSession | string) {
+export default function usePermissions(
+  tokenProvider: Video.RoomSession | string
+) {
   const token =
     typeof tokenProvider === "string"
       ? tokenProvider
