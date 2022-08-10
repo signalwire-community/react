@@ -1,4 +1,5 @@
 import React from "react";
+import type * as SignalWire from '@signalwire/js';
 
 type CoreVideoConferenceProps = {
   onRoomReady?: (roomSession: any) => void,
@@ -22,56 +23,56 @@ export default function CoreVideoConference({
   prejoin,
 }: CoreVideoConferenceProps) {
   const container = React.useRef<HTMLDivElement>(null);
+  const videoConferenceComponent = React.useRef<any>();
+
+  // FIXME Maybe we won't need this if https://github.com/signalwire/ready-rooms/pull/188 is merged
+  const [roomSession, setRoomSession] = React.useState<SignalWire.Video.RoomSession | null>(null);
 
   React.useEffect(() => {
-    if (container.current === null) return;
+    const scriptEsm = document.createElement('script');
+    const scriptNoModule = document.createElement('script');
+    const css = document.createElement('link');
+  
+    scriptEsm.src = "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.esm.js";
+    scriptEsm.type = "module";
 
-    const c = container.current;
-    (c as any).setupRoomSession = (rs: any) => {
-      if (onRoomReady) {
-        onRoomReady(rs);
-      }
-    };
+    scriptNoModule.src = "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.js";
+    scriptNoModule.noModule = true;
 
-    const script = document.createElement("script");
-    script.innerHTML = `
-!function(e,r){e.swvr=e.swvr||function(r={}){
-Object.assign(e.swvr.p=e.swvr.p||{},r)}
-;let t=r.currentScript,n=r.createElement("script")
-;n.type="module",n.src="https://cdn.signalwire.com/video/rooms/index.js",
-n.onload=function(){let n=r.createElement("ready-room")
-;n.params=e.swvr.p,t.parentNode?.appendChild(n)},t.parentNode.insertBefore(n,t)
-;let i=r.createElement("link")
-;i.type="text/css",i.rel="stylesheet",i.href="https://cdn.signalwire.com/video/rooms/signalwire.css",
-t.parentNode.insertBefore(i,t),
-e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
-}(window,document);
+    css.href = "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.css"
+    css.rel = "stylesheet"
+  
+    container.current?.appendChild(scriptEsm);
+    container.current?.appendChild(scriptNoModule);
+    container.current?.appendChild(css);
+  
+    return () => {
+      container.current?.removeChild(scriptEsm);
+      container.current?.removeChild(scriptNoModule);
+      container.current?.removeChild(css);
+    }
+  }, []);
 
-(function(){
-  const currScript = document.currentScript;
-  SignalWire.Prebuilt.VideoRoom({
-    token: ${JSON.stringify(token)},
-    userName: ${JSON.stringify(userName)},
-    theme: ${JSON.stringify(theme)},
-    audio: ${JSON.stringify(audio)},
-    video: ${JSON.stringify(video)},
-    memberList: ${JSON.stringify(memberList)},
-    prejoin: ${JSON.stringify(prejoin)},
-    setupRoomSession: (rs) => {
-      const el = currScript.parentNode;
-      if (el.setupRoomSession !== undefined) {
-        el.setupRoomSession(rs);
+  React.useEffect(() => {
+    if (videoConferenceComponent.current) {
+      videoConferenceComponent.current.setupRoomSession = (rs: any) => {
+        onRoomReady?.(rs);
       }
     }
-  });
-})();
-    `;
+  }, [onRoomReady])
 
-    c.appendChild(script);
-    return () => {
-      c.removeChild(script);
-      c.innerHTML = ''
-    };
-  }, [container, token, userName, memberList, prejoin, audio, video, theme]);
-  return <div ref={container}></div>;
+  return <div ref={container}>
+    {/* @ts-ignore */}
+    <sw-video-conference
+      key={JSON.stringify([token, userName, theme, audio, video, memberList, prejoin])}
+      ref={videoConferenceComponent}
+      token={token}
+      user-name={userName}
+      theme={theme}
+      audio={audio}
+      video={video}
+      member-list={memberList}
+      prejoin={prejoin}
+    />
+  </div>;
 }
