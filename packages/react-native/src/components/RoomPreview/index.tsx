@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { View } from "react-native";
 import { WebView } from 'react-native-webview';
 
 type RoomPreviewProps = {
@@ -30,15 +31,21 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
     let intv: NodeJS.Timer | null = null;
 
     if (previewUrl) {
+      console.log("Setting Interval", previewUrl)
       intv = setInterval(() => {
-        if (currUrl === previewUrl) {
-          // We are already displaying previewUrl, so just refresh it.
-          webView.current?.reload()
-        } else {
-          // We probably were displaying the "loading" image, so now we should
-          // try displaying the previewUrl.
-          setCurrUrl(previewUrl)
-        }
+        setCurrUrl(currUrl => {
+          if (currUrl?.uri === previewUrl?.uri) {
+            // We are already displaying previewUrl, so just refresh it.
+            // webView.current?.clearCache(true)
+            // webView.current?.reload()
+
+            return {...currUrl}
+          } else {
+            // We probably were displaying the "loading" image, so now we should
+            // try displaying the previewUrl.
+            return previewUrl
+          }
+        })
       }, 10000);
     }
 
@@ -50,23 +57,24 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
   }, [previewUrl]);
 
   function onHttpError() {
-    if (currUrl !== loadingUrl) {
+    if (currUrl?.uri !== loadingUrl?.uri) {
       setCurrUrl(loadingUrl)
     }
   }
 
   return (
-    <WebView 
-      ref={webView}
-      source={currUrl}
-      onHttpError={onHttpError}
-      style={{
-        height: 200,
-        aspectRatio: "16/9",
-        backgroundColor: "black",
-        ...style,
-      }}
-    />
+    <View style={{
+      aspectRatio: 16 / 9,
+      backgroundColor: "blue",
+      ...style,
+    }}>
+      <WebView
+        ref={webView}
+        source={currUrl}
+        // cacheEnabled={false}
+        onHttpError={onHttpError}
+      />
+    </View>
   );
 };
 
