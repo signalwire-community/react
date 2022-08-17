@@ -55,7 +55,12 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
     };
   }, [previewUrl]);
 
-  function onError() {
+  function onError(e: any) {
+    if (e?.nativeEvent?.error && e?.nativeEvent?.error?.includes('animated-webp')) {
+      // error: "To encode animated webp please add the dependency to the animated-webp module"
+      console.warn("You need to enable animated webP support for room previews to work.")
+    }
+
     if (currUrl?.uri !== loadingUrl?.uri) {
       setCurrUrl(loadingUrl);
     }
