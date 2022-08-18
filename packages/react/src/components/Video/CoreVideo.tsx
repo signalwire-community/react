@@ -1,7 +1,13 @@
-import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react';
-import * as SignalWire from '@signalwire/js';
-import { IVideoProps } from './IVideoProps';
-import { debounce } from 'lodash'
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import * as SignalWire from "@signalwire/js";
+import { IVideoProps } from "./IVideoProps";
+import { debounce } from "lodash";
 
 export interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
@@ -13,16 +19,17 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   onRoomReady,
   ...props
 }) => {
-  const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
+  const [roomSession, setRoomSession] =
+    useState<SignalWire.Video.RoomSession | null>(null);
 
   // This is used to access the current roomSession from useEffect without it
   // becoming a dependency.
-  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>()
-  roomSessionRef.current = roomSession
+  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>();
+  roomSessionRef.current = roomSession;
 
   useEffect(() => {
     try {
-      setup(props)
+      setup(props);
     } catch (e) {
       console.error("Couldn't join room", e);
     }
@@ -34,10 +41,10 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   const setup = useCallback(
     debounce(async (props: ICoreVideoProps) => {
       if (roomSessionRef.current) {
-        await quitSession(roomSessionRef.current)
-        setRoomSession(null)
+        await quitSession(roomSessionRef.current);
+        setRoomSession(null);
         if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = ""
+          props.rootElement.current.innerHTML = "";
         }
       }
 
@@ -53,27 +60,28 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
         stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
         video: props.video,
       });
+      (curRoomSession as any).token = props.token;
       setRoomSession(curRoomSession);
       onRoomReady?.(curRoomSession);
       await curRoomSession.join();
 
-      return curRoomSession
+      return curRoomSession;
     }, 100),
     []
-  )
+  );
 
   /** Cleanup when the component is unmounted */
   useEffect(() => {
     return () => {
       if (roomSessionRef.current) {
-        quitSession(roomSessionRef.current)
-        setRoomSession(null)
+        quitSession(roomSessionRef.current);
+        setRoomSession(null);
         if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = ""
+          props.rootElement.current.innerHTML = "";
         }
       }
-    }
-  }, [])
+    };
+  }, []);
 
   /**
    * Robust way for disconnecting a RoomSession
@@ -82,36 +90,38 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     // Ensure the room is in a joined state first, since we don't have a way to
     // abort an in-progress join.
     try {
-      await roomSession.join()
+      await roomSession.join();
     } catch (e) {}
 
     // Initiate disconnection
     try {
       roomSession.removeAllListeners();
-      roomSession.on('room.joined', async () => {
-        await roomSession?.leave()
+      roomSession.on("room.joined", async () => {
+        await roomSession?.leave();
         roomSession.destroy();
-      })
+      });
       await roomSession.leave();
       roomSession.destroy();
-    } catch (e) { console.log(e) }
-  }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const eventMap = {
-    'layout.changed': props.onLayoutChanged ?? null,
-    'member.joined': props.onMemberJoined ?? null,
-    'member.left': props.onMemberLeft ?? null,
-    'member.talking': props.onMemberTalking ?? null,
-    'member.updated': props.onMemberUpdated ?? null,
-    'memberList.updated': props.onMemberListUpdated ?? null,
-    'playback.ended': props.onPlaybackEnded ?? null,
-    'playback.started': props.onPlaybackStarted ?? null,
-    'playback.updated': props.onPlaybackUpdated ?? null,
-    'recording.ended': props.onRecordingEnded ?? null,
-    'recording.started': props.onRecordingStarted ?? null,
-    'recording.updated': props.onRecordingUpdated ?? null,
-    'room.joined': props.onRoomJoined ?? null,
-    'room.updated': props.onRoomUpdated ?? null,
+    "layout.changed": props.onLayoutChanged ?? null,
+    "member.joined": props.onMemberJoined ?? null,
+    "member.left": props.onMemberLeft ?? null,
+    "member.talking": props.onMemberTalking ?? null,
+    "member.updated": props.onMemberUpdated ?? null,
+    "memberList.updated": props.onMemberListUpdated ?? null,
+    "playback.ended": props.onPlaybackEnded ?? null,
+    "playback.started": props.onPlaybackStarted ?? null,
+    "playback.updated": props.onPlaybackUpdated ?? null,
+    "recording.ended": props.onRecordingEnded ?? null,
+    "recording.started": props.onRecordingStarted ?? null,
+    "recording.updated": props.onRecordingUpdated ?? null,
+    "room.joined": props.onRoomJoined ?? null,
+    "room.updated": props.onRoomUpdated ?? null,
   };
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {

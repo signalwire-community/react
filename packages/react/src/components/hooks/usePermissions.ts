@@ -3,6 +3,8 @@ import jwt_decode from "jwt-decode";
 
 const allPermissions = [
   "room.hide_video_muted",
+  "room.set_position",
+  "room.set_meta",
   "room.show_video_muted",
   "room.list_available_layouts",
   "room.playback",
@@ -29,6 +31,10 @@ const allPermissions = [
   "room.self.set_output_volume",
   "room.self.video_mute",
   "room.self.video_unmute",
+  "room.self.set_position",
+  "room.member.set_position",
+  "room.self.set_meta",
+  "room.member.set_meta",
 ];
 const defaultPermissions = [
   "room.self.audio_mute",
@@ -85,6 +91,8 @@ function permissionObjectFromPermissions(permissions: string[]) {
     recording: permissions.includes("room.recording"),
     show_video_muted: permissions.includes("room.show_video_muted"),
     hide_video_muted: permissions.includes("room.hide_video_muted"),
+    set_position: permissions.includes("room.set_position"),
+    set_meta: permissions.includes("room.set_meta"),
   };
 
   ["self", "member"].forEach((type) => {
@@ -134,7 +142,7 @@ export default function usePermissions(
   try {
     decodedToken = jwt_decode(token);
   } catch (e) {
-    console.error("Invalid Token (useHook)");
+    console.error("Invalid Token (usePermission)");
     return null;
   }
 
