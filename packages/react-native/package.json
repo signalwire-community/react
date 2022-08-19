@@ -40,8 +40,8 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
-    "@signalwire/js": "^3.12.1",
     "@signalwire-community/react": "^1.2.7",
+    "@signalwire/js": "^3.12.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
