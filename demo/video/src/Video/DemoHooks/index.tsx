@@ -16,7 +16,7 @@ function DemoHooks() {
     undefined
   );
 
-  const P = usePermissions(import.meta.env.VITE_ROOM_TOKEN_FULL_PERMISSIONS);
+  const P = usePermissions(roomSession);
   const members = useMembers(roomSession ?? null);
 
   function controlStrip(m: any, permission: any) {
@@ -24,7 +24,7 @@ function DemoHooks() {
     return (
       <>
         {`${m.name.substr(0, 6)}... (${m.id.substr(0, 10)}...)`}
-        <i>{members.self.talking && " Talking"}</i>
+        <i>{(members?.self as any)?.talking && " Talking"}</i>
         <br />
         {permission.audio.full && (
           <button onClick={(x) => m.audio.toggle()}>
@@ -86,7 +86,7 @@ function DemoHooks() {
       )}
       {members.members.map((m: any) => (
         <div key={m.id}>
-          {m.id !== members.self.id && <>{controlStrip(m, P.member)}</>}
+          {m.id !== members?.self?.id && <>{controlStrip(m, P.member)}</>}
         </div>
       ))}
     </div>
