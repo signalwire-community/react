@@ -60,7 +60,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
         stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
         video: props.video,
       });
-      (curRoomSession as any).token = props.token;
+      (curRoomSession as any).__swc_token = props.token;
       setRoomSession(curRoomSession);
       onRoomReady?.(curRoomSession);
       await curRoomSession.join();

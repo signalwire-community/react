@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Video } from "@signalwire/js";
-import { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
+import type {
+  VideoMemberEntity,
+  VideoMemberTalkingEventParams,
+} from "@signalwire/js";
+import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
+import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
 
-// TODO: Explicitly mark types for each parameter
 export default function useMembers(roomSession: Video.RoomSession | null) {
   const selfId = useRef<string | null>(null);
-  const [members, setMembers] = useState<any>([]);
+  const [members, setMembers] = useState<VideoMemberEntity[]>([]);
 
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
@@ -57,7 +61,6 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     }
     if (roomSession === null) return;
     function onRoomJoined(e: any) {
-      console.log("Room Joined", e);
       selfId.current = e.member_id;
       console.log(selfId.current);
       let members = e.room_session.members;
@@ -65,8 +68,7 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     }
     roomSession.on("room.joined", onRoomJoined);
 
-    function onMemberListUpdated(e: any) {
-      console.log("MemberList Updated", e);
+    function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
       const members: any = e.members;
       members.forEach((m: any) => {
         m.position = m.current_position;
@@ -75,18 +77,17 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     }
     roomSession.on("memberList.updated", onMemberListUpdated);
 
-    function onMemberTalking(e: any) {
-      setMembers((members: any) => {
+    function onMemberTalking(e: VideoMemberTalkingEventParams) {
+      setMembers((members) => {
         const newMembers = [...members];
-        let member = newMembers?.find((m: any) => m.id === e.member.id);
-        if (member) member.talking = e.member.talking;
+        let member = newMembers.find((m: any) => m.id === e.member.id);
+        if (member) (member as any).talking = e.member.talking;
         return newMembers;
       });
     }
     roomSession.on("member.talking", onMemberTalking);
 
     function onLayoutChanged(e: any) {
-      console.log("Layout Changed", e);
       setMembers((members: any) => {
         const newMembers = [...members];
         e.layout.layers.forEach((layer: any) => {

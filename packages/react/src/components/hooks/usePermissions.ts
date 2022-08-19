@@ -137,7 +137,7 @@ export default function usePermissions(
   const token =
     typeof tokenProvider === "string"
       ? tokenProvider
-      : (tokenProvider as any).token;
+      : (tokenProvider as any).__swc_token;
   if (token === undefined || token === null) return null;
   let decodedToken: any;
   try {

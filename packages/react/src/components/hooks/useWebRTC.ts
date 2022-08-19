@@ -1,19 +1,29 @@
 import { useEffect, useState } from "react";
 import { WebRTC } from "@signalwire/js";
 
-export default function useWebRTC() {
+export default function useWebRTC(deviceEnabled: {
+  cameras: boolean;
+  microphones: boolean;
+  speakers: boolean;
+}) {
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
 
   useEffect(() => {
     async function setupList() {
-      const cameras = await WebRTC.getCameraDevicesWithPermissions();
-      setCameras(Array.from(cameras));
-      const microphones = await WebRTC.getMicrophoneDevicesWithPermissions();
-      setMicrophones(microphones);
-      const speakers = await WebRTC.getSpeakerDevicesWithPermissions();
-      setSpeakers(speakers);
+      if (deviceEnabled.cameras !== false) {
+        const cameras = await WebRTC.getCameraDevicesWithPermissions();
+        setCameras(Array.from(cameras));
+      }
+      if (deviceEnabled.microphones !== false) {
+        const microphones = await WebRTC.getMicrophoneDevicesWithPermissions();
+        setMicrophones(microphones);
+      }
+      if (deviceEnabled.speakers !== false) {
+        const speakers = await WebRTC.getSpeakerDevicesWithPermissions();
+        setSpeakers(speakers);
+      }
     }
     setupList();
   }, []);
@@ -21,20 +31,26 @@ export default function useWebRTC() {
   useEffect(() => {
     let cameraWatcher: any, microphoneWatcher: any, speakerWatcher: any;
     async function setupWatchers() {
-      cameraWatcher = await WebRTC.createCameraDeviceWatcher();
-      cameraWatcher.on("changed", (x: any) => {
-        setCameras(x.devices);
-      });
+      if (deviceEnabled.cameras !== false) {
+        cameraWatcher = await WebRTC.createCameraDeviceWatcher();
+        cameraWatcher.on("changed", (x: any) => {
+          setCameras(x.devices);
+        });
+      }
 
-      microphoneWatcher = await WebRTC.createMicrophoneDeviceWatcher();
-      microphoneWatcher.on("changed", (x: any) => {
-        setMicrophones(x.devices);
-      });
+      if (deviceEnabled.microphones !== false) {
+        microphoneWatcher = await WebRTC.createMicrophoneDeviceWatcher();
+        microphoneWatcher.on("changed", (x: any) => {
+          setMicrophones(x.devices);
+        });
+      }
 
-      speakerWatcher = await WebRTC.createSpeakerDeviceWatcher();
-      speakerWatcher.on("changed", (x: any) => {
-        setSpeakers(x.devices);
-      });
+      if (deviceEnabled.speakers !== false) {
+        speakerWatcher = await WebRTC.createSpeakerDeviceWatcher();
+        speakerWatcher.on("changed", (x: any) => {
+          setSpeakers(x.devices);
+        });
+      }
     }
     setupWatchers();
 
@@ -50,6 +66,9 @@ export default function useWebRTC() {
     };
   }, []);
 
-  return { cameras, microphones, speakers };
+  return {
+    cameras: deviceEnabled.cameras !== false ? cameras : undefined,
+    microphones: deviceEnabled.microphones !== false ? microphones : undefined,
+    speakers: deviceEnabled.speakers !== false ? speakers : undefined,
+  };
 }
-
