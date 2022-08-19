@@ -131,8 +131,9 @@ function permissionObjectFromPermissions(permissions: string[]) {
 }
 
 export default function usePermissions(
-  tokenProvider: Video.RoomSession | string
+  tokenProvider: Video.RoomSession | string | undefined
 ) {
+  if (tokenProvider === undefined) return null;
   const token =
     typeof tokenProvider === "string"
       ? tokenProvider
