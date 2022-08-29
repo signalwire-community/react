@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, VoidFunctionComponent } from "react";
 import { Video } from "@signalwire/js";
 import type {
   VideoMemberEntity,
@@ -7,32 +7,55 @@ import type {
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
 
+interface Member extends VideoMemberEntity {
+  audio: {
+    muted: boolean;
+    mute: () => void;
+    unmute: () => void;
+    toggle: () => void;
+  };
+  video: {
+    muted: boolean;
+    mute: () => void;
+    unmute: () => void;
+    toggle: () => void;
+  };
+  speaker: {
+    muted: boolean;
+    mute: () => void;
+    unmute: () => void;
+    toggle: () => void;
+  };
+  remove: () => void;
+  setPosition: (position: string) => void;
+}
 export default function useMembers(roomSession: Video.RoomSession | null) {
   const selfId = useRef<string | null>(null);
   const [members, setMembers] = useState<VideoMemberEntity[]>([]);
 
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
-    function addMethods(members: any[]) {
-      return members.map((m) => {
+    function addMethods(members: VideoMemberEntity[]): Member[] {
+      return members.map((m: VideoMemberEntity) => {
         return {
           ...m,
           audio: {
-            muted: m.audio_muted,
+            // NOTE: the typedefs don't match the implementation here (audioMuted vs audio_muted)
+            muted: (m as any).audio_muted,
             mute: () => roomSession?.audioMute({ memberId: m.id }),
             unmute: () => roomSession?.audioUnmute({ memberId: m.id }),
             toggle: () => {
-              m.audio_muted
+              (m as any).audio_muted
                 ? roomSession?.audioUnmute({ memberId: m.id })
                 : roomSession?.audioMute({ memberId: m.id });
             },
           },
           video: {
-            muted: m.video_muted,
+            muted: (m as any).video_muted,
             mute: () => roomSession?.videoMute({ memberId: m.id }),
             unmute: () => roomSession?.videoUnmute({ memberId: m.id }),
             toggle: () => {
-              m.video_muted
+              (m as any).video_muted
                 ? roomSession?.videoUnmute({ memberId: m.id })
                 : roomSession?.videoMute({ memberId: m.id });
             },
