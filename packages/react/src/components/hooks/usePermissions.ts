@@ -45,12 +45,12 @@ function decoratePermissionObject(P_bare: any) {
 }
 
 export default function usePermissions(
-  tokenProvider: Video.RoomSession | string | undefined
+  tokenProvider: Video.RoomSession | string | null
 ) {
   const [permissions, setPermissions] = useState<any>(null);
 
   useEffect(() => {
-    if (tokenProvider === undefined) return;
+    if (tokenProvider === undefined || tokenProvider === null) return;
     const token =
       typeof tokenProvider === "string"
         ? tokenProvider

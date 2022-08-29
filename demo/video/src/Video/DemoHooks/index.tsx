@@ -15,15 +15,15 @@ const controlStyle = {
 };
 
 function DemoHooks() {
-  const [roomSession, setRoomSession] = useState<Video.RoomSession | undefined>(
-    undefined
+  const [roomSession, setRoomSession] = useState<Video.RoomSession | null>(
+    null
   );
 
   const P: any = usePermissions(roomSession);
   const { layouts, setLayout, currentLayout } = useLayouts(roomSession);
   const { toggle: toggleScreenShare, state: screenShareState } =
     useScreenShare(roomSession);
-  const members = useMembers(roomSession ?? null);
+  const members = useMembers(roomSession);
 
   return (
     <div>

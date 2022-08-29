@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, VoidFunctionComponent } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Video } from "@signalwire/js";
 import type {
   VideoMemberEntity,
