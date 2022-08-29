@@ -6,14 +6,21 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
   const [currentLayout, setCurrentLayout] = useState("");
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
-    roomSession.on("room.joined", async (room) => {
-      let layout_list = (await roomSession.getLayouts()).layouts;
-      setLayouts(layout_list);
+    async function onRoomJoined(room: any) {
+      let layout_list = (await roomSession?.getLayouts())?.layouts;
+      setLayouts(layout_list || []);
       setCurrentLayout(room.room_session.layout_name);
-    });
-    roomSession.on("layout.changed", (e) => {
+    }
+    async function onLayoutChanged(e: any) {
       setCurrentLayout(e.layout.name);
-    });
+    }
+    roomSession.on("room.joined", onRoomJoined);
+    roomSession.on("layout.changed", onLayoutChanged);
+
+    return () => {
+      roomSession.off("layout.changed", onLayoutChanged);
+      roomSession.off("layout.changed", onLayoutChanged);
+    };
   }, [roomSession]);
   return {
     layouts,
