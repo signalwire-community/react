@@ -111,6 +111,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     'recording.started': props.onRecordingStarted ?? null,
     'recording.updated': props.onRecordingUpdated ?? null,
     'room.joined': props.onRoomJoined ?? null,
+    'room.left': props.onRoomLeft ?? null,
     'room.updated': props.onRoomUpdated ?? null,
   };
 
