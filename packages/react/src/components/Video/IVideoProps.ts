@@ -17,5 +17,6 @@ export interface IVideoProps extends Omit<RoomSessionOptions, "rootElement"> {
   onRecordingStarted?: (e: any) => void;
   onRecordingUpdated?: (e: any) => void;
   onRoomJoined?: (e: any) => void;
+  onRoomLeft?: (e: any) => void;
   onRoomUpdated?: (e: any) => void;
 }
