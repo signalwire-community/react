@@ -108,20 +108,21 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   };
 
   const eventMap = {
-    "layout.changed": props.onLayoutChanged ?? null,
-    "member.joined": props.onMemberJoined ?? null,
-    "member.left": props.onMemberLeft ?? null,
-    "member.talking": props.onMemberTalking ?? null,
-    "member.updated": props.onMemberUpdated ?? null,
-    "memberList.updated": props.onMemberListUpdated ?? null,
-    "playback.ended": props.onPlaybackEnded ?? null,
-    "playback.started": props.onPlaybackStarted ?? null,
-    "playback.updated": props.onPlaybackUpdated ?? null,
-    "recording.ended": props.onRecordingEnded ?? null,
-    "recording.started": props.onRecordingStarted ?? null,
-    "recording.updated": props.onRecordingUpdated ?? null,
-    "room.joined": props.onRoomJoined ?? null,
-    "room.updated": props.onRoomUpdated ?? null,
+    'layout.changed': props.onLayoutChanged ?? null,
+    'member.joined': props.onMemberJoined ?? null,
+    'member.left': props.onMemberLeft ?? null,
+    'member.talking': props.onMemberTalking ?? null,
+    'member.updated': props.onMemberUpdated ?? null,
+    'memberList.updated': props.onMemberListUpdated ?? null,
+    'playback.ended': props.onPlaybackEnded ?? null,
+    'playback.started': props.onPlaybackStarted ?? null,
+    'playback.updated': props.onPlaybackUpdated ?? null,
+    'recording.ended': props.onRecordingEnded ?? null,
+    'recording.started': props.onRecordingStarted ?? null,
+    'recording.updated': props.onRecordingUpdated ?? null,
+    'room.joined': props.onRoomJoined ?? null,
+    'room.left': props.onRoomLeft ?? null,
+    'room.updated': props.onRoomUpdated ?? null,
   };
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {

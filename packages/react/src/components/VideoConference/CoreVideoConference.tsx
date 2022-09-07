@@ -70,6 +70,7 @@ e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
     c.appendChild(script);
     return () => {
       c.removeChild(script);
+      c.innerHTML = ''
     };
   }, [container, token, userName, memberList, prejoin, audio, video, theme]);
   return <div ref={container}></div>;
