@@ -5,10 +5,12 @@ import {
   usePermissions,
   useLayouts,
   useScreenShare,
+  useWebRTC,
   Video as VideoWeb,
 } from "@signalwire-community/react";
 import { LayoutSelector } from "./LayoutSelector";
 import { ControlStrip } from "./ControlStrip";
+import { DeviceChangeButton } from "./DeviceChangeButton";
 const controlStyle = {
   padding: "10px 5px",
   border: "1px solid #ccc",
@@ -24,6 +26,11 @@ function DemoHooks() {
   const { toggle: toggleScreenShare, state: screenShareState } =
     useScreenShare(roomSession);
   const members = useMembers(roomSession);
+  const { cameras, microphones, speakers } = useWebRTC({
+    cameras: true,
+    microphones: true,
+    speakers: true,
+  });
 
   return (
     <div>
@@ -64,6 +71,38 @@ function DemoHooks() {
           )}
         </div>
       ))}
+
+      {roomSession && (
+        <div>
+          Cameras:
+          {cameras?.map((x: MediaDeviceInfo) => (
+            <DeviceChangeButton
+              key={x.deviceId}
+              kind="camera"
+              roomSession={roomSession}
+              device={x}
+            />
+          ))}
+          Microphones:
+          {microphones?.map((x: MediaDeviceInfo) => (
+            <DeviceChangeButton
+              key={x.deviceId}
+              kind="microphone"
+              roomSession={roomSession}
+              device={x}
+            />
+          ))}
+          Speakers:
+          {speakers?.map((x: MediaDeviceInfo) => (
+            <DeviceChangeButton
+              key={x.deviceId}
+              kind="speaker"
+              roomSession={roomSession}
+              device={x}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

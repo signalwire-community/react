@@ -1,54 +1,45 @@
 import { useEffect, useState } from "react";
 import { WebRTC } from "@signalwire/js";
 
-export default function useWebRTC(deviceEnabled: {
-  cameras: boolean;
-  microphones: boolean;
-  speakers: boolean;
-}) {
+export default function useWebRTC(
+  deviceEnabled: {
+    cameras?: boolean;
+    microphones?: boolean;
+    speakers?: boolean;
+  } = { cameras: true, microphones: true, speakers: true }
+) {
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
 
   useEffect(() => {
     async function setupList() {
-      if (deviceEnabled.cameras !== false) {
-        const cameras = await WebRTC.getCameraDevicesWithPermissions();
-        setCameras(Array.from(cameras));
-      }
-      if (deviceEnabled.microphones !== false) {
-        const microphones = await WebRTC.getMicrophoneDevicesWithPermissions();
-        setMicrophones(microphones);
-      }
-      if (deviceEnabled.speakers !== false) {
-        const speakers = await WebRTC.getSpeakerDevicesWithPermissions();
-        setSpeakers(speakers);
-      }
+      deviceEnabled?.cameras !== false &&
+        WebRTC.getCameraDevices().then((c) => setCameras(Array.from(c)));
+      deviceEnabled?.microphones !== false &&
+        WebRTC.getMicrophoneDevices().then((m) =>
+          setMicrophones(Array.from(m))
+        );
+      deviceEnabled?.speakers !== false &&
+        WebRTC.getSpeakerDevices().then((s) => setSpeakers(Array.from(s)));
     }
     setupList();
   }, []);
 
+  // TODO: not in this hook in particular, but there should
+  // be a way to keep track of the devices currently being used.
+
   useEffect(() => {
-    let cameraWatcher: any, microphoneWatcher: any, speakerWatcher: any;
+    let deviceWatcher: any;
     async function setupWatchers() {
       if (deviceEnabled.cameras !== false) {
-        cameraWatcher = await WebRTC.createCameraDeviceWatcher();
-        cameraWatcher.on("changed", (x: any) => {
-          setCameras(x.devices);
+        deviceWatcher = await WebRTC.createDeviceWatcher({
+          targets: ["microphone", "speaker", "camera"],
         });
-      }
-
-      if (deviceEnabled.microphones !== false) {
-        microphoneWatcher = await WebRTC.createMicrophoneDeviceWatcher();
-        microphoneWatcher.on("changed", (x: any) => {
-          setMicrophones(x.devices);
-        });
-      }
-
-      if (deviceEnabled.speakers !== false) {
-        speakerWatcher = await WebRTC.createSpeakerDeviceWatcher();
-        speakerWatcher.on("changed", (x: any) => {
-          setSpeakers(x.devices);
+        deviceWatcher.on("changed", (x: any) => {
+          setCameras(x.devices.filter((x: any) => x.kind === "videoinput"));
+          setMicrophones(x.devices.filter((x: any) => x.kind === "audioinput"));
+          setSpeakers(x.devices.filter((x: any) => x.kind === "audiooutput"));
         });
       }
     }
@@ -56,10 +47,7 @@ export default function useWebRTC(deviceEnabled: {
 
     return () => {
       try {
-        //TODO: remove specific changers
-        cameraWatcher?.off("changed");
-        microphoneWatcher?.off("changed");
-        speakerWatcher?.off("changed");
+        deviceWatcher?.off("changed");
       } catch (e) {
         console.error("Couldn't remove watchers for WebRTC", e);
       }
