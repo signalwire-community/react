@@ -5,17 +5,17 @@ export function ControlStrip(member: any, permission: any, members: any) {
       {`${member.name.substr(0, 6)}... (${member.id.substr(0, 10)}...)`}
       <i>{(members?.self as any)?.talking && " Talking"}</i>
       <br />
-      {permission.audio && (
+      {permission.audio_full && (
         <button onClick={(x) => member.audio.toggle()}>
           {member.audio.muted ? "Unmute" : "Mute"} audio
         </button>
       )}
-      {permission.video && (
+      {permission.video_full && (
         <button onClick={(x) => member.video.toggle()}>
           {member.video.muted ? "Unmute" : "Mute"} video
         </button>
       )}
-      {permission.video && (
+      {permission.speaker_full && (
         <button onClick={(x) => member.speaker.toggle()}>
           {member.speaker.muted ? "Unmute" : "Mute"} speaker
         </button>

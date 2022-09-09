@@ -1,7 +1,7 @@
 import _CoreVideo from "./Video/CoreVideo";
 import { ICoreVideoProps as _ICoreVideoProps } from "./Video/CoreVideo";
 
-export { default as usePermissions } from "./hooks/usePermissions";
+export { usePermissions } from "./hooks/usePermissions";
 export { default as useLayouts } from "./hooks/useLayouts";
 export { default as useMembers } from "./hooks/useMembers";
 export { default as useScreenShare } from "./hooks/useScreenShare";

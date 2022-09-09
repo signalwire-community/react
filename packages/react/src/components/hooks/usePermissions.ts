@@ -31,9 +31,9 @@ function decoratePermissionObject(P_bare: any) {
   if (!(typeof P_bare === "object")) return {};
   let P = JSON.parse(JSON.stringify(P_bare)); //Deep copy for small object
 
-  P.self.audio = P.self.audio_mute && P.self.audio_unmute;
-  P.self.video = P.self.video_mute && P.self.video_unmute;
-  P.self.speaker = P.self.deaf && P.self.undeaf;
+  P.self.audio_full = P.self.audio_mute && P.self.audio_unmute;
+  P.self.video_full = P.self.video_mute && P.self.video_unmute;
+  P.self.speaker_full = P.self.deaf && P.self.undeaf;
   P.self.remove = true;
 
   P.member.audio = P.member.audio_mute && P.member.audio_unmute;
@@ -44,9 +44,7 @@ function decoratePermissionObject(P_bare: any) {
   return P;
 }
 
-export default function usePermissions(
-  tokenProvider: Video.RoomSession | string | null
-) {
+function usePermissions(tokenProvider: Video.RoomSession | string | null) {
   const [permissions, setPermissions] = useState<any>(null);
 
   useEffect(() => {
@@ -72,3 +70,5 @@ export default function usePermissions(
 
   return permissions;
 }
+
+export { usePermissions, makeBarePermissionObject, decoratePermissionObject };
