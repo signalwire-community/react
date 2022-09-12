@@ -1,12 +1,12 @@
 export function LayoutSelector(
   currentLayout: string | undefined,
   layouts: string[],
-  setLayout: (layout: string) => void
+  setLayout: ({ name }: { name: string }) => void
 ) {
   return (
     <select
       onChange={(e) => {
-        setLayout(e.target.value);
+        setLayout({ name: e.target.value });
       }}
       value={currentLayout}
     >

@@ -1,6 +1,8 @@
 import { Video, VideoPositions } from "@signalwire/js";
 import { useEffect, useState } from "react";
 
+type SetLayoutParams = Parameters<Video.RoomSession["setLayout"]>;
+
 export default function useLayouts(roomSession: Video.RoomSession | null) {
   const [layouts, setLayouts] = useState<string[]>([]);
   const [currentLayout, setCurrentLayout] = useState("");
@@ -18,14 +20,14 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
     roomSession.on("layout.changed", onLayoutChanged);
 
     return () => {
-      roomSession.off("layout.changed", onLayoutChanged);
+      roomSession.off("room.joined", onRoomJoined);
       roomSession.off("layout.changed", onLayoutChanged);
     };
   }, [roomSession]);
   return {
     layouts,
-    setLayout(name: string, positions?: VideoPositions) {
-      roomSession?.setLayout({ name, positions });
+    setLayout(...params: SetLayoutParams) {
+      roomSession?.setLayout(...params);
     },
     currentLayout,
   };

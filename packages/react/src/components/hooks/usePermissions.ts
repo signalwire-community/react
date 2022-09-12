@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 function makeBarePermissionObject(permString: string[]) {
   let permObject = {};
   let permElements = permString.map((perm) => perm.split(".").splice(1));
+  permElements = permElements.filter((x) => x.length > 0);
   permElements.forEach((perm) => {
     addPerm(perm, permObject);
     function addPerm(perm: string[], permObj: any) {
@@ -31,16 +32,22 @@ function decoratePermissionObject(P_bare: any) {
   if (!(typeof P_bare === "object")) return {};
   let P = JSON.parse(JSON.stringify(P_bare)); //Deep copy for small object
 
-  P.self.audio_full = P.self.audio_mute && P.self.audio_unmute;
-  P.self.video_full = P.self.video_mute && P.self.video_unmute;
-  P.self.speaker_full = P.self.deaf && P.self.undeaf;
-  P.self.remove = true;
+  if (P.self) {
+    P.self.audio_full = (P.self.audio_mute && P.self.audio_unmute) ?? false;
+    P.self.video_full = (P.self.video_mute && P.self.video_unmute) ?? false;
+    P.self.speaker_full = (P.self.deaf && P.self.undeaf) ?? false;
+    P.self.remove = true;
+  }
 
-  P.member.audio = P.member.audio_mute && P.member.audio_unmute;
-  P.member.video = P.member.video_mute && P.member.video_unmute;
-  P.member.speaker = P.member.deaf && P.member.undeaf;
+  if (P.member) {
+    P.member.audio_full =
+      (P.member.audio_mute && P.member.audio_unmute) ?? false;
+    P.member.video_full =
+      (P.member.video_mute && P.member.video_unmute) ?? false;
+    P.member.speaker_full = (P.member.deaf && P.member.undeaf) ?? false;
+  }
 
-  P.layout = P.list_available_layouts && P.set_layout;
+  P.layout = (P.list_available_layouts && P.set_layout) ?? false;
   return P;
 }
 

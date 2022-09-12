@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Video } from "@signalwire/js";
 import {
   useMembers,
@@ -27,15 +27,15 @@ function DemoHooks() {
     useScreenShare(roomSession);
   const members = useMembers(roomSession);
   const { cameras, microphones, speakers } = useWebRTC({
-    cameras: true,
-    microphones: true,
-    speakers: true,
+    camera: true,
+    microphone: true,
+    speaker: true,
   });
 
   return (
     <div>
       <VideoWeb
-        token={import.meta.env.VITE_ROOM_TOKEN_FULL_PERMISSIONS}
+        token={import.meta.env.VITE_ROOM_TOKEN}
         onRoomReady={(e) => {
           // Without this line, the `memberList.updated` event inside
           // `useMembers` will not be triggered.
