@@ -1,5 +1,4 @@
 import { Video } from "@signalwire/js";
-import { RefObject } from "react";
 export type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
 
 export interface IVideoProps extends Omit<RoomSessionOptions, "rootElement"> {
