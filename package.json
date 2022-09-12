@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "eslint": "^8.23.1",
     "lerna": "^5.1.8",
     "npm-run-all": "^4.1.5",
     "nx": "14.2.0",
@@ -12,6 +15,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap --no-ci",
     "build": "lerna run build",
+    "lint": "lerna run lint",
     "test": "lerna run test"
   },
   "repository": {
