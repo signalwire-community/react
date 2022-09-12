@@ -1,11 +1,6 @@
 import _CoreVideo from "./Video/CoreVideo";
 import { ICoreVideoProps as _ICoreVideoProps } from "./Video/CoreVideo";
 
-export { usePermissions } from "./hooks/usePermissions";
-export { default as useLayouts } from "./hooks/useLayouts";
-export { default as useMembers } from "./hooks/useMembers";
-export { default as useScreenShare } from "./hooks/useScreenShare";
-export { default as useWebRTC } from "./hooks/useWebRTC";
 export { default as LocalStream } from "./LocalStream";
 export { default as RemoteStream } from "./RemoteStream";
 export { default as RoomPreview } from "./RoomPreview";
