@@ -63,5 +63,5 @@ export default function BaseStream({
   }, [roomSession, streamSource]);
 
   /* prettier-ignore */ /* @ts-expect-error */
-  return <RTCView streamURL={streamUrl} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
+  return <RTCView streamURL={streamUrl} style={{ width: '100%', aspectRatio: 16 / 9, ...style }} />;
 }
