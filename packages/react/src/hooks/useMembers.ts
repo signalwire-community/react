@@ -90,7 +90,6 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
         };
       });
     }
-    if (roomSession === null) return;
     function onRoomJoined(e: any) {
       selfId.current = e.member_id;
       console.log(selfId.current);
