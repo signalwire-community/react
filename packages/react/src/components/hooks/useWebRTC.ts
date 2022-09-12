@@ -32,14 +32,9 @@ export default function useWebRTC(
   useEffect(() => {
     let deviceWatcher: any;
     async function setupWatchers() {
-      let targets: DevicePermissionName[] = [];
-      Object(config)
-        .keys()
-        .forEach(
-          (key: string) =>
-            (config as any)[key] && targets.push(key as DevicePermissionName)
-        );
-      console.log(targets);
+      const targets: DevicePermissionName[] = (
+        Object.keys(config) as DevicePermissionName[]
+      ).filter((key) => (config as any)[key]);
 
       if (targets.length > 0) {
         deviceWatcher = await WebRTC.createDeviceWatcher({
