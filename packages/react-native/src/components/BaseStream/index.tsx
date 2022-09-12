@@ -20,10 +20,10 @@ function extractStreamUrl(
   roomSession: SignalWire.Video.RoomSession,
   streamSource?: 'local' | 'remote'
 ): string | null {
-  const stream: MediaStream | null | undefined =
+  const stream =
     streamSource === 'local'
-      ? roomSession.localStream
-      : roomSession.remoteStream;
+      ? roomSession.localStream as MediaStream | null | undefined
+      : roomSession.remoteStream as MediaStream | null | undefined;
 
   return stream?.toURL() ?? null;
 }
@@ -60,7 +60,7 @@ export default function BaseStream({
         setStreamUrl(null);
       };
     }
-  }, [roomSession]);
+  }, [roomSession, streamSource]);
 
   /* prettier-ignore */ /* @ts-expect-error */
   return <RTCView streamURL={streamUrl} style={{ width: '100%', aspectRatio: 16/9, ...style }} />
