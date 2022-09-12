@@ -35,7 +35,7 @@ export default function useScreenShare(roomSession: Video.RoomSession | null) {
     if (roomSession === null) return;
     if (screenShareObject !== null) return; //already screen sharing
     if (params) params.autoJoin = true;
-    let sc = await roomSession?.startScreenShare(params ?? { autoJoin: true });
+    const sc = await roomSession?.startScreenShare(params ?? { autoJoin: true });
     setScreenShareObject(sc);
     setMemberId(sc.memberId ?? (sc as any).activeRTCPeerId);
   }

@@ -9,6 +9,7 @@
     "build": "npm run rollup",
     "rollup": "rollup -c",
     "dev": "rollup -c -w",
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
     "test": "jest"
   },
   "repository": {

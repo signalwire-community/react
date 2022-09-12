@@ -3,7 +3,7 @@ import { Video } from "@signalwire/js";
 import jwt_decode from "jwt-decode";
 
 function makeBarePermissionObject(permString: string[]) {
-  let permObject = {};
+  const permObject = {};
   let permElements = permString.map((perm) => perm.split(".").splice(1));
   permElements = permElements.filter((x) => x.length > 0);
   permElements.forEach((perm) => {
@@ -16,7 +16,8 @@ function makeBarePermissionObject(permString: string[]) {
       }
     }
   });
-  let handler: ProxyHandler<any> = {
+
+  const handler: ProxyHandler<any> = {
     get(target, prop) {
       if (typeof target[prop] === "object")
         return new Proxy(target[prop], handler);
@@ -24,13 +25,13 @@ function makeBarePermissionObject(permString: string[]) {
       return target[prop];
     },
   };
-  let proxyPerm = new Proxy(permObject, handler);
-  return proxyPerm;
+
+  return new Proxy(permObject, handler);
 }
 
 function decoratePermissionObject(P_bare: any) {
   if (!(typeof P_bare === "object")) return {};
-  let P = JSON.parse(JSON.stringify(P_bare)); //Deep copy for small object
+  const P = JSON.parse(JSON.stringify(P_bare)); // Deep copy for small object
 
   if (P.self) {
     P.self.audio_full = (P.self.audio_mute && P.self.audio_unmute) ?? false;

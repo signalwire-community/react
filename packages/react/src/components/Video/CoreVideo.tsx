@@ -91,7 +91,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     // abort an in-progress join.
     try {
       await roomSession.join();
-    } catch (e) {}
+    } catch (e) { /* empty */ }
 
     // Initiate disconnection
     try {
