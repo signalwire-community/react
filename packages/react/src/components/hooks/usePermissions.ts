@@ -51,6 +51,11 @@ function decoratePermissionObject(P_bare: any) {
   return P;
 }
 
+/**
+ * Given a RoomSession or a room token, parses and simplifies the set of permissions allowed for the user.
+ * @param `RoomSession` or `string` (token) or `null`
+ * @returns an object with allowed permissions. Eg: `{screenshare:false, self:{audio_mute:true, ...}, ...}`
+ */
 function usePermissions(tokenProvider: Video.RoomSession | string | null) {
   const [permissions, setPermissions] = useState<any>(null);
 

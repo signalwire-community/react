@@ -8,6 +8,10 @@ type ScreenShareParams = Omit<
   "autoJoin"
 >;
 
+/**
+ * Given RoomSession, returns a set of easier controls for ScreenSharing:
+ * `{ start(), stop(), state, toggle() ... }`
+ */
 export default function useScreenShare(roomSession: Video.RoomSession | null) {
   const [screenShareObject, setScreenShareObject] =
     useState<RoomSessionScreenShare | null>(null);

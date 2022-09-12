@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { WebRTC } from "@signalwire/js";
 import { DevicePermissionName } from "@signalwire/webrtc/dist/cjs/webrtc/src/utils";
 
+/**
+ * Maintains a current list of selected I/O devices.
+ * Pass a config object Eg: `{camera: false}` to avoid watching all devices
+ */
 export default function useWebRTC(
-  deviceEnabled: {
+  config: {
     camera?: boolean;
     microphone?: boolean;
     speaker?: boolean;
@@ -14,11 +18,11 @@ export default function useWebRTC(
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
 
   useEffect(() => {
-    deviceEnabled?.camera !== false &&
+    config?.camera !== false &&
       WebRTC.getCameraDevices().then((c) => setCameras(Array.from(c)));
-    deviceEnabled?.microphone !== false &&
+    config?.microphone !== false &&
       WebRTC.getMicrophoneDevices().then((m) => setMicrophones(Array.from(m)));
-    deviceEnabled?.speaker !== false &&
+    config?.speaker !== false &&
       WebRTC.getSpeakerDevices().then((s) => setSpeakers(Array.from(s)));
   }, []);
 
@@ -29,12 +33,11 @@ export default function useWebRTC(
     let deviceWatcher: any;
     async function setupWatchers() {
       let targets: DevicePermissionName[] = [];
-      Object(deviceEnabled)
+      Object(config)
         .keys()
         .forEach(
           (key: string) =>
-            (deviceEnabled as any)[key] &&
-            targets.push(key as DevicePermissionName)
+            (config as any)[key] && targets.push(key as DevicePermissionName)
         );
       console.log(targets);
 
@@ -62,8 +65,8 @@ export default function useWebRTC(
   }, []);
 
   return {
-    cameras: deviceEnabled.camera !== false ? cameras : undefined,
-    microphones: deviceEnabled.microphone !== false ? microphones : undefined,
-    speakers: deviceEnabled.speaker !== false ? speakers : undefined,
+    cameras: config.camera !== false ? cameras : undefined,
+    microphones: config.microphone !== false ? microphones : undefined,
+    speakers: config.speaker !== false ? speakers : undefined,
   };
 }

@@ -29,6 +29,14 @@ interface Member extends VideoMemberEntity {
   remove: () => void;
   setPosition: (position: string) => void;
 }
+
+/**
+ * Given an active RoomSession, maintains a reactive list of all members, including the user themselves.
+ * @param `RoomSession` or `null`
+ * @return an object with `self` as a reference to the current user,
+ * `members` as an array with the list of all members, and `removeAll()`
+ * which removes everyone
+ */
 export default function useMembers(roomSession: Video.RoomSession | null) {
   const selfId = useRef<string | null>(null);
   const [members, setMembers] = useState<VideoMemberEntity[]>([]);

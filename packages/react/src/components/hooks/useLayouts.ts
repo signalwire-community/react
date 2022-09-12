@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 
 type SetLayoutParams = Parameters<Video.RoomSession["setLayout"]>;
 
+/**
+ * Given an active RoomSession, maintains a list of all layouts, the current layout, and a function to change them
+ * @param `RoomSession` or `null`
+ * @returns an object with `current_layout`, `layouts` and `setLayout()`
+ */
 export default function useLayouts(roomSession: Video.RoomSession | null) {
   const [layouts, setLayouts] = useState<string[]>([]);
   const [currentLayout, setCurrentLayout] = useState("");
