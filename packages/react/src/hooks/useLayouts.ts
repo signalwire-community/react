@@ -1,4 +1,4 @@
-import { Video, VideoPositions } from "@signalwire/js";
+import { Video } from "@signalwire/js";
 import { useEffect, useState } from "react";
 
 type SetLayoutParams = Parameters<Video.RoomSession["setLayout"]>;
@@ -14,7 +14,7 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
     async function onRoomJoined(room: any) {
-      let layout_list = (await roomSession?.getLayouts())?.layouts;
+      const layout_list = (await roomSession?.getLayouts())?.layouts;
       setLayouts(layout_list || []);
       setCurrentLayout(room.room_session.layout_name);
     }

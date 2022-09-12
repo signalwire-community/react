@@ -94,8 +94,7 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     function onRoomJoined(e: any) {
       selfId.current = e.member_id;
       console.log(selfId.current);
-      let members = e.room_session.members;
-      setMembers(addMethods(members));
+      setMembers(addMethods(e.room_session.members));
     }
     roomSession.on("room.joined", onRoomJoined);
 
@@ -111,7 +110,7 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     function onMemberTalking(e: VideoMemberTalkingEventParams) {
       setMembers((members) => {
         const newMembers = [...members];
-        let member = newMembers.find((m: any) => m.id === e.member.id);
+        const member = newMembers.find((m: any) => m.id === e.member.id);
         if (member) (member as any).talking = e.member.talking;
         return newMembers;
       });
