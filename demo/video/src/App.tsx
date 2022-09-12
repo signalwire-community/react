@@ -1,36 +1,48 @@
-import { Link, Routes, Route, useLocation } from 'react-router-dom';
-import DemoConference from './Video/DemoConference';
-import DemoVideo from './Video/DemoVideo';
-import DemoRoomPreview from './Video/DemoRoomPreview';
+import { Link, Routes, Route, useLocation } from "react-router-dom";
+import DemoConference from "./Video/DemoConference";
+import DemoVideo from "./Video/DemoVideo";
+import DemoHooks from "./Video/DemoHooks";
+import DemoRoomPreview from "./Video/DemoRoomPreview";
 
 function App() {
   let location = useLocation();
   return (
-    <div>
-      <h2>Browse Demos</h2>
-      <ul>
+    <div style={{ maxWidth: 800, minWidth: 400 }}>
+      <ul style={{ display: "flex", padding: 5 }}>
         {[
-          { name: 'Video', url: '/video' },
-          { name: 'Video Conference', url: '/videoconference' },
-          { name: 'Room Preview', url: '/roompreview' },
+          { name: "Video", url: "/video" },
+          { name: "Video Conference", url: "/videoconference" },
+          { name: "Room Preview", url: "/roompreview" },
+          { name: "Hooks", url: "/hooks" },
         ].map((demo, index) => (
           <li
             key={demo.name}
             style={{
-              fontWeight: location.pathname === demo.url ? 'bold' : 'initial',
+              fontWeight: location.pathname === demo.url ? "bold" : "initial",
+              display: "block",
+              paddingRight: 30,
             }}
           >
-            <Link to={demo.url}>{demo.name}</Link>
+            <Link
+              style={{
+                textDecoration:
+                  location.pathname === demo.url ? "underline" : "none",
+              }}
+              to={demo.url}
+            >
+              {demo.name}
+            </Link>
           </li>
         ))}
-
-        <Routes>
-          <Route path="/" element={<></>} />
-          <Route path="video" element={<DemoVideo />} />
-          <Route path="videoconference" element={<DemoConference />} />
-          <Route path="roompreview" element={<DemoRoomPreview />} />
-        </Routes>
       </ul>
+
+      <Routes>
+        <Route path="/" element={<></>} />
+        <Route path="video" element={<DemoVideo />} />
+        <Route path="videoconference" element={<DemoConference />} />
+        <Route path="roompreview" element={<DemoRoomPreview />} />
+        <Route path="hooks" element={<DemoHooks />} />
+      </Routes>
     </div>
   );
 }
