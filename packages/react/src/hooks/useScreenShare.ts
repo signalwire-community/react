@@ -3,10 +3,13 @@ import { RoomSessionScreenShare } from "@signalwire/js/dist/js/src/RoomSessionSc
 import { VideoMemberHandlerParams } from "@signalwire/js/dist/js/src/video";
 import { useEffect, useState } from "react";
 
-type ScreenShareParams = Omit<
-  Parameters<Video.RoomSession["startScreenShare"]>,
-  "autoJoin"
->;
+type StartScreenShareOptions = NonNullable<Parameters<Video.RoomSession["startScreenShare"]>[0]>
+
+/**
+ * Same as the original StartScreenShareOptions, but without the `autoJoin`
+ * property since we force it to `true`.
+ */
+type ScreenShareParams = Omit<StartScreenShareOptions, "autoJoin">;
 
 /**
  * Given RoomSession, returns a set of easier controls for ScreenSharing:
@@ -31,11 +34,17 @@ export default function useScreenShare(roomSession: Video.RoomSession | null) {
     };
   }, [memberId, roomSession]);
 
-  async function start(params?: ScreenShareParams[0]) {
+  async function start(params?: ScreenShareParams) {
     if (roomSession === null) return;
     if (screenShareObject !== null) return; //already screen sharing
-    if (params) params.autoJoin = true;
-    const sc = await roomSession?.startScreenShare(params ?? { autoJoin: true });
+
+    // Force autoJoin
+    const screenShareOptions: StartScreenShareOptions | undefined = params
+    if (screenShareOptions) {
+      screenShareOptions.autoJoin = true;
+    }
+
+    const sc = await roomSession?.startScreenShare(screenShareOptions ?? { autoJoin: true });
     setScreenShareObject(sc);
     setMemberId(sc.memberId ?? (sc as any).activeRTCPeerId);
   }
