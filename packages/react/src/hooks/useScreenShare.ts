@@ -10,7 +10,7 @@ type ScreenShareParams = Omit<
 
 /**
  * Given RoomSession, returns a set of easier controls for ScreenSharing:
- * `{ start(), stop(), state, toggle() ... }`
+ * `{ start(), stop(), active, toggle() ... }`
  */
 export default function useScreenShare(roomSession: Video.RoomSession | null) {
   const [screenShareObject, setScreenShareObject] =
@@ -49,7 +49,7 @@ export default function useScreenShare(roomSession: Video.RoomSession | null) {
     screenShareObject,
     start,
     stop,
-    state: !!screenShareObject,
+    active: !!screenShareObject,
     async toggle() {
       if (screenShareObject === null) await start();
       else await stop();

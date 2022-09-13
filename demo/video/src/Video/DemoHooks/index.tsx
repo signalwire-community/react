@@ -23,7 +23,7 @@ function DemoHooks() {
 
   const P: any = usePermissions(roomSession);
   const { layouts, setLayout, currentLayout } = useLayouts(roomSession);
-  const { toggle: toggleScreenShare, state: screenShareState } =
+  const { toggle: toggleScreenShare, active: screenShareState } =
     useScreenShare(roomSession);
   const members = useMembers(roomSession);
   const { cameras, microphones, speakers } = useWebRTC({
