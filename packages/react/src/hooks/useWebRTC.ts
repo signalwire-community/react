@@ -24,7 +24,7 @@ export default function useWebRTC(
       WebRTC.getMicrophoneDevices().then((m) => setMicrophones(Array.from(m)));
     config?.speaker !== false &&
       WebRTC.getSpeakerDevices().then((s) => setSpeakers(Array.from(s)));
-  }, []);
+  }, [config]);
 
   // TODO: not in this hook in particular, but there should
   // be a way to keep track of the i/o devices currently being used.
@@ -57,7 +57,7 @@ export default function useWebRTC(
         console.error("Couldn't remove watchers for WebRTC", e);
       }
     };
-  }, []);
+  }, [config]);
 
   return {
     cameras: config.camera !== false ? cameras : undefined,

@@ -49,6 +49,7 @@ export default function VideoConference(props: VideoConferenceProps) {
 
   // Attach event handlers
   for (const [key, value] of Object.entries(eventMap)) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
       if (roomSession && value) {
         roomSession.on(key, value)
@@ -56,7 +57,7 @@ export default function VideoConference(props: VideoConferenceProps) {
       return () => {
         roomSession?.off(key, value)
       }
-    }, [roomSession, value])
+    }, [roomSession, key, value])
   }
 
   function onRoomReady(roomSession: any) {
