@@ -32,16 +32,16 @@ export function ControlStrip(member: any, permission: any, members: any) {
       {permission.set_position && (
         <button
           onClick={(e) => {
-            if (member.position === "off-canvas")
+            if (member.current_position === "off-canvas")
               member.setPosition("standard-1");
             else member.setPosition("off-canvas");
           }}
         >
-          {member.position === "off-canvas" ? "Show" : "Hide"}
+          {member.current_position === "off-canvas" ? "Show" : "Hide"}
         </button>
       )}
       <br />
-      Position: {member.position}
+      Position: {member.current_position}
     </>
   );
 }
