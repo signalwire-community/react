@@ -43,9 +43,13 @@ const RoomPreview: React.FC<RoomPreviewProps> = ({
       }
     }
 
+    // We capture a copy of the ref to make sure that the cleanup function uses
+    // this one instead of the new ref at the time the cleanup function runs.
+    const currImgCopy = currImg.current
+
     return () => {
       if (imageErrorListener) {
-        currImg.current.removeEventListener("error", imageErrorListener)
+        currImgCopy.removeEventListener("error", imageErrorListener)
       }
     }
   }, [loadingUrl]);

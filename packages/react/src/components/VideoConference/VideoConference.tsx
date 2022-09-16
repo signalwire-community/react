@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import CoreVideoConference from "./CoreVideoConference";
 
 type VideoConferenceProps = {
@@ -49,6 +49,7 @@ export default function VideoConference(props: VideoConferenceProps) {
 
   // Attach event handlers
   for (const [key, value] of Object.entries(eventMap)) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
       if (roomSession && value) {
         roomSession.on(key, value)
@@ -56,15 +57,20 @@ export default function VideoConference(props: VideoConferenceProps) {
       return () => {
         roomSession?.off(key, value)
       }
-    }, [roomSession, value])
+    }, [roomSession, key, value])
   }
 
-  function onRoomReady(roomSession: any) {
-    setRoomSession(roomSession)
-    if (props.onRoomReady) {
-      props.onRoomReady(roomSession)
-    }
-  }
+  const props_onRoomReady = props.onRoomReady;
+
+  const onRoomReady = useCallback(
+    (roomSession: any) => {
+      setRoomSession(roomSession);
+      if (props_onRoomReady) {
+        props_onRoomReady(roomSession);
+      }
+    },
+    [props_onRoomReady]
+  );
 
   return <CoreVideoConference
     token={props.token}

@@ -72,6 +72,6 @@ e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
       c.removeChild(script);
       c.innerHTML = ''
     };
-  }, [container, token, userName, memberList, prejoin, audio, video, theme]);
+  }, [container, token, userName, memberList, prejoin, audio, video, theme, onRoomReady]);
   return <div ref={container}></div>;
 }

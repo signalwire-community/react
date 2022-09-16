@@ -27,18 +27,10 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>();
   roomSessionRef.current = roomSession;
 
-  useEffect(() => {
-    try {
-      setup(props);
-    } catch (e) {
-      console.error("Couldn't join room", e);
-    }
-  }, [props.token]); // changing the other props won't result in a rejoin
-
   /**
    * Establish a new RoomSession connection
    */
-  const setup = useCallback(
+  const setup = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     debounce(async (props: ICoreVideoProps) => {
       if (roomSessionRef.current) {
         await quitSession(roomSessionRef.current);
@@ -70,6 +62,15 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     []
   );
 
+  useEffect(() => {
+    try {
+      setup(props);
+    } catch (e) {
+      console.error("Couldn't join room", e);
+    }
+
+  }, [setup, props.token]); /* eslint-disable-line react-hooks/exhaustive-deps */  // changing the other props won't result in a rejoin
+
   /** Cleanup when the component is unmounted */
   useEffect(() => {
     return () => {
@@ -81,7 +82,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
         }
       }
     };
-  }, []);
+  }, []); /* eslint-disable-line react-hooks/exhaustive-deps */
 
   /**
    * Robust way for disconnecting a RoomSession
@@ -126,6 +127,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   };
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
       if (roomSession && eventValue) {
         roomSession.on(eventName as any, eventValue);
@@ -134,7 +136,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
       return () => {
         roomSession?.off(eventName as any, eventValue as any);
       };
-    }, [roomSession, eventValue]);
+    }, [roomSession, eventName, eventValue]);
   }
 
   return <>{children}</>;
