@@ -7,10 +7,12 @@ import {
   useScreenShare,
   useWebRTC,
   Video as VideoWeb,
+  useStatus,
 } from "@signalwire-community/react";
 import { LayoutSelector } from "./LayoutSelector";
 import { ControlStrip } from "./ControlStrip";
 import { DeviceChangeButton } from "./DeviceChangeButton";
+import ActiveLight from "./ActiveLight";
 const controlStyle = {
   padding: "10px 5px",
   border: "1px solid #ccc",
@@ -32,6 +34,8 @@ function DemoHooks() {
     speaker: true,
   });
 
+  const { active } = useStatus(roomSession);
+
   return (
     <div>
       <VideoWeb
@@ -44,7 +48,11 @@ function DemoHooks() {
         }}
       />
 
-      {members.self && (
+      <div style={{ position: "fixed", top: 10, right: 10 }}>
+        <ActiveLight active={active} />
+      </div>
+
+      {members.self && active && (
         <div style={controlStyle}>
           <b>Me:</b>
           <br />
@@ -64,6 +72,7 @@ function DemoHooks() {
           )}
         </div>
       )}
+
       {members.members.map((m: any) => (
         <div key={m.id}>
           {m.id !== members?.self?.id && (
@@ -72,7 +81,7 @@ function DemoHooks() {
         </div>
       ))}
 
-      {roomSession && (
+      {roomSession && active && (
         <div>
           Cameras:
           {cameras?.map((x: MediaDeviceInfo) => (
