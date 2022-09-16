@@ -99,9 +99,6 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
 
     function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
       const members: any = e.members;
-      members.forEach((m: any) => {
-        m.position = m.current_position;
-      });
       setMembers(addMethods(members));
     }
     roomSession.on("memberList.updated", onMemberListUpdated);
@@ -123,7 +120,7 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
           if (layer.member_id === undefined) return;
           const member = newMembers.find((m: any) => m.id === layer.member_id);
           if (member !== undefined && layer.position !== undefined)
-            member.position = layer.position;
+            member.current_position = layer.position;
         });
         return newMembers;
       });
