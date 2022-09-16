@@ -11,16 +11,21 @@ type SetLayoutParams = Parameters<Video.RoomSession["setLayout"]>;
 export default function useLayouts(roomSession: Video.RoomSession | null) {
   const [layouts, setLayouts] = useState<string[]>([]);
   const [currentLayout, setCurrentLayout] = useState("");
+
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
+
     async function onRoomJoined(room: any) {
+      setCurrentLayout(room.room_session.layout_name);
+      
       const layout_list = (await roomSession?.getLayouts())?.layouts;
       setLayouts(layout_list || []);
-      setCurrentLayout(room.room_session.layout_name);
     }
+
     async function onLayoutChanged(e: any) {
       setCurrentLayout(e.layout.name);
     }
+
     roomSession.on("room.joined", onRoomJoined);
     roomSession.on("layout.changed", onLayoutChanged);
 
@@ -29,6 +34,7 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
       roomSession.off("layout.changed", onLayoutChanged);
     };
   }, [roomSession]);
+
   return {
     layouts,
     setLayout(...params: SetLayoutParams) {
