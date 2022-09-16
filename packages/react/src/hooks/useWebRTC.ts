@@ -40,6 +40,11 @@ export default function useWebRTC(
       ).filter((key) => (config as any)[key]);
 
       if (targets.length > 0) {
+        await WebRTC.getUserMedia({
+          audio: targets.includes('microphone') || targets.includes('speaker'),
+          video: targets.includes('camera')
+        });
+
         deviceWatcher = await WebRTC.createDeviceWatcher({
           targets,
         });
