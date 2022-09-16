@@ -2,7 +2,7 @@ import { Video } from "@signalwire/js";
 import { useEffect, useState } from "react";
 
 /**
- * Given a RoomSession, returns an object with it's status, notably `active` which is true if client is connected to Room Session
+ * Given a RoomSession, returns an object with its status, notably `active` which is true if the client is connected to the Room Session
  * @param `RoomSession` or `null`
  * @returns an object with an attribute `active`
  */
