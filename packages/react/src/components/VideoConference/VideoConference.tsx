@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import CoreVideoConference from "./CoreVideoConference";
 
 type VideoConferenceProps = {
@@ -60,12 +60,14 @@ export default function VideoConference(props: VideoConferenceProps) {
     }, [roomSession, key, value])
   }
 
-  function onRoomReady(roomSession: any) {
+  function onRoomReadyFn(){
     setRoomSession(roomSession)
     if (props.onRoomReady) {
       props.onRoomReady(roomSession)
     }
   }
+
+  const onRoomReady = useCallback(onRoomReadyFn, [props.onRoomReady])
 
   return <CoreVideoConference
     token={props.token}
