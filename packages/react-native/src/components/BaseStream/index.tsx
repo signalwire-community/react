@@ -22,8 +22,8 @@ function extractStreamUrl(
 ): string | null {
   const stream =
     streamSource === 'local'
-      ? roomSession.localStream as MediaStream | null | undefined
-      : roomSession.remoteStream as MediaStream | null | undefined;
+      ? (roomSession.localStream as MediaStream | null | undefined)
+      : (roomSession.remoteStream as MediaStream | null | undefined);
 
   return stream?.toURL() ?? null;
 }
@@ -62,6 +62,6 @@ export default function BaseStream({
     }
   }, [roomSession, streamSource]);
 
-  /* prettier-ignore */ /* @ts-expect-error */
+  /* prettier-ignore */ /* @ts-expect-error */ /* eslint-disable-next-line react-native/no-inline-styles */
   return <RTCView streamURL={streamUrl} style={{ width: '100%', aspectRatio: 16 / 9, ...style }} />;
 }
