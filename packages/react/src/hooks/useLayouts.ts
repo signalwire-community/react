@@ -17,7 +17,7 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
 
     async function onRoomJoined(room: any) {
       setCurrentLayout(room.room_session.layout_name);
-      
+
       const layout_list = (await roomSession?.getLayouts())?.layouts;
       setLayouts(layout_list || []);
     }
