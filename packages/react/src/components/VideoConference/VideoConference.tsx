@@ -60,14 +60,15 @@ export default function VideoConference(props: VideoConferenceProps) {
     }, [roomSession, key, value])
   }
 
-  function onRoomReadyFn(){
+  const props_onRoomReady = props.onRoomReady;
+  function onRoomReadyFn(roomSession: any) {
     setRoomSession(roomSession)
-    if (props.onRoomReady) {
-      props.onRoomReady(roomSession)
+    if (props_onRoomReady) {
+      props_onRoomReady(roomSession);
     }
   }
 
-  const onRoomReady = useCallback(onRoomReadyFn, [props.onRoomReady])
+  const onRoomReady = useCallback(onRoomReadyFn, [props_onRoomReady]);
 
   return <CoreVideoConference
     token={props.token}

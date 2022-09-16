@@ -17,19 +17,22 @@ export default function useWebRTC(
   const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
 
+  const { camera, microphone, speaker } = config;
+
   useEffect(() => {
-    config?.camera !== false &&
+    camera !== false &&
       WebRTC.getCameraDevices().then((c) => setCameras(Array.from(c)));
-    config?.microphone !== false &&
+    microphone !== false &&
       WebRTC.getMicrophoneDevices().then((m) => setMicrophones(Array.from(m)));
-    config?.speaker !== false &&
+    speaker !== false &&
       WebRTC.getSpeakerDevices().then((s) => setSpeakers(Array.from(s)));
-  }, [config?.camera, config?.microphone, config?.speaker]);
+  }, [camera, microphone, speaker]);
 
   // TODO: not in this hook in particular, but there should
   // be a way to keep track of the i/o devices currently being used.
 
   useEffect(() => {
+    const config = { camera, microphone, speaker };
     let deviceWatcher: any;
     async function setupWatchers() {
       const targets: DevicePermissionName[] = (
@@ -57,7 +60,7 @@ export default function useWebRTC(
         console.error("Couldn't remove watchers for WebRTC", e);
       }
     };
-  }, [config?.camera, config?.microphone, config?.speaker]);
+  }, [camera, microphone, speaker]);
 
   return {
     cameras: config.camera !== false ? cameras : undefined,
