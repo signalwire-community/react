@@ -2,14 +2,15 @@ import React from "react";
 import type * as SignalWire from "@signalwire/js";
 
 type CoreVideoConferenceProps = {
-  onRoomReady?: (roomSession: any) => void;
+  onRoomReady?: (roomSession: SignalWire.Video.RoomSession) => void;
   token: string;
   userName?: string;
   theme?: "light" | "dark" | "auto";
   audio?: MediaTrackConstraints;
   video?: MediaTrackConstraints;
   memberList?: boolean;
-  prejoin?: boolean;
+  chat?: boolean;
+  devicePicker?: boolean;
 };
 
 export default function CoreVideoConference({
@@ -20,7 +21,8 @@ export default function CoreVideoConference({
   audio,
   video,
   memberList,
-  prejoin,
+  chat,
+  devicePicker,
 }: CoreVideoConferenceProps) {
   const container = React.useRef<HTMLDivElement>(null);
   const videoConferenceComponent = React.useRef<any>();
@@ -30,40 +32,25 @@ export default function CoreVideoConference({
     React.useState<SignalWire.Video.RoomSession | null>(null);
 
   React.useEffect(() => {
-    const scriptEsm = document.createElement("script");
-    const scriptNoModule = document.createElement("script");
-    const css = document.createElement("link");
-
-    scriptEsm.src =
-      "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.esm.js";
-    scriptEsm.type = "module";
-
-    scriptNoModule.src =
-      "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.js";
-    scriptNoModule.noModule = true;
-
-    css.href =
-      "https://cdn.signalwire.com/@signalwire/app-kit@next/dist/signalwire/signalwire.css";
-    css.rel = "stylesheet";
-
-    container.current?.appendChild(scriptEsm);
-    container.current?.appendChild(scriptNoModule);
-    container.current?.appendChild(css);
-
-    return () => {
-      container.current?.removeChild(scriptEsm);
-      container.current?.removeChild(scriptNoModule);
-      container.current?.removeChild(css);
-    };
+    // Run side effects from app-kit
+    import("@signalwire/app-kit");
   }, []);
 
   React.useEffect(() => {
     if (videoConferenceComponent.current) {
+      (window as any).pp = videoConferenceComponent.current;
       videoConferenceComponent.current.setupRoomSession = (rs: any) => {
         onRoomReady?.(rs);
       };
     }
   }, [onRoomReady]);
+
+  React.useEffect(() => {
+    if (videoConferenceComponent.current?.pvcConfig) {
+      console.log("resetting");
+      videoConferenceComponent.current.pvcConfig.reset();
+    }
+  }, [token, userName, theme, audio, video, memberList, chat, devicePicker]);
 
   return (
     <div ref={container}>
@@ -76,7 +63,8 @@ export default function CoreVideoConference({
           audio,
           video,
           memberList,
-          prejoin,
+          chat,
+          devicePicker,
         ])}
         ref={videoConferenceComponent}
         token={token}
@@ -85,7 +73,8 @@ export default function CoreVideoConference({
         audio={audio}
         video={video}
         member-list={memberList}
-        prejoin={prejoin}
+        chat={chat}
+        device-picker={devicePicker}
       />
     </div>
   );

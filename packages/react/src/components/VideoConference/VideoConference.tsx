@@ -26,6 +26,7 @@ type VideoConferenceProps = {
   onRoomUpdated?: (e: any) => void,
 }
 
+/** @deprecated */
 export default function VideoConference(props: VideoConferenceProps) {
 
   const [roomSession, setRoomSession] = React.useState<any>()
