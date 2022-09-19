@@ -65,7 +65,7 @@ export default function BaseStream({
         video.srcObject = null;
       };
     }
-  }, [roomSession]);
+  }, [roomSession, streamSource]);
 
   return (
     <video

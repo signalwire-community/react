@@ -1,7 +1,13 @@
-import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react';
-import * as SignalWire from '@signalwire/js';
-import { IVideoProps } from './IVideoProps';
-import { debounce } from 'lodash'
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import * as SignalWire from "@signalwire/js";
+import { IVideoProps } from "./IVideoProps";
+import { debounce } from "lodash";
 
 export interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
@@ -13,31 +19,24 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   onRoomReady,
   ...props
 }) => {
-  const [roomSession, setRoomSession] = useState<SignalWire.Video.RoomSession | null>(null);
+  const [roomSession, setRoomSession] =
+    useState<SignalWire.Video.RoomSession | null>(null);
 
   // This is used to access the current roomSession from useEffect without it
   // becoming a dependency.
-  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>()
-  roomSessionRef.current = roomSession
-
-  useEffect(() => {
-    try {
-      setup(props)
-    } catch (e) {
-      console.error("Couldn't join room", e);
-    }
-  }, [props.token]); // changing the other props won't result in a rejoin
+  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>();
+  roomSessionRef.current = roomSession;
 
   /**
    * Establish a new RoomSession connection
    */
-  const setup = useCallback(
+  const setup = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     debounce(async (props: ICoreVideoProps) => {
       if (roomSessionRef.current) {
-        await quitSession(roomSessionRef.current)
-        setRoomSession(null)
+        await quitSession(roomSessionRef.current);
+        setRoomSession(null);
         if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = ""
+          props.rootElement.current.innerHTML = "";
         }
       }
 
@@ -53,27 +52,37 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
         stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
         video: props.video,
       });
+      (curRoomSession as any).__swc_token = props.token;
       setRoomSession(curRoomSession);
       onRoomReady?.(curRoomSession);
       await curRoomSession.join();
 
-      return curRoomSession
+      return curRoomSession;
     }, 100),
     []
-  )
+  );
+
+  useEffect(() => {
+    try {
+      setup(props);
+    } catch (e) {
+      console.error("Couldn't join room", e);
+    }
+
+  }, [setup, props.token]); /* eslint-disable-line react-hooks/exhaustive-deps */  // changing the other props won't result in a rejoin
 
   /** Cleanup when the component is unmounted */
   useEffect(() => {
     return () => {
       if (roomSessionRef.current) {
-        quitSession(roomSessionRef.current)
-        setRoomSession(null)
+        quitSession(roomSessionRef.current);
+        setRoomSession(null);
         if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = ""
+          props.rootElement.current.innerHTML = "";
         }
       }
-    }
-  }, [])
+    };
+  }, []); /* eslint-disable-line react-hooks/exhaustive-deps */
 
   /**
    * Robust way for disconnecting a RoomSession
@@ -82,20 +91,22 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     // Ensure the room is in a joined state first, since we don't have a way to
     // abort an in-progress join.
     try {
-      await roomSession.join()
-    } catch (e) {}
+      await roomSession.join();
+    } catch (e) { /* empty */ }
 
     // Initiate disconnection
     try {
       roomSession.removeAllListeners();
-      roomSession.on('room.joined', async () => {
-        await roomSession?.leave()
+      roomSession.on("room.joined", async () => {
+        await roomSession?.leave();
         roomSession.destroy();
-      })
+      });
       await roomSession.leave();
       roomSession.destroy();
-    } catch (e) { console.log(e) }
-  }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const eventMap = {
     'layout.changed': props.onLayoutChanged ?? null,
@@ -116,6 +127,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   };
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
       if (roomSession && eventValue) {
         roomSession.on(eventName as any, eventValue);
@@ -124,7 +136,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
       return () => {
         roomSession?.off(eventName as any, eventValue as any);
       };
-    }, [roomSession, eventValue]);
+    }, [roomSession, eventName, eventValue]);
   }
 
   return <>{children}</>;
