@@ -7,7 +7,7 @@ import type {
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
 
-type DeviceId = {
+type DeviceIdHolder = {
   deviceId: string;
   [x: string | number | symbol]: unknown;
 };
@@ -19,7 +19,7 @@ interface IOAttributes {
   toggle: () => void;
 }
 interface SelfIOAttributes extends IOAttributes {
-  setDevice: (device: DeviceId) => void;
+  setDevice: (device: DeviceIdHolder) => void;
 }
 interface Member extends VideoMemberEntity {
   audio: IOAttributes;
@@ -147,13 +147,13 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     const self: Self | null =
       (members.find((m: any) => m.id === selfId.current) as Self) ?? null;
     if (self != null) {
-      self.audio.setDevice = (device: DeviceId) => {
+      self.audio.setDevice = (device: DeviceIdHolder) => {
         roomSession?.updateMicrophone(device);
       };
-      self.video.setDevice = (device: DeviceId) => {
+      self.video.setDevice = (device: DeviceIdHolder) => {
         roomSession?.updateCamera(device);
       };
-      self.speaker.setDevice = (device: DeviceId) => {
+      self.speaker.setDevice = (device: DeviceIdHolder) => {
         roomSession?.updateSpeaker(device);
       };
     }
