@@ -1,11 +1,9 @@
-import { Video } from "@signalwire/js";
-
 export function DeviceChangeButton({
-  roomSession,
+  self,
   kind,
   device,
 }: {
-  roomSession: Video.RoomSession;
+  self: any;
   kind: "camera" | "speaker" | "microphone";
   device: MediaDeviceInfo;
 }) {
@@ -15,12 +13,9 @@ export function DeviceChangeButton({
       href="#"
       onClick={(x) => {
         x.preventDefault();
-        if (kind === "camera")
-          roomSession.updateCamera({ deviceId: device.deviceId });
-        if (kind === "microphone")
-          roomSession.updateMicrophone({ deviceId: device.deviceId });
-        if (kind === "speaker")
-          roomSession.updateSpeaker({ deviceId: device.deviceId });
+        if (kind === "camera") self.video.setDevice(device);
+        if (kind === "microphone") self.audio.setDevice(device);
+        if (kind === "speaker") self.speaker.setDevice(device);
       }}
     >
       {device.label}

@@ -7,27 +7,31 @@ import type {
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
 
+type DeviceIdHolder = {
+  deviceId: string;
+  [x: string | number | symbol]: unknown;
+};
+
+interface IOAttributes {
+  muted: boolean;
+  mute: () => void;
+  unmute: () => void;
+  toggle: () => void;
+}
+interface SelfIOAttributes extends IOAttributes {
+  setDevice: (device: DeviceIdHolder) => void;
+}
 interface Member extends VideoMemberEntity {
-  audio: {
-    muted: boolean;
-    mute: () => void;
-    unmute: () => void;
-    toggle: () => void;
-  };
-  video: {
-    muted: boolean;
-    mute: () => void;
-    unmute: () => void;
-    toggle: () => void;
-  };
-  speaker: {
-    muted: boolean;
-    mute: () => void;
-    unmute: () => void;
-    toggle: () => void;
-  };
+  audio: IOAttributes;
+  video: IOAttributes;
+  speaker: IOAttributes;
   remove: () => void;
   setPosition: (position: string) => void;
+}
+interface Self extends Member {
+  audio: SelfIOAttributes;
+  video: SelfIOAttributes;
+  speaker: SelfIOAttributes;
 }
 
 /**
@@ -37,9 +41,13 @@ interface Member extends VideoMemberEntity {
  * `members` as an array with the list of all members, and `removeAll()`
  * which removes everyone
  */
-export default function useMembers(roomSession: Video.RoomSession | null) {
+export default function useMembers(roomSession: Video.RoomSession | null): {
+  self: Self | null;
+  members: Member[];
+  removeAll: () => void;
+} {
   const selfId = useRef<string | null>(null);
-  const [members, setMembers] = useState<VideoMemberEntity[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
     if (roomSession === null || roomSession === undefined) return;
@@ -135,8 +143,25 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     };
   }, [roomSession]);
 
+  function getSelfMember(): null | Self {
+    const self: Self | null =
+      (members.find((m: any) => m.id === selfId.current) as Self) ?? null;
+    if (self != null) {
+      self.audio.setDevice = (device: DeviceIdHolder) => {
+        roomSession?.updateMicrophone(device);
+      };
+      self.video.setDevice = (device: DeviceIdHolder) => {
+        roomSession?.updateCamera(device);
+      };
+      self.speaker.setDevice = (device: DeviceIdHolder) => {
+        roomSession?.updateSpeaker(device);
+      };
+    }
+    return self;
+  }
+
   return {
-    self: members.find((m: any) => m.id === selfId.current) ?? null,
+    self: getSelfMember(),
     members,
     removeAll: () => {
       roomSession?.removeAllMembers();
