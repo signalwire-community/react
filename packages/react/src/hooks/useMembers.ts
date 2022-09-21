@@ -7,6 +7,11 @@ import type {
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
 
+type DeviceId = {
+  deviceId: string;
+  [x: string | number | symbol]: unknown;
+};
+
 interface Member extends VideoMemberEntity {
   audio: {
     muted: boolean;
@@ -135,8 +140,24 @@ export default function useMembers(roomSession: Video.RoomSession | null) {
     };
   }, [roomSession]);
 
+  function getSelfMember() {
+    const self: any = members.find((m: any) => m.id === selfId.current) ?? null;
+    if (self != null) {
+      self.audio.setDevice = (device: DeviceId) => {
+        roomSession?.updateMicrophone(device);
+      };
+      self.video.setDevice = (device: DeviceId) => {
+        roomSession?.updateCamera(device);
+      };
+      self.speaker.setDevice = (device: DeviceId) => {
+        roomSession?.updateSpeaker(device);
+      };
+    }
+    return self;
+  }
+
   return {
-    self: members.find((m: any) => m.id === selfId.current) ?? null,
+    self: getSelfMember(),
     members,
     removeAll: () => {
       roomSession?.removeAllMembers();

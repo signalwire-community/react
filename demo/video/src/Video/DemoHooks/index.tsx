@@ -88,7 +88,7 @@ function DemoHooks() {
             <DeviceChangeButton
               key={x.deviceId}
               kind="camera"
-              roomSession={roomSession}
+              self={members.self}
               device={x}
             />
           ))}
@@ -97,7 +97,7 @@ function DemoHooks() {
             <DeviceChangeButton
               key={x.deviceId}
               kind="microphone"
-              roomSession={roomSession}
+              self={members.self}
               device={x}
             />
           ))}
@@ -106,7 +106,7 @@ function DemoHooks() {
             <DeviceChangeButton
               key={x.deviceId}
               kind="speaker"
-              roomSession={roomSession}
+              self={members.self}
               device={x}
             />
           ))}
