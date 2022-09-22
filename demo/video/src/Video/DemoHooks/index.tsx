@@ -40,12 +40,7 @@ function DemoHooks() {
     <div>
       <VideoWeb
         token={import.meta.env.VITE_ROOM_TOKEN}
-        onRoomReady={(e) => {
-          // Without this line, the `memberList.updated` event inside
-          // `useMembers` will not be triggered.
-          e.on("memberList.updated", (m) => {});
-          setRoomSession(e);
-        }}
+        onRoomReady={setRoomSession}
       />
 
       <div style={{ position: "fixed", top: 10, right: 10 }}>

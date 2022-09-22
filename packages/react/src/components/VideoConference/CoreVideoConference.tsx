@@ -1,15 +1,15 @@
 import React from "react";
 
 type CoreVideoConferenceProps = {
-  onRoomReady?: (roomSession: any) => void,
-  token: string,
-  userName?: string,
-  theme?: 'light' | 'dark' | 'auto',
-  audio?: MediaTrackConstraints,
-  video?: MediaTrackConstraints,
-  memberList?: boolean,
-  prejoin?: boolean,
-}
+  onRoomReady?: (roomSession: any) => void;
+  token: string;
+  userName?: string;
+  theme?: "light" | "dark" | "auto";
+  audio?: MediaTrackConstraints;
+  video?: MediaTrackConstraints;
+  memberList?: boolean;
+  prejoin?: boolean;
+};
 
 export default function CoreVideoConference({
   onRoomReady,
@@ -29,6 +29,8 @@ export default function CoreVideoConference({
     const c = container.current;
     (c as any).setupRoomSession = (rs: any) => {
       if (onRoomReady) {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        rs.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
         onRoomReady(rs);
       }
     };
@@ -70,8 +72,18 @@ e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
     c.appendChild(script);
     return () => {
       c.removeChild(script);
-      c.innerHTML = ''
+      c.innerHTML = "";
     };
-  }, [container, token, userName, memberList, prejoin, audio, video, theme, onRoomReady]);
+  }, [
+    container,
+    token,
+    userName,
+    memberList,
+    prejoin,
+    audio,
+    video,
+    theme,
+    onRoomReady,
+  ]);
   return <div ref={container}></div>;
 }

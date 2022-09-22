@@ -30,7 +30,8 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   /**
    * Establish a new RoomSession connection
    */
-  const setup = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
+  // prettier-ignore
+  const setup = useCallback( /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: ICoreVideoProps) => {
       if (roomSessionRef.current) {
         await quitSession(roomSessionRef.current);
@@ -54,6 +55,8 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
       });
       (curRoomSession as any).__swc_token = props.token;
       setRoomSession(curRoomSession);
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
       onRoomReady?.(curRoomSession);
       await curRoomSession.join();
 
@@ -62,14 +65,17 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     []
   );
 
-  useEffect(() => {
-    try {
+  useEffect(
+    () => {
+      try {
       setup(props);
     } catch (e) {
       console.error("Couldn't join room", e);
     }
-
-  }, [setup, props.token]); /* eslint-disable-line react-hooks/exhaustive-deps */  // changing the other props won't result in a rejoin
+      // prettier-ignore
+    } /* eslint-disable-next-line react-hooks/exhaustive-deps */, // changing the other props won't result in a rejoin
+    [setup, props.token]
+  );
 
   /** Cleanup when the component is unmounted */
   useEffect(() => {
@@ -92,7 +98,9 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
     // abort an in-progress join.
     try {
       await roomSession.join();
-    } catch (e) { /* empty */ }
+    } catch (e) {
+      /* empty */
+    }
 
     // Initiate disconnection
     try {
@@ -109,21 +117,21 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   };
 
   const eventMap = {
-    'layout.changed': props.onLayoutChanged ?? null,
-    'member.joined': props.onMemberJoined ?? null,
-    'member.left': props.onMemberLeft ?? null,
-    'member.talking': props.onMemberTalking ?? null,
-    'member.updated': props.onMemberUpdated ?? null,
-    'memberList.updated': props.onMemberListUpdated ?? null,
-    'playback.ended': props.onPlaybackEnded ?? null,
-    'playback.started': props.onPlaybackStarted ?? null,
-    'playback.updated': props.onPlaybackUpdated ?? null,
-    'recording.ended': props.onRecordingEnded ?? null,
-    'recording.started': props.onRecordingStarted ?? null,
-    'recording.updated': props.onRecordingUpdated ?? null,
-    'room.joined': props.onRoomJoined ?? null,
-    'room.left': props.onRoomLeft ?? null,
-    'room.updated': props.onRoomUpdated ?? null,
+    "layout.changed": props.onLayoutChanged ?? null,
+    "member.joined": props.onMemberJoined ?? null,
+    "member.left": props.onMemberLeft ?? null,
+    "member.talking": props.onMemberTalking ?? null,
+    "member.updated": props.onMemberUpdated ?? null,
+    "memberList.updated": props.onMemberListUpdated ?? null,
+    "playback.ended": props.onPlaybackEnded ?? null,
+    "playback.started": props.onPlaybackStarted ?? null,
+    "playback.updated": props.onPlaybackUpdated ?? null,
+    "recording.ended": props.onRecordingEnded ?? null,
+    "recording.started": props.onRecordingStarted ?? null,
+    "recording.updated": props.onRecordingUpdated ?? null,
+    "room.joined": props.onRoomJoined ?? null,
+    "room.left": props.onRoomLeft ?? null,
+    "room.updated": props.onRoomUpdated ?? null,
   };
 
   for (const [eventName, eventValue] of Object.entries(eventMap)) {
@@ -134,7 +142,9 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
       }
 
       return () => {
-        roomSession?.off(eventName as any, eventValue as any);
+        if (roomSession && eventValue) {
+          roomSession.off(eventName as any, eventValue);
+        }
       };
     }, [roomSession, eventName, eventValue]);
   }
