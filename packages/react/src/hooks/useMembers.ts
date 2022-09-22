@@ -11,7 +11,6 @@ type DeviceIdHolder = {
   deviceId: string;
   [x: string | number | symbol]: unknown;
 };
-
 interface IOAttributes {
   muted: boolean;
   mute: () => void;
@@ -27,6 +26,7 @@ interface Member extends VideoMemberEntity {
   speaker: IOAttributes;
   remove: () => void;
   setPosition: (position: string) => void;
+  talking?: boolean;
 }
 interface Self extends Member {
   audio: SelfIOAttributes;
@@ -115,7 +115,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
       setMembers((members) => {
         const newMembers = [...members];
         const member = newMembers.find((m: any) => m.id === e.member.id);
-        if (member) (member as any).talking = e.member.talking;
+        if (member) member.talking = e.member.talking;
         return newMembers;
       });
     }
