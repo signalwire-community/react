@@ -105,7 +105,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
       });
     }
     function onRoomJoined(e: VideoRoomEventParams) {
-      // @ts-expect-error
+      // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
       const members = e.room_session.members?.map(toCamelCase) ?? [];
       setMembers(addMethods(members));
@@ -132,9 +132,9 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
       setMembers((members) => {
         const newMembers = [...members];
         e.layout.layers.forEach((layer) => {
-          // @ts-expect-error
+          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
           if (layer.member_id === undefined) return;
-          // @ts-expect-error
+          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
           const member = newMembers.find((m) => m.id === layer.member_id);
           if (member !== undefined && layer.position !== undefined)
             member.currentPosition = layer.position;
