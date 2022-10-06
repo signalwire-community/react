@@ -1,16 +1,5 @@
 import lodash from "lodash";
-
-type SnakeToCamelCase<S extends string> = S extends `${infer T}_${infer U}`
-  ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
-  : S;
-
-type SnakeToCamelCaseNested<T> = T extends object
-  ? {
-      [K in keyof T as SnakeToCamelCase<K & string>]: SnakeToCamelCaseNested<
-        T[K]
-      >;
-    }
-  : T;
+import type { CamelCasedPropertiesDeep } from "type-fest";
 
 export function toCamelCase<T extends Record<string, unknown>>(obj: T) {
   return lodash.transform(
@@ -21,5 +10,5 @@ export function toCamelCase<T extends Record<string, unknown>>(obj: T) {
         ? toCamelCase(value as Record<string, unknown>)
         : value;
     }
-  ) as SnakeToCamelCaseNested<T>;
+  ) as CamelCasedPropertiesDeep<T>;
 }
