@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { render } from "@testing-library/react";
+import { act, renderHook, cleanup } from "@testing-library/react-hooks";
 import useLayouts from "./useLayouts";
 
 describe("useLayouts", () => {
@@ -11,14 +10,7 @@ describe("useLayouts", () => {
       off: jest.fn(),
     };
 
-    function TestComponent() {
-      const { layouts, currentLayout, setLayout } = useLayouts(
-        roomSession as any
-      );
-      return <></>;
-    }
-
-    render(<TestComponent />);
+    const { result } = renderHook(() => useLayouts(roomSession as any));
 
     expect(roomSession.on).toHaveBeenCalledTimes(2);
     expect(roomSession.on).toHaveBeenCalledWith(
@@ -41,15 +33,8 @@ describe("useLayouts", () => {
       off: jest.fn(),
     };
 
-    function TestComponent() {
-      const { layouts, currentLayout, setLayout } = useLayouts(
-        roomSession as any
-      );
-      return <></>;
-    }
-
-    const { unmount } = render(<TestComponent />);
-    unmount();
+    const { result } = renderHook(() => useLayouts(roomSession as any));
+    cleanup();
 
     expect(roomSession.off).toHaveBeenCalledTimes(2);
     expect(roomSession.off).toHaveBeenCalledWith(
@@ -70,19 +55,11 @@ describe("useLayouts", () => {
       off: jest.fn(),
     };
 
-    function TestComponent() {
-      const { layouts, currentLayout, setLayout } = useLayouts(
-        roomSession as any
-      );
+    const { result } = renderHook(() => useLayouts(roomSession as any));
 
-      useEffect(() => {
-        setLayout({ name: "2x2" });
-      }, []);
-
-      return <></>;
-    }
-
-    render(<TestComponent />);
+    act(() => {
+      result.current.setLayout({ name: "2x2" });
+    });
 
     expect(roomSession.setLayout).toHaveBeenCalledTimes(1);
   });
