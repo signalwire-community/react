@@ -46,7 +46,7 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
 
     const onMemberUpdated = (e: VideoMemberUpdatedHandlerParams) => {
       if (e.member.id !== selfId.current) return;
-      const { updated, ...partialMember } = e.member;
+      const { updated: _, ...partialMember } = e.member;
 
       setMember((member) => {
         if (!member) return null;
