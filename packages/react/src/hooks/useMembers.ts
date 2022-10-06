@@ -60,79 +60,33 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    if (roomSession === null || roomSession === undefined) return;
-    function addMethods(members: VideoMemberEntity[]): Member[] {
-      return members.map((m: VideoMemberEntity) => {
-        return {
-          ...m,
-          audio: {
-            // NOTE: the typedefs don't match the implementation here (audioMuted vs audio_muted)
-            muted: m.audioMuted,
-            mute: () => roomSession?.audioMute({ memberId: m.id }),
-            unmute: () => roomSession?.audioUnmute({ memberId: m.id }),
-            toggle: () => {
-              m.audioMuted
-                ? roomSession?.audioUnmute({ memberId: m.id })
-                : roomSession?.audioMute({ memberId: m.id });
-            },
-          },
-          video: {
-            muted: m.videoMuted,
-            mute: () => roomSession?.videoMute({ memberId: m.id }),
-            unmute: () => roomSession?.videoUnmute({ memberId: m.id }),
-            toggle: () => {
-              m.videoMuted
-                ? roomSession?.videoUnmute({ memberId: m.id })
-                : roomSession?.videoMute({ memberId: m.id });
-            },
-          },
-          speaker: {
-            muted: m.deaf,
-            toggle: () =>
-              m.deaf
-                ? roomSession?.undeaf({ memberId: m.id })
-                : roomSession?.deaf({ memberId: m.id }),
-            mute: () => roomSession?.deaf({ memberId: m.id }),
-            unmute: () => roomSession?.undeaf({ memberId: m.id }),
-          },
-          remove: () => {
-            roomSession?.removeMember({ memberId: m.id });
-          },
-          setPosition: (position: VideoPosition) => {
-            const params: SetMemberPositionParams = {
-              memberId: m.id,
-              position: position,
-            };
-            roomSession?.setMemberPosition(params);
-          },
-        };
-      });
-    }
-    function onRoomJoined(e: VideoRoomEventParams) {
+    if (!roomSession) return;
+
+    const onRoomJoined = (e: VideoRoomEventParams) => {
       // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
       const members = e.room_session.members?.map(toCamelCase) ?? [];
-      setMembers(addMethods(members));
-    }
+      setMembers(addMethods(roomSession, members));
+    };
     roomSession.on("room.joined", onRoomJoined);
 
-    function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
+    const onMemberListUpdated = (e: VideoMemberListUpdatedParams) => {
       const members = e.members.map(toCamelCase);
-      setMembers(addMethods(members));
-    }
+      setMembers(addMethods(roomSession, members));
+    };
     roomSession.on("memberList.updated", onMemberListUpdated);
 
-    function onMemberTalking(e: VideoMemberTalkingEventParams) {
+    const onMemberTalking = (e: VideoMemberTalkingEventParams) => {
       setMembers((members) => {
         const newMembers = [...members];
         const member = newMembers.find((m) => m.id === e.member.id);
         if (member) member.talking = e.member.talking;
         return newMembers;
       });
-    }
+    };
     roomSession.on("member.talking", onMemberTalking);
 
-    function onLayoutChanged(e: { layout: VideoLayout }) {
+    const onLayoutChanged = (e: { layout: VideoLayout }) => {
       setMembers((members) => {
         const newMembers = [...members];
         e.layout.layers.forEach((layer) => {
@@ -145,7 +99,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
         });
         return newMembers;
       });
-    }
+    };
     roomSession.on("layout.changed", onLayoutChanged);
 
     return () => {
@@ -157,18 +111,12 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
   }, [roomSession]);
 
   function getSelfMember(): null | Self {
+    if (!roomSession) return null;
+
     const self: Self | null =
       (members.find((m) => m.id === selfId.current) as Self) ?? null;
-    if (self != null) {
-      self.audio.setDevice = (device: DeviceIdHolder) => {
-        roomSession?.updateMicrophone(device);
-      };
-      self.video.setDevice = (device: DeviceIdHolder) => {
-        roomSession?.updateCamera(device);
-      };
-      self.speaker.setDevice = (device: DeviceIdHolder) => {
-        roomSession?.updateSpeaker(device);
-      };
+    if (self) {
+      addSelfMemberMethods(roomSession, self);
     }
     return self;
   }
@@ -178,6 +126,88 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     members,
     removeAll: () => {
       roomSession?.removeAllMembers();
+    },
+  };
+}
+
+function addMethods(
+  roomSession: Video.RoomSession,
+  members: VideoMemberEntity[]
+): Member[] {
+  return members.map((m) => addMemberMethods(roomSession, m));
+}
+
+export function addMemberMethods(
+  roomSession: Video.RoomSession,
+  m: VideoMemberEntity
+): Member {
+  return {
+    ...m,
+    audio: {
+      muted: m.audioMuted,
+      mute: () => roomSession.audioMute({ memberId: m.id }),
+      unmute: () => roomSession.audioUnmute({ memberId: m.id }),
+      toggle: () => {
+        m.audioMuted
+          ? roomSession.audioUnmute({ memberId: m.id })
+          : roomSession.audioMute({ memberId: m.id });
+      },
+    },
+    video: {
+      muted: m.videoMuted,
+      mute: () => roomSession.videoMute({ memberId: m.id }),
+      unmute: () => roomSession.videoUnmute({ memberId: m.id }),
+      toggle: () => {
+        m.videoMuted
+          ? roomSession.videoUnmute({ memberId: m.id })
+          : roomSession.videoMute({ memberId: m.id });
+      },
+    },
+    speaker: {
+      muted: m.deaf,
+      toggle: () =>
+        m.deaf
+          ? roomSession.undeaf({ memberId: m.id })
+          : roomSession.deaf({ memberId: m.id }),
+      mute: () => roomSession.deaf({ memberId: m.id }),
+      unmute: () => roomSession.undeaf({ memberId: m.id }),
+    },
+    remove: () => {
+      roomSession.removeMember({ memberId: m.id });
+    },
+    setPosition: (position: VideoPosition) => {
+      const params: SetMemberPositionParams = {
+        memberId: m.id,
+        position: position,
+      };
+      roomSession.setMemberPosition(params);
+    },
+  };
+}
+
+export function addSelfMemberMethods(
+  roomSession: Video.RoomSession,
+  m: Member
+): Self {
+  return {
+    ...m,
+    audio: {
+      ...m.audio,
+      setDevice: (device: DeviceIdHolder) => {
+        roomSession.updateMicrophone(device);
+      },
+    },
+    video: {
+      ...m.video,
+      setDevice: (device: DeviceIdHolder) => {
+        roomSession?.updateCamera(device);
+      },
+    },
+    speaker: {
+      ...m.speaker,
+      setDevice: (device: DeviceIdHolder) => {
+        roomSession?.updateSpeaker(device);
+      },
     },
   };
 }
