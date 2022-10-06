@@ -17,15 +17,18 @@ type DeviceIdHolder = {
   deviceId: string;
   [x: string | number | symbol]: unknown;
 };
+
 interface IOAttributes {
   muted: boolean;
   mute: () => void;
   unmute: () => void;
   toggle: () => void;
 }
+
 interface SelfIOAttributes extends IOAttributes {
   setDevice: (device: DeviceIdHolder) => void;
 }
+
 interface Member extends VideoMemberEntity {
   audio: IOAttributes;
   video: IOAttributes;
@@ -34,7 +37,8 @@ interface Member extends VideoMemberEntity {
   setPosition: (position: VideoPosition) => void;
   talking?: boolean;
 }
-interface Self extends Member {
+
+export interface Self extends Member {
   audio: SelfIOAttributes;
   video: SelfIOAttributes;
   speaker: SelfIOAttributes;
