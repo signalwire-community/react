@@ -170,4 +170,61 @@ describe("useSelf", () => {
 
     expect(result.current?.talking).toBe(false);
   });
+
+  it("returns null after room.left", async () => {
+    let emitRoomJoined: any;
+    let emitRoomLeft: any;
+
+    const roomSession = {
+      active: true,
+      memberId: "member1",
+      getMembers: jest.fn().mockImplementation(async () => ({
+        members: [
+          {
+            id: "member1",
+            input_volume: 0,
+          },
+        ],
+      })),
+      on: jest.fn().mockImplementation((event, cb) => {
+        if (event === "room.left") {
+          emitRoomLeft = cb;
+        } else if (event === "room.joined") {
+          emitRoomJoined = cb;
+        }
+      }),
+      off: jest.fn(),
+    };
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useSelf(roomSession as any)
+    );
+    await waitForNextUpdate();
+
+    expect(result.current?.id).toBe("member1");
+
+    act(() => {
+      emitRoomLeft({});
+    });
+
+    expect(result.current).toBeNull();
+
+    act(() => {
+      emitRoomJoined({
+        member_id: "member2",
+        room_session: {
+          members: [
+            {
+              id: "member2",
+              audio_muted: true,
+              name: "aaa",
+            },
+          ],
+        },
+      });
+    });
+
+    expect(result.current?.id).toBe("member2");
+    expect(result.current?.name).toBe("aaa");
+  });
 });

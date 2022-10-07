@@ -10,6 +10,11 @@ import { useEffect, useRef, useState } from "react";
 import { toCamelCase } from "../utils/camelCase";
 import { Self, addMemberMethods, addSelfMemberMethods } from "./useMembers";
 
+/**
+ * Given a RoomSession, returns the current member and its associated properties.
+ * @param roomSession `RoomSession` or `null`
+ * @returns the current member, or `null` if the RoomSession is not active.
+ */
 export default function useSelf(roomSession: Video.RoomSession | null) {
   const selfId = useRef<string | null>(null);
   const [member, setMember] = useState<Self | null>(null);
@@ -94,11 +99,15 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
     };
     roomSession.on("layout.changed", onLayoutChanged);
 
+    const onRoomLeft = () => setMember(null);
+    roomSession.on("room.left", onRoomLeft);
+
     return () => {
       roomSession.off("layout.changed", onLayoutChanged);
       roomSession.off("member.talking", onMemberTalking);
       roomSession.off("member.updated", onMemberUpdated);
       roomSession.off("room.joined", onRoomJoined);
+      roomSession.off("room.left", onRoomLeft);
     };
   }, [roomSession]);
 
