@@ -102,14 +102,14 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
       selfId.current = e.member_id;
       setMembers(addMethods(e.room_session.members));
     }
+    roomSession.on("room.joined", onRoomJoined);
     if (roomSession.active) {
       (async () => {
+        // In case  `useMembers` is invoked after `room.joined` event.
         selfId.current = roomSession?.memberId ?? null;
         const members = (await roomSession?.getMembers())?.members;
         if (members) setMembers(addMethods(members));
       })();
-    } else {
-      roomSession?.on("room.joined", onRoomJoined);
     }
 
     function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
