@@ -7,7 +7,7 @@ import {
 } from "@signalwire/js";
 import { VideoMemberUpdatedHandlerParams } from "@signalwire/js/dist/js/src/utils/interfaces";
 import { useEffect, useRef, useState } from "react";
-import { toCamelCase } from "../utils/camelCase";
+import { toCamelCase } from "../../utils/camelCase";
 import { Self, addMemberMethods, addSelfMemberMethods } from "./useMembers";
 
 /**
