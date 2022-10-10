@@ -34,6 +34,10 @@ export default {
   plugins: [
     externals(),
     resolve(),
-    typescript({ tsconfig: "./tsconfig.json", declaration: false }),
+    typescript({
+      tsconfig: "./tsconfig.json",
+      target: "ES2015",
+      declaration: false,
+    }),
   ],
 };
