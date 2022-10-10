@@ -100,10 +100,17 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     }
     function onRoomJoined(e: any) {
       selfId.current = e.member_id;
-      console.log(selfId.current);
       setMembers(addMethods(e.room_session.members));
     }
     roomSession.on("room.joined", onRoomJoined);
+    if (roomSession.active) {
+      (async () => {
+        // In case  `useMembers` is invoked after `room.joined` event.
+        selfId.current = roomSession?.memberId ?? null;
+        const members = (await roomSession?.getMembers())?.members;
+        if (members) setMembers(addMethods(members));
+      })();
+    }
 
     function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
       const members: any = e.members;
