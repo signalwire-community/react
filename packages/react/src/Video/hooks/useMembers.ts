@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from "react";
-import { Video } from "@signalwire/js";
+import {
+  Video,
+  VideoLayout,
+  VideoPosition,
+  VideoRoomEventParams,
+} from "@signalwire/js";
 import type {
   VideoMemberEntity,
   VideoMemberTalkingEventParams,
 } from "@signalwire/js";
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
+import { toCamelCase } from "../../utils/camelCase";
 
 type DeviceIdHolder = {
   deviceId: string;
@@ -25,7 +31,7 @@ interface Member extends VideoMemberEntity {
   video: IOAttributes;
   speaker: IOAttributes;
   remove: () => void;
-  setPosition: (position: string) => void;
+  setPosition: (position: VideoPosition) => void;
   talking?: boolean;
 }
 interface Self extends Member {
@@ -57,21 +63,21 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
           ...m,
           audio: {
             // NOTE: the typedefs don't match the implementation here (audioMuted vs audio_muted)
-            muted: (m as any).audio_muted,
+            muted: m.audioMuted,
             mute: () => roomSession?.audioMute({ memberId: m.id }),
             unmute: () => roomSession?.audioUnmute({ memberId: m.id }),
             toggle: () => {
-              (m as any).audio_muted
+              m.audioMuted
                 ? roomSession?.audioUnmute({ memberId: m.id })
                 : roomSession?.audioMute({ memberId: m.id });
             },
           },
           video: {
-            muted: (m as any).video_muted,
+            muted: m.videoMuted,
             mute: () => roomSession?.videoMute({ memberId: m.id }),
             unmute: () => roomSession?.videoUnmute({ memberId: m.id }),
             toggle: () => {
-              (m as any).video_muted
+              m.videoMuted
                 ? roomSession?.videoUnmute({ memberId: m.id })
                 : roomSession?.videoMute({ memberId: m.id });
             },
@@ -88,19 +94,21 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
           remove: () => {
             roomSession?.removeMember({ memberId: m.id });
           },
-          setPosition: (position: string) => {
-            const params: any = {
+          setPosition: (position: VideoPosition) => {
+            const params: SetMemberPositionParams = {
               memberId: m.id,
               position: position,
             };
-            roomSession?.setMemberPosition(params as SetMemberPositionParams);
+            roomSession?.setMemberPosition(params);
           },
         };
       });
     }
-    function onRoomJoined(e: any) {
+    function onRoomJoined(e: VideoRoomEventParams) {
+      // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
-      setMembers(addMethods(e.room_session.members));
+      const members = e.room_session.members?.map(toCamelCase) ?? [];
+      setMembers(addMethods(members));
     }
     roomSession.on("room.joined", onRoomJoined);
     if (roomSession.active) {
@@ -113,7 +121,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     }
 
     function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
-      const members: any = e.members;
+      const members = e.members.map(toCamelCase);
       setMembers(addMethods(members));
     }
     roomSession.on("memberList.updated", onMemberListUpdated);
@@ -121,21 +129,23 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     function onMemberTalking(e: VideoMemberTalkingEventParams) {
       setMembers((members) => {
         const newMembers = [...members];
-        const member = newMembers.find((m: any) => m.id === e.member.id);
+        const member = newMembers.find((m) => m.id === e.member.id);
         if (member) member.talking = e.member.talking;
         return newMembers;
       });
     }
     roomSession.on("member.talking", onMemberTalking);
 
-    function onLayoutChanged(e: any) {
-      setMembers((members: any) => {
+    function onLayoutChanged(e: { layout: VideoLayout }) {
+      setMembers((members) => {
         const newMembers = [...members];
-        e.layout.layers.forEach((layer: any) => {
+        e.layout.layers.forEach((layer) => {
+          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
           if (layer.member_id === undefined) return;
-          const member = newMembers.find((m: any) => m.id === layer.member_id);
+          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
+          const member = newMembers.find((m) => m.id === layer.member_id);
           if (member !== undefined && layer.position !== undefined)
-            member.current_position = layer.position;
+            member.currentPosition = layer.position;
         });
         return newMembers;
       });
@@ -152,7 +162,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
 
   function getSelfMember(): null | Self {
     const self: Self | null =
-      (members.find((m: any) => m.id === selfId.current) as Self) ?? null;
+      (members.find((m) => m.id === selfId.current) as Self) ?? null;
     if (self != null) {
       self.audio.setDevice = (device: DeviceIdHolder) => {
         roomSession?.updateMicrophone(device);
