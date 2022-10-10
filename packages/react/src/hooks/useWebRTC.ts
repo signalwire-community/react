@@ -3,8 +3,9 @@ import { WebRTC } from "@signalwire/js";
 import { DevicePermissionName } from "@signalwire/webrtc/dist/cjs/webrtc/src/utils";
 
 /**
- * Maintains a current list of selected I/O devices.
- * Pass a config object Eg: `{camera: false}` to avoid watching all devices
+ * Maintains a current list of selected I/O devices. If no arguments are
+ * provided, it subscribes to all device types by default. Pass a config object
+ * (e.g., `{ camera: true }`) to only match specific devices.
  */
 export default function useWebRTC(
   config: {
@@ -20,11 +21,10 @@ export default function useWebRTC(
   const { camera, microphone, speaker } = config;
 
   useEffect(() => {
-    camera !== false &&
-      WebRTC.getCameraDevices().then((c) => setCameras(Array.from(c)));
-    microphone !== false &&
+    camera && WebRTC.getCameraDevices().then((c) => setCameras(Array.from(c)));
+    microphone &&
       WebRTC.getMicrophoneDevices().then((m) => setMicrophones(Array.from(m)));
-    speaker !== false &&
+    speaker &&
       WebRTC.getSpeakerDevices().then((s) => setSpeakers(Array.from(s)));
   }, [camera, microphone, speaker]);
 
@@ -41,8 +41,8 @@ export default function useWebRTC(
 
       if (targets.length > 0) {
         await WebRTC.getUserMedia({
-          audio: targets.includes('microphone') || targets.includes('speaker'),
-          video: targets.includes('camera')
+          audio: targets.includes("microphone") || targets.includes("speaker"),
+          video: targets.includes("camera"),
         });
 
         deviceWatcher = await WebRTC.createDeviceWatcher({
