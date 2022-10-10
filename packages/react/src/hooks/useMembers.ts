@@ -111,6 +111,14 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
       setMembers(addMethods(members));
     }
     roomSession.on("room.joined", onRoomJoined);
+    if (roomSession.active) {
+      (async () => {
+        // In case  `useMembers` is invoked after `room.joined` event.
+        selfId.current = roomSession?.memberId ?? null;
+        const members = (await roomSession?.getMembers())?.members;
+        if (members) setMembers(addMethods(members));
+      })();
+    }
 
     function onMemberListUpdated(e: VideoMemberListUpdatedParams) {
       const members = e.members.map(toCamelCase);
