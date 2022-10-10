@@ -1,36 +1,43 @@
 import externals from "rollup-plugin-node-externals";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
-import dts from "rollup-plugin-dts";
+import resolve from "@rollup/plugin-node-resolve";
+import { terser } from "rollup-plugin-terser";
 
-const packageJson = require("./package.json");
-
-export default [
-  {
-    input: "src/index.ts",
-    output: [
-      {
-        file: packageJson.main,
-        format: "cjs",
-        sourcemap: true,
-      },
-      {
-        file: packageJson.module,
-        format: "esm",
-        sourcemap: true,
-      },
-    ],
-    plugins: [
-      externals(),
-      resolve(),
-      commonjs(),
-      typescript({ tsconfig: "./tsconfig.json" }),
-    ],
-  },
-  {
-    input: "dist/esm/types/index.d.ts",
-    output: [{ file: "dist/index.d.ts", format: "esm" }],
-    plugins: [dts()],
-  },
-];
+export default {
+  input: "src/index.ts",
+  output: [
+    {
+      file: "dist/bundles/bundle.esm.js",
+      format: "esm",
+      sourcemap: true,
+    },
+    {
+      file: "dist/bundles/bundle.esm.min.js",
+      format: "esm",
+      plugins: [terser()],
+      sourcemap: true,
+    },
+    {
+      file: "dist/bundles/bundle.umd.js",
+      format: "umd",
+      name: "SignalWireCommunityReact",
+      sourcemap: true,
+    },
+    {
+      file: "dist/bundles/bundle.umd.min.js",
+      format: "umd",
+      name: "SignalWireCommunityReact",
+      plugins: [terser()],
+      sourcemap: true,
+    },
+  ],
+  plugins: [
+    externals(),
+    resolve(),
+    typescript({
+      tsconfig: "./tsconfig.json",
+      target: "ES2015",
+      declaration: false,
+    }),
+  ],
+};

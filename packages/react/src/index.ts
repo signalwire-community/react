@@ -1,2 +1,22 @@
-export * from './components';
-export * from './hooks';
+export * from "./Video";
+
+// export * as VideoNS from "./Video";
+
+// // For backwards compatibility
+// export {
+//   Video,
+//   LocalStream,
+//   RemoteStream,
+//   RoomPreview,
+//   VideoConference,
+//   __internal,
+//   useLayouts,
+//   useMembers,
+//   usePermissions,
+//   useScreenShare,
+//   useStatus,
+//   useWebRTC,
+// } from "./Video";
+
+// // For backwards compatibility
+// export type { IVideoProps } from "./Video";

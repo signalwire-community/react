@@ -2,15 +2,26 @@
   "name": "@signalwire-community/react",
   "version": "1.4.2",
   "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "typings": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
-    "build": "npm run rollup",
-    "rollup": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:bundles && npm run build:types",
+    "clean": "shx rm -rf dist",
+    "build:esm": "tsc -p tsconfig.build.esm.json",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json",
+    "build:bundles": "rollup -c",
+    "build:types": "tsc -p tsconfig.build.types.json",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -27,7 +38,6 @@
     "react": ">=17.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "8.3.3",
     "@testing-library/react": "^12.1.5",
@@ -44,8 +54,8 @@
     "react-dom": "^17.0.2",
     "react-test-renderer": "^17.0.2",
     "rollup": "^2.75.6",
-    "rollup-plugin-dts": "^4.2.2",
     "rollup-plugin-node-externals": "^4.1.1",
+    "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^28.0.7",
     "tslib": "^2.4.0",
     "type-fest": "^3.0.0",

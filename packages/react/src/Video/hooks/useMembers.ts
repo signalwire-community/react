@@ -11,7 +11,7 @@ import type {
 } from "@signalwire/js";
 import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
 import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
-import { toCamelCase } from "../utils/camelCase";
+import { toCamelCase } from "../../utils/camelCase";
 
 type DeviceIdHolder = {
   deviceId: string;
