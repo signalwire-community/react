@@ -89,8 +89,7 @@ function usePermissions(roomSession: Video.RoomSession | null) {
     // @ts-expect-error "member.promoted" is not public yet
     roomSession.on("member.promoted", onMemberPromoted);
 
-    // @ts-expect-error "member.promoted" is not public yet
-    const onMemberDemoted = (e) => {
+    const onMemberDemoted = () => {
       setPermissions(permissionsFromList([]));
     };
     // @ts-expect-error "member.demoted" is not public yet
