@@ -74,7 +74,7 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
         // In case  `useMembers` is invoked after `room.joined` event.
         selfId.current = roomSession?.memberId ?? null;
         const members = (await roomSession?.getMembers())?.members;
-        if (members) setMembers(addMethods(members));
+        if (members) setMembers(addMethods(roomSession, members));
       })();
     }
 
