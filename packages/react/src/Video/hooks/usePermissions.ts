@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Video } from "@signalwire/js";
-import jwt_decode from "jwt-decode";
 
 function makeBarePermissionObject(permString: string[]) {
   const permObject = {};
@@ -52,34 +51,62 @@ function decoratePermissionObject(P_bare: any) {
   return P;
 }
 
+function permissionsFromList(scopes: string[]) {
+  const barePermissionObj = makeBarePermissionObject(scopes ?? []);
+  return decoratePermissionObject(barePermissionObj);
+}
+
 /**
- * Given a RoomSession or a room token, parses and simplifies the set of permissions allowed for the user.
- * @param `RoomSession` or `string` (token) or `null`
- * @returns an object with allowed permissions. Eg: `{screenshare:false, self:{audio_mute:true, ...}, ...}`
+ * Given a RoomSession, returns the set of current permissions.
+ * @param `RoomSession` or `null`
+ * @returns an object with allowed permissions. Eg: `{ screenshare:false, self: {audio_mute: true, ... }, ... }`
  */
-function usePermissions(tokenProvider: Video.RoomSession | string | null) {
-  const [permissions, setPermissions] = useState<any>(null);
+function usePermissions(roomSession: Video.RoomSession | null) {
+  const [permissions, setPermissions] = useState(permissionsFromList([]));
 
   useEffect(() => {
-    if (tokenProvider === undefined || tokenProvider === null) return;
-    const token =
-      typeof tokenProvider === "string"
-        ? tokenProvider
-        : (tokenProvider as any).__swc_token;
-    if (token === undefined || token === null) return;
-    let decodedToken: any;
-    try {
-      decodedToken = jwt_decode(token);
-    } catch (e) {
-      console.error("Invalid Token (usePermission)");
-      return;
-    }
+    if (!roomSession) return;
 
-    if (decodedToken.s === undefined) return;
-    const barePermissionObj = makeBarePermissionObject(decodedToken.s);
-    const decoratedPermissionObj = decoratePermissionObject(barePermissionObj);
-    setPermissions(decoratedPermissionObj);
-  }, [tokenProvider]);
+    const refreshPermissions = () => {
+      // @ts-expect-error "select" is internal
+      const scopes = roomSession.select?.(
+        // @ts-expect-error "select" is internal
+        (s) => s?.session?.authState?.room?.scopes
+      );
+      setPermissions(permissionsFromList(scopes ?? []));
+    };
+
+    const onRoomJoined = () => {
+      refreshPermissions();
+    };
+    roomSession.on("room.joined", onRoomJoined);
+
+    // @ts-expect-error "member.promoted" is not public yet
+    const onMemberPromoted = (e) => {
+      const scopes = e.authorization.room.scopes;
+      setPermissions(permissionsFromList(scopes ?? []));
+    };
+    // @ts-expect-error "member.promoted" is not public yet
+    roomSession.on("member.promoted", onMemberPromoted);
+
+    // @ts-expect-error "member.promoted" is not public yet
+    const onMemberDemoted = (e) => {
+      setPermissions(permissionsFromList([]));
+    };
+    // @ts-expect-error "member.demoted" is not public yet
+    roomSession.on("member.demoted", onMemberDemoted);
+
+    const onRoomLeft = () => {
+      setPermissions(permissionsFromList([]));
+    };
+    roomSession.on("room.left", onRoomLeft);
+
+    refreshPermissions();
+
+    return () => {
+      roomSession.off("room.joined", onRoomJoined);
+    };
+  }, [roomSession]);
 
   return permissions;
 }

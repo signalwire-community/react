@@ -53,7 +53,6 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
         stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
         video: props.video,
       });
-      (curRoomSession as any).__swc_token = props.token;
       setRoomSession(curRoomSession);
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
