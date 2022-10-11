@@ -24,8 +24,8 @@ import { VideoConference } from "@signalwire-community/react";
 
 ## Supported components
 
-- [`<LocalStream>`](/packages/react/src/components/LocalStream)
-- [`<RemoteStream>`](/packages/react/src/components/RemoteStream)
-- [`<RoomPreview>`](/packages/react/src/components/RoomPreview)
-- [`<Video>`](/packages/react/src/components/Video)
-- [`<VideoConference>`](/packages/react/src/components/VideoConference)
+- [`<LocalStream>`](/packages/react/src/Video/components/LocalStream)
+- [`<RemoteStream>`](/packages/react/src/Video/components/RemoteStream)
+- [`<RoomPreview>`](/packages/react/src/Video/components/RoomPreview)
+- [`<Video>`](/packages/react/src/Video/components/Video)
+- [`<VideoConference>`](/packages/react/src/Video/components/VideoConference)
