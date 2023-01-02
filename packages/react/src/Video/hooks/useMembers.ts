@@ -124,9 +124,9 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
     const self: Self | null =
       (members.find((m) => m.id === selfId.current) as Self) ?? null;
     if (self) {
-      addSelfMemberMethods(roomSession, self);
+      return addSelfMemberMethods(roomSession, self);
     }
-    return self;
+    return null;
   }
 
   return {
