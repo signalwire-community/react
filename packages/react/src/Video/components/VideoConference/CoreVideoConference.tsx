@@ -85,5 +85,5 @@ e.SignalWire=e.SignalWire||{},e.SignalWire.Prebuilt={VideoRoom:e.swvr}
     theme,
     onRoomReady,
   ]);
-  return <div ref={container}></div>;
+  return <div ref={container} style={{ width: "100%", height: "100%" }}></div>;
 }
