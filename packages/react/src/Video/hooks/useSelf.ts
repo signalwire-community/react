@@ -97,13 +97,15 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
         return member;
       });
     };
-    roomSession.on("layout.changed", onLayoutChanged);
+    // `as any` is used because github.com/signalwire/cloud-product/issues/5479
+    roomSession.on("layout.changed", onLayoutChanged as any);
 
     const onRoomLeft = () => setMember(null);
     roomSession.on("room.left", onRoomLeft);
 
     return () => {
-      roomSession.off("layout.changed", onLayoutChanged);
+      // `as any` is used because github.com/signalwire/cloud-product/issues/5479
+      roomSession.off("layout.changed", onLayoutChanged as any);
       roomSession.off("member.talking", onMemberTalking);
       roomSession.off("member.updated", onMemberUpdated);
       roomSession.off("room.joined", onRoomJoined);
