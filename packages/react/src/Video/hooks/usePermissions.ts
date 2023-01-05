@@ -68,11 +68,7 @@ function usePermissions(roomSession: Video.RoomSession | null) {
     if (!roomSession) return;
 
     const refreshPermissions = () => {
-      // @ts-expect-error "select" is internal
-      const scopes = roomSession.select?.(
-        // @ts-expect-error "select" is internal
-        (s) => s?.session?.authState?.room?.scopes
-      );
+      const scopes = roomSession.permissions;
       setPermissions(permissionsFromList(scopes ?? []));
     };
 
