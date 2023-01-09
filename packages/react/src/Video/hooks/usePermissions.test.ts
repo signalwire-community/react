@@ -107,12 +107,15 @@ describe("usePermissions", () => {
           emitRoomJoined = cb;
         }
       }),
-      select: jest
+      off: jest.fn(),
+    };
+
+    Object.defineProperty(roomSession, "permissions", {
+      get: jest
         .fn()
         .mockImplementationOnce(() => ["room.aaa.bbb", "room.ccc"])
         .mockImplementationOnce(() => ["room.xxx.bbb"]),
-      off: jest.fn(),
-    };
+    });
 
     const { result } = renderHook(() => usePermissions(roomSession as any));
 
