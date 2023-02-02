@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { CoreVideo } from "./";
 import { Fabric } from "@signalwire/js";
 
@@ -9,7 +9,10 @@ export function Video({
   client: Fabric.Client;
   address: any;
 }) {
+  const ref = useRef(null);
   return client ? (
-    <CoreVideo client={client} address={address} audio={true} video={false} />
+    <CoreVideo client={client} address={address} audio={true} video={false}>
+      <div ref={ref}></div>
+    </CoreVideo>
   ) : null;
 }

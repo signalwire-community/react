@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { RefObject } from "react";
 import { Fabric, Video } from "@signalwire/js";
 import { useEffect, useRef } from "react";
 
@@ -26,6 +26,9 @@ export interface IVideoProps
   address: any;
   audio: boolean;
   video: boolean;
+
+  children: React.ReactNode;
+  rootElement?: RefObject<HTMLElement>;
 }
 
 export function CoreVideo({
@@ -33,17 +36,23 @@ export function CoreVideo({
   address,
   audio = true,
   video = true,
+  children,
   ...props
 }: IVideoProps) {
   let roomSessionRef = useRef<null | Video.RoomSession>(null);
-  let ref = useRef<any>(null);
   useEffect(() => {
-    if (client === null || ref.current === null) return;
-    if (address === null || address?.channels?.video === null) return;
+    if (
+      client === null ||
+      address === null ||
+      address?.channels?.video === null
+    )
+      return;
     (async () => {
       const call = await client.createCall({
         uri: address.channels.video,
-        rootElement: ref.current,
+
+        // @ts-expect-error
+        rootElement: props.rootElement?.current ?? undefined,
       });
       roomSessionRef.current = call;
       //@ts-expect-error
@@ -60,5 +69,5 @@ export function CoreVideo({
     })();
   }, [client, address]);
 
-  return <div ref={ref}></div>;
+  return <>{children}</>;
 }
