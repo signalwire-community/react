@@ -1,11 +1,15 @@
-import React, { RefObject, useState } from "react";
-import { useFabric } from "./useFabric";
-import CoreVideo from "./CoreVideo";
+import React from "react";
+import { CoreVideo } from "./";
+import { Fabric } from "@signalwire/js";
 
-export function Video({ token }: { token: string }) {
-  const [accessToken, _] = useState<any>({ accessToken: token });
-  let client = useFabric(accessToken);
+export function Video({
+  client,
+  address,
+}: {
+  client: Fabric.Client;
+  address: any;
+}) {
   return client ? (
-    <CoreVideo client={client} audio={true} video={false} />
+    <CoreVideo client={client} address={address} audio={true} video={false} />
   ) : null;
 }

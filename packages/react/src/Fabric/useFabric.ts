@@ -6,15 +6,14 @@ import { useEffect, useState } from "react";
  * @param params
  * @returns Fabric.Client
  */
-export function useFabric(param: any) {
+export function useFabric(token: string) {
   // ...params: ConstructorParameters<typeof Fabric.Client>
 
   const [client, setClient] = useState<null | Fabric.Client>(null);
   useEffect(() => {
-    if (param === undefined) return;
-    console.log(param);
-    let _client = new Fabric.Client(param);
+    if (token === undefined) return;
+    let _client = new Fabric.Client({ accessToken: token });
     setClient(_client);
-  }, [param]);
+  }, [token]);
   return client;
 }
