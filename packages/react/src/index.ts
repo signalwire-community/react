@@ -1,4 +1,5 @@
 export * from "./Video";
+export * as Fabric from "./Fabric";
 
 // export * as VideoNS from "./Video";
 

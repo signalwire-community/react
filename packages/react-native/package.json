@@ -46,7 +46,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.2",
     "@react-native-community/eslint-config": "^3.0.2",
-    "@signalwire/js": "^3.17.0",
+    "@signalwire/js": "^3.18.0-dev.202301191718.e2c475a.0",
     "@types/jest": "^28.1.2",
     "@types/lodash": "^4.14.182",
     "@types/react": "17.0.2",
