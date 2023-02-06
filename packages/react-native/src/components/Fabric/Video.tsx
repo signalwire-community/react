@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import React, { useState } from 'react';
 import type * as SignalWire from '@signalwire/js';
-import { __internal as Internal, Fabric } from '@signalwire-community/react';
+import { Fabric } from '@signalwire-community/react';
 
 import { registerGlobals } from 'react-native-webrtc';
 import RemoteStream from '../RemoteStream';
