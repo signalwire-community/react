@@ -11,13 +11,13 @@ function DemoFabric() {
 
     (async () => {
       const { addresses } = await client.getAddresses();
-      setAddress(addresses[0]);
+      setAddress(addresses[4]);
     })();
   }, [client]);
 
   return (
     <div>
-      {import.meta.env.VITE_FABRIC_TOKEN && client && address ? (
+      {import.meta.env.VITE_FABRIC_TOKEN && client && address !== null ? (
         <Fabric.Video client={client} address={address} />
       ) : (
         "No Token Present. Please set your env variable"

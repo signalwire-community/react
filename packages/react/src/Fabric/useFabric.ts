@@ -1,4 +1,4 @@
-import { Video, Fabric } from "@signalwire/js";
+import { Fabric } from "@signalwire/js";
 import { useEffect, useState } from "react";
 
 /**
