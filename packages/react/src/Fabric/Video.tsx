@@ -11,7 +11,13 @@ export function Video({
 }) {
   const ref = useRef(null);
   return client ? (
-    <CoreVideo client={client} address={address} audio={true} video={true}>
+    <CoreVideo
+      client={client}
+      address={address}
+      audio={true}
+      video={true}
+      rootElement={ref}
+    >
       <div ref={ref}></div>
     </CoreVideo>
   ) : null;
