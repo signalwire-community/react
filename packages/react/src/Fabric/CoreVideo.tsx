@@ -122,7 +122,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
     }
       // prettier-ignore
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */, // changing the other props won't result in a rejoin
-    [setup, props.client, props.address]
+    [setup, props.client, props.address.channels.video]
   );
 
   const eventMap = {
