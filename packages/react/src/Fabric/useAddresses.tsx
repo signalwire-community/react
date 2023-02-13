@@ -7,10 +7,7 @@ import { useEffect, useState } from "react";
  * @param delay in ms, the polling time
  * @returns null | address[]
  */
-export function useAddresses(
-  client: Fabric.Client | null,
-  delay: number = 10000
-) {
+export function useAddresses(client: Fabric.Client | null, delay = 10000) {
   const [addresses, setAddresses] = useState<null | any>(null);
   useEffect(() => {
     async function fetch() {
@@ -18,7 +15,7 @@ export function useAddresses(
       const { addresses } = await client.getAddresses();
       setAddresses(addresses);
     }
-    let interval = setInterval(fetch, delay);
+    const interval = setInterval(fetch, delay);
     fetch();
     return () => {
       clearInterval(interval);

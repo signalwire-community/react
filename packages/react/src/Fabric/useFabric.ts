@@ -12,7 +12,7 @@ export function useFabric(token: string) {
   const [client, setClient] = useState<null | Fabric.Client>(null);
   useEffect(() => {
     if (token === undefined) return;
-    let _client = new Fabric.Client({ accessToken: token });
+    const _client = new Fabric.Client({ accessToken: token });
     setClient(_client);
   }, [token]);
   return client;

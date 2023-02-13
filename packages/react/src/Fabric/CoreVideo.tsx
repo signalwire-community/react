@@ -56,10 +56,10 @@ export function CoreVideo({ ...props }: IVideoProps) {
         }
       }
 
-      let currentRoomSession = await props.client.createCall({
+      const currentRoomSession = await props.client.createCall({
         uri: props.address.channels.video,
 
-        // @ts-expect-error
+        // @ts-expect-error undefined is not assignable to rootElement
         rootElement: props.rootElement?.current ?? undefined,
       });
       roomSessionRef.current = currentRoomSession;
@@ -68,7 +68,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
       currentRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
       props.onRoomReady?.(currentRoomSession);
       await currentRoomSession.join();
-      //@ts-expect-error
+      //@ts-expect-error extra parameters that `start` might not take
       await currentRoomSession.start({
         audio:props.audio,
         video:props.video,
