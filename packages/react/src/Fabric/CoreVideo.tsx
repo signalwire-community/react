@@ -67,7 +67,6 @@ export function CoreVideo({ ...props }: IVideoProps) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       currentRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
       props.onRoomReady?.(currentRoomSession);
-      await currentRoomSession.join();
       //@ts-expect-error extra parameters that `start` might not take
       await currentRoomSession.start({
         audio:props.audio,

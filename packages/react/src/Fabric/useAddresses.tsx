@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 /**
  * Given a client, poll the addresses available.
  * @param client is the fabric client
- * @param delay in ms, the polling time
  * @returns null | address[]
  */
-export function useAddresses(client: Fabric.Client | null, delay = 10000) {
+export function useAddresses(client: Fabric.Client | null) {
+  const delay = 10000;
   const [addresses, setAddresses] = useState<null | any>(null);
   useEffect(() => {
     async function fetch() {
