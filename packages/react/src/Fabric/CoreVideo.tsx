@@ -61,6 +61,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
 
         // @ts-expect-error undefined is not assignable to rootElement
         rootElement: props.rootElement?.current ?? undefined,
+        debugLevel: 'debug'
       });
       roomSessionRef.current = currentRoomSession;
       setRoomSession(currentRoomSession)
