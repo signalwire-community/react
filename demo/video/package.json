@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@signalwire-community/react": "1.4.2-dev.2",
+    "@signalwire-community/react": "1.4.2-dev.3",
     "@signalwire/js": "^3.18.0-dev.202301191718.e2c475a.0",
     "dotenv": "^16.0.1",
     "react": "^18.0.0",
