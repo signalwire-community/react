@@ -25,7 +25,7 @@ async function registerDevice(params: IRegisterParams) {
   try {
     result = await Fabric.registerDevice({ ...params, deviceType: os });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   if (result && result['push_notification_key'] !== undefined) {
