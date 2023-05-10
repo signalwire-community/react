@@ -7,9 +7,9 @@ if (Platform.OS === 'android') os = 'Android';
 else if ((Platform.OS = 'ios')) os = 'iOS';
 
 type IRegisterParams = Omit<
-  Parameters<typeof Fabric.registerDevice>,
+  Parameters<typeof Fabric.registerDevice>[0],
   'deviceType'
->[0];
+>;
 
 // Register this device to get push notifications.
 
