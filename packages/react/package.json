@@ -62,7 +62,7 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@signalwire/js": "^3.19.3-dev.202305051417.5be0c97.0",
+    "@signalwire/js": "^3.19.3-dev.202305101803.ae18d02.0",
     "lodash": "^4.17.21"
   }
 }
