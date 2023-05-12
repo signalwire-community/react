@@ -63,11 +63,13 @@ export default function useSWClient(...params: clientParams) {
       return result;
     };
 
-    client.unregisterDevice = async (...params: IUnregisterParams) => {
+    client.unregisterDevice = async (
+      ...unregisterParams: IUnregisterParams
+    ) => {
       let result;
 
       try {
-        result = await client._unregisterDevice(...params);
+        result = await client._unregisterDevice(...unregisterParams);
       } catch (e) {
         console.error('Could not unregister device');
         return result;
