@@ -1,5 +1,5 @@
 import type { SWClient as SWClientOriginal } from '@signalwire/js';
-import { SWClient } from '@signalwire-community/react';
+import ReactWrapper from '@signalwire-community/react';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,7 +14,7 @@ interface IRegisterParams
   > {}
 type IUnregisterParams = Parameters<SWClientOriginal['unregisterDevice']>;
 
-type clientParams = Parameters<typeof SWClient.useSWClient>;
+type clientParams = Parameters<typeof ReactWrapper.useSWClient>;
 
 interface ISWClientRN extends SWClientOriginal {
   _registerDevice: SWClientOriginal['registerDevice'];
@@ -24,7 +24,9 @@ interface ISWClientRN extends SWClientOriginal {
 }
 
 export default function useSWClient(...params: clientParams) {
-  const client: ISWClientRN = SWClient.useSWClient(...params) as ISWClientRN;
+  const client: ISWClientRN = ReactWrapper.useSWClient(
+    ...params
+  ) as ISWClientRN;
   useEffect(() => {
     if (!client) return;
     client._registerDevice = client.registerDevice;
