@@ -56,7 +56,7 @@ export default function useSWClient(...params: clientParams) {
       if (result && result['push_notification_key'] && result['id']) {
         try {
           await AsyncStorage.setItem(
-            '@push_notification_key',
+            '@signalwire_push_notification_key',
             result['push_notification_key']
           );
         } catch (e) {
@@ -64,7 +64,10 @@ export default function useSWClient(...params: clientParams) {
         }
 
         try {
-          await AsyncStorage.setItem('@registration_id', result['id']);
+          await AsyncStorage.setItem(
+            '@signalwire_registration_id',
+            result['id']
+          );
         } catch (e) {
           console.error('Could not save the registration ID');
         }
@@ -80,7 +83,7 @@ export default function useSWClient(...params: clientParams) {
       if (unregisterParams.id === undefined) {
         let id = null;
         try {
-          id = await AsyncStorage.getItem('@registration_id');
+          id = await AsyncStorage.getItem('@signalwire_registration_id');
         } catch (e) {
           console.error('Could not get the registration ID');
         }
@@ -101,8 +104,8 @@ export default function useSWClient(...params: clientParams) {
       }
 
       try {
-        await AsyncStorage.removeItem('@push_notification_key');
-        await AsyncStorage.removeItem('@registration_id');
+        await AsyncStorage.removeItem('@signalwire_push_notification_key');
+        await AsyncStorage.removeItem('@signalwire_registration_id');
       } catch (e) {
         console.error('Could not remove saved items from async storage.');
       }
