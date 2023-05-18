@@ -1,6 +1,7 @@
 export * from "./Video";
 export * as Fabric from "./Fabric";
 export { useSWClient } from "./SWClient";
+export { useAddresses } from "./Fabric/useAddresses";
 
 // export * as VideoNS from "./Video";
 
