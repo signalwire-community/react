@@ -1,5 +1,5 @@
 import type { SWClient as SWClientOriginal } from '@signalwire/js';
-import ReactWrapper from '@signalwire-community/react';
+import * as ReactWrapper from '@signalwire-community/react';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
