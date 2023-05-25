@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react",
-  "version": "1.4.2-dev.6",
+  "version": "1.4.2-dev.11",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
