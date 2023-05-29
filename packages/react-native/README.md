@@ -29,7 +29,7 @@ Please follow the [instructions to enable WebRTC](https://github.com/expo/config
 ## Installation
 
 ```bash
-npm install @signalwire-community/react-native react-native-get-random-values
+npm install @signalwire-community/react-native react-native-get-random-values @react-native-async-storage/async-storage
 npx pod-install
 ```
 
