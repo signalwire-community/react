@@ -40,7 +40,8 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
-    "@signalwire-community/react": "1.4.2-dev.11",
+    "@signalwire-community/react": "^1.4.2-dev.6",
+    "event-target-polyfill": "^0.0.3",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
