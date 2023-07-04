@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react-native",
-  "version": "1.0.0-dev.12",
+  "version": "1.0.0-dev.13",
   "description": "",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -40,14 +40,14 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
-    "@signalwire-community/react": "^1.4.2-dev.6",
+    "@signalwire-community/react": "1.4.2-dev.13",
     "event-target-polyfill": "^0.0.3",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/eslint-config": "^3.0.2",
-    "@signalwire/js": "3.19.3-dev.202305101803.ae18d02.0",
+    "@signalwire/js": "3.22.0-dev.202307041304.c72e7ce.0",
     "@types/jest": "^28.1.2",
     "@types/lodash": "^4.14.182",
     "@types/react": "17.0.2",
@@ -64,7 +64,7 @@
     "react-native": "0.68.2",
     "react-native-builder-bob": "^0.18.3",
     "react-native-get-random-values": "^1.8.0",
-    "react-native-webrtc": "^106.0.7",
+    "react-native-webrtc": ">=106.0.0",
     "typescript": "^4.5.2"
   },
   "resolutions": {
