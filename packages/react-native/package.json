@@ -64,7 +64,7 @@
     "react-native": "0.68.2",
     "react-native-builder-bob": "^0.18.3",
     "react-native-get-random-values": "^1.8.0",
-    "react-native-webrtc": ">=106.0.0",
+    "react-native-webrtc": ">=106 <=111",
     "typescript": "^4.5.2"
   },
   "resolutions": {
