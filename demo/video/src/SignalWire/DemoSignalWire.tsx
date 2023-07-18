@@ -1,10 +1,13 @@
-import { Fabric } from "@signalwire-community/react";
+import { Call, useSignalWire, useAddresses } from "@signalwire-community/react";
 import { useEffect, useState } from "react";
 
-function DemoFabric() {
-  const client = Fabric.useFabric(import.meta.env.VITE_FABRIC_TOKEN);
-  const addresses = Fabric.useAddresses(client);
+function DemoSignalWire() {
+  const client = useSignalWire({
+    token: import.meta.env.VITE_FABRIC_TOKEN,
+  });
+  const addresses = useAddresses(client);
   const [address, setAddress] = useState(null);
+
   useEffect(() => {
     console.log(addresses);
     const rooms = addresses?.filter((a: any) => a.type === "room") ?? [];
@@ -14,7 +17,13 @@ function DemoFabric() {
   return (
     <div>
       {import.meta.env.VITE_FABRIC_TOKEN && client && address !== null ? (
-        <Fabric.Video client={client} address={address} />
+        <Call
+          client={client}
+          address={address}
+          onCallReady={(r: any) => {
+            console.log(r, "the Call handle");
+          }}
+        />
       ) : (
         "No Token Present. Please set your env variable"
       )}
@@ -22,4 +31,4 @@ function DemoFabric() {
   );
 }
 
-export default DemoFabric;
+export default DemoSignalWire;

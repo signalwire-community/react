@@ -1,12 +1,13 @@
 import React, { RefObject, useCallback, useState } from "react";
-import { Fabric, Video } from "@signalwire/js";
+import { Call, SignalWireContract } from "./types";
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 
-export type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
+export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
+
 export interface IVideoProps
-  extends Omit<RoomSessionOptions, "rootElement" | "token"> {
-  onRoomReady?: (roomSession: Video.RoomSession) => void;
+  extends Omit<CallOptions, "rootElement" | "token" | "to"> {
+  onRoomReady?: (roomSession: Call) => void;
   onLayoutChanged?: (e: any) => void;
   onMemberJoined?: (e: any) => void;
   onMemberLeft?: (e: any) => void;
@@ -23,7 +24,7 @@ export interface IVideoProps
   onRoomLeft?: (e: any) => void;
   onRoomUpdated?: (e: any) => void;
 
-  client: Fabric.Client;
+  client: SignalWireContract;
   address: any;
   audio: boolean;
   video: boolean;
@@ -33,14 +34,12 @@ export interface IVideoProps
 }
 
 export function CoreVideo({ ...props }: IVideoProps) {
-  const [roomSession, setRoomSession] = useState<Video.RoomSession | null>(
-    null
-  );
+  const [call, setRoomSession] = useState<Call | null>(null);
 
   // This is used to access the current roomSession from useEffect without it
   // becoming a dependency.
-  const roomSessionRef = useRef<Video.RoomSession | null>();
-  roomSessionRef.current = roomSession;
+  const roomSessionRef = useRef<Call | null>();
+  roomSessionRef.current = call;
 
   /**
    * Establish a new RoomSession connection
@@ -56,32 +55,24 @@ export function CoreVideo({ ...props }: IVideoProps) {
         }
       }
 
-      const currentRoomSession = await props.client.createCall({
-        uri: props.address.channels.video,
+      console.log("Dialing to the address");
+      const currentCall = await props.client.dial({
+        to: props.address.channels.video,
 
         // @ts-expect-error undefined is not assignable to rootElement
-        rootElement: props.rootElement?.current ?? undefined,
+        // rootElement: props.rootElement?.current ?? undefined,
         debugLevel: 'debug'
       });
-      roomSessionRef.current = currentRoomSession;
-      setRoomSession(currentRoomSession)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      currentRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
-      props.onRoomReady?.(currentRoomSession);
-      //@ts-expect-error extra parameters that `start` might not take
-      await currentRoomSession.start({
-        audio:props.audio,
-        video:props.video,
-        applyLocalVideoOverlay: props.applyLocalVideoOverlay,
-        iceServers: props.iceServers,
-        logLevel: props.logLevel,
-        speakerId: props.speakerId,
-        stopCameraWhileMuted: props.stopCameraWhileMuted,
-        stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
-      });
+      console.log("Successfully dialed to address");
+      roomSessionRef.current = currentCall;
+      setRoomSession(currentCall)
 
+      // @ts-expect-error
+      // eslint-disable-next-line @typescript-eslint/no-empty-function 
+      currentCall.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
+      props.onRoomReady?.(currentCall);
 
-      return currentRoomSession;
+      return currentCall;
     }, 100),
     []
   );
@@ -89,24 +80,24 @@ export function CoreVideo({ ...props }: IVideoProps) {
   /**
    * Robust way for disconnecting a RoomSession
    */
-  const quitSession = async (roomSession: Video.RoomSession) => {
+  const quitSession = async (call: Call) => {
     // Ensure the room is in a joined state first, since we don't have a way to
     // abort an in-progress join.
     try {
-      await roomSession.join();
+      await call.join();
     } catch (e) {
       /* empty */
     }
 
     // Initiate disconnection
     try {
-      roomSession.removeAllListeners();
-      roomSession.on("room.joined", async () => {
-        await roomSession?.leave();
-        roomSession.destroy();
+      call.removeAllListeners();
+      call.on("room.joined", async () => {
+        await call?.leave();
+        call.destroy();
       });
-      await roomSession.leave();
-      roomSession.destroy();
+      await call.leave();
+      call.destroy();
     } catch (e) {
       console.log(e);
     }
@@ -146,16 +137,16 @@ export function CoreVideo({ ...props }: IVideoProps) {
   for (const [eventName, eventValue] of Object.entries(eventMap)) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
-      if (roomSession && eventValue) {
-        roomSession.on(eventName as any, eventValue);
+      if (call && eventValue) {
+        call.on(eventName as any, eventValue);
       }
 
       return () => {
-        if (roomSession && eventValue) {
-          roomSession.off(eventName as any, eventValue);
+        if (call && eventValue) {
+          call.off(eventName as any, eventValue);
         }
       };
-    }, [roomSession, eventName, eventValue]);
+    }, [call, eventName, eventValue]);
   }
 
   return <>{props.children}</>;

@@ -1,12 +1,12 @@
-import { Fabric, SWClient } from "@signalwire/js";
 import { useEffect, useState } from "react";
+import type { SignalWireContract } from "./types";
 
 /**
  * Given a client, poll the addresses available.
- * @param client is the Fabric client or SWClient
+ * @param client is the SignalWire client
  * @returns null | address[]
  */
-export function useAddresses(client: Fabric.Client | SWClient | null) {
+export function useAddresses(client: SignalWireContract | null) {
   const delay = 10000;
   const [addresses, setAddresses] = useState<null | any>(null);
   useEffect(() => {

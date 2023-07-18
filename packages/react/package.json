@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react",
-  "version": "1.4.2-dev.13",
+  "version": "2.0.0-dev.1",
   "description": "",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -62,7 +62,7 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@signalwire/js": "3.22.0-dev.202307041304.c72e7ce.0",
+    "@signalwire/js": "3.23.0-dev.202307071726.37bfb58.0",
     "lodash": "^4.17.21"
   }
 }

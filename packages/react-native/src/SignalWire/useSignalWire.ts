@@ -1,5 +1,5 @@
-import type { SWClient as SWClientOriginal } from '@signalwire/js';
-import * as ReactWrapper from '@signalwire-community/react';
+import type { SignalWireContract } from './types';
+import { useSignalWire as _useSignalWire } from '@signalwire-community/react';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,27 +8,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type PartiallyOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 type IRegisterParams = PartiallyOptional<
-  Parameters<SWClientOriginal['registerDevice']>[0],
+  Parameters<SignalWireContract['registerDevice']>[0],
   'deviceType'
 >;
 type IUnregisterParams = PartiallyOptional<
-  Parameters<SWClientOriginal['unregisterDevice']>[0],
+  Parameters<SignalWireContract['unregisterDevice']>[0],
   'id'
 >;
 
-type clientParams = Parameters<typeof ReactWrapper.useSWClient>;
+type IHandlePushNotificationParams = Omit<
+  Parameters<SignalWireContract['handlePushNotification']>[0],
+  'decrypted'
+>;
 
-interface ISWClientRN extends SWClientOriginal {
-  _registerDevice: SWClientOriginal['registerDevice'];
-  _unregisterDevice: SWClientOriginal['unregisterDevice'];
-  registerDevice: (_: IRegisterParams) => Promise<any>;
+type clientParams = Parameters<typeof _useSignalWire>[0];
+
+interface ISWClientRN extends SignalWireContract {
+  _registerDevice: SignalWireContract['registerDevice'];
+  _unregisterDevice: SignalWireContract['unregisterDevice'];
+  _handlePushNotification: SignalWireContract['handlePushNotification'];
+  egisterDevice: (_: IRegisterParams) => Promise<any>;
   unregisterDevice: (_: IUnregisterParams) => Promise<any>;
+  handlePushNotification: (_: IHandlePushNotificationParams) => Promise<any>;
 }
 
-export default function useSWClient(...params: clientParams) {
-  const client: ISWClientRN = ReactWrapper.useSWClient(
-    ...params
-  ) as ISWClientRN;
+export default function useSignalWire(params: clientParams) {
+  const client: ISWClientRN = _useSignalWire(params) as ISWClientRN;
   useEffect(() => {
     if (!client) return;
     client._registerDevice = client.registerDevice;

@@ -40,14 +40,14 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
-    "@signalwire-community/react": "1.4.2-dev.13",
+    "@signalwire-community/react": "*",
     "event-target-polyfill": "^0.0.3",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/eslint-config": "^3.0.2",
-    "@signalwire/js": "3.22.0-dev.202307041304.c72e7ce.0",
+    "@signalwire/js": "3.23.0-dev.202307071726.37bfb58.0",
     "@types/jest": "^28.1.2",
     "@types/lodash": "^4.14.182",
     "@types/react": "17.0.2",
