@@ -33,7 +33,7 @@ export function Call({
         ref={(r) => {
           // this will need a better interface
           if (hideVideo !== true) {
-            // @ts-expect-error
+            // @ts-expect-error Property '__wsClient' does not exist on type 'SignalWireContract'
             client.__wsClient.options.rootElement = r;
             ref.current = r;
           }
