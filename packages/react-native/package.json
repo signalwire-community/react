@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react-native",
-  "version": "1.0.0-dev.13",
+  "version": "2.0.0-dev.1",
   "description": "",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -25,7 +25,8 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "build": "bob build"
+    "build": "bob build",
+    "postbuild": "npm pack"
   },
   "keywords": [
     "react-native",

@@ -88,3 +88,5 @@ target 'pushNotifications' do
     end
   end
 end
+
+pod 'RNCallKeep', :path => '../node_modules/react-native-callkeep'
