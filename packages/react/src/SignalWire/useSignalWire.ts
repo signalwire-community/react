@@ -15,11 +15,15 @@ export function useSignalWire(
 
   useEffect(() => {
     if (token === undefined) return;
+    let _client: SignalWireContract | undefined;
     async function createClient() {
-      const _client = await SignalWire({
+      _client = await SignalWire({
         token: token,
       });
       setClient(_client);
+
+      // disconnect on unmount
+      return () => _client?.disconnect();
     }
     createClient();
   }, [token]);
