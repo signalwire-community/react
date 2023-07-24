@@ -37,7 +37,7 @@ interface ISWClientRN extends SignalWireContract {
   _registerDevice: SignalWireContract['registerDevice'];
   _unregisterDevice: SignalWireContract['unregisterDevice'];
   _handlePushNotification: SignalWireContract['handlePushNotification'];
-  egisterDevice: (_: IRegisterParams) => Promise<any>;
+  registerDevice: (_: IRegisterParams) => Promise<any>;
   unregisterDevice: (_: IUnregisterParams) => Promise<any>;
   handlePushNotification: (_: IHandlePushNotificationParams) => Promise<any>;
 }
@@ -185,10 +185,18 @@ export default function useSignalWire(params: clientParams) {
 
       // AesGcmCrypto returns a base64 encoded binary
       let decompressedInvite = pako.inflate(Buffer.from(invite, 'base64'));
-      console.log('The SDP invite', decompressedInvite);
+      let sdpJson = Buffer.from(decompressedInvite).toString('utf8');
+      try {
+        sdpJson = JSON.parse(sdpJson);
+      } catch (e) {
+        console.error('Ill formed JSON invite');
+        return null;
+      }
+
+      console.log('The SDP invite', sdpJson);
       const call = client._handlePushNotification({
         ...corePayload,
-        decrypted: decompressedInvite,
+        decrypted: sdpJson,
       });
       return call;
     };

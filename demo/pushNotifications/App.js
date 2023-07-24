@@ -49,22 +49,21 @@ export default function App() {
     RNCallKeep.addEventListener("answerCall", async (params) => {
       console.log("Call is answered.", params);
 
-      console.log(payload, "is the payload");
-
       if (payload) {
+        let call = await client.handlePushNotification(payload);
         try {
-          let call = await client.handlePushNotification(payload);
-          setCall(call);
+          setCall(call.resultObject);
+          call.resultObject.join();
         } catch (e) {
-          console.log("Ill formed SDP invite");
+          console.log("Ill formed SDP invite", e);
         }
       }
     });
 
     RNCallKeep.addEventListener("endCall", ({ callUUID }) => {
       console.log("Call ended");
-      call?.leave();
-      setPayload(null);
+      // call?.leave();
+      // setPayload(null);
     });
 
     return () => {
@@ -88,7 +87,7 @@ export default function App() {
     });
 
     VoipPushNotification.addEventListener("notification", (notification) => {
-      console.log(notification);
+      console.log(notification, "notification received");
       setPayload(notification);
 
       VoipPushNotification.onVoipNotificationCompleted(
@@ -138,6 +137,7 @@ export default function App() {
     <View style={styles.container}>
       <Text>Wait for push notification!</Text>
       <StatusBar style="auto" />
+      {call && <Text>Call has been joined</Text>}
       {call && <RemoteStream roomSession={call}></RemoteStream>}
     </View>
   );
