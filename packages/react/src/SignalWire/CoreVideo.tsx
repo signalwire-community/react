@@ -45,7 +45,8 @@ export function CoreVideo({ ...props }: IVideoProps) {
    * Establish a new RoomSession connection
    */
   // prettier-ignore
-  const setup = useCallback( /* eslint-disable-line react-hooks/exhaustive-deps */
+  const setup = useCallback(
+    /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: IVideoProps) => {
       if (roomSessionRef.current) {
         await quitSession(roomSessionRef.current);
@@ -55,22 +56,24 @@ export function CoreVideo({ ...props }: IVideoProps) {
         }
       }
 
-      console.log("Dialing to the address");
       const currentCall = await props.client.dial({
         to: props.address.channels.video,
 
         // @ts-expect-error undefined is not assignable to rootElement
         // rootElement: props.rootElement?.current ?? undefined,
-        debugLevel: 'debug'
+        debugLevel: "debug",
       });
-      console.log("Successfully dialed to address");
       roomSessionRef.current = currentCall;
-      setRoomSession(currentCall)
+      setRoomSession(currentCall);
 
       // @ts-expect-error current call isn't described yet
-      // eslint-disable-next-line @typescript-eslint/no-empty-function 
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       currentCall.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
+
       props.onRoomReady?.(currentCall);
+
+      // @ts-expect-error Property 'start' does not exist on type '{}'.
+      await currentCall?.start();
 
       return currentCall;
     }, 100),
