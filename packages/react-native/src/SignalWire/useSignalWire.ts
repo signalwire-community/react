@@ -1,8 +1,10 @@
-import type { SignalWireContract } from './types';
+import type { Call, SignalWireContract } from './types';
 import { useSignalWire as _useSignalWire } from '@signalwire-community/react';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import pako from 'pako';
+import AesGcmCrypto from 'react-native-aes-gcm-crypto';
 
 // helper to make a ts property optional, use same as Omit<>
 type PartiallyOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -16,13 +18,21 @@ type IUnregisterParams = PartiallyOptional<
   'id'
 >;
 
-type IHandlePushNotificationParams = Omit<
-  Parameters<SignalWireContract['handlePushNotification']>[0],
-  'decrypted'
->;
+type IHandlePushNotificationParams = {
+  aps?: {
+    alert: Omit<
+      Parameters<SignalWireContract['handlePushNotification']>[0],
+      'decrypted'
+    >;
+  };
+  notification?: {
+    body: string;
+  };
+};
 
 type clientParams = Parameters<typeof _useSignalWire>[0];
 
+// @ts-expect-error Incompatible function assignment for handlePushNotification
 interface ISWClientRN extends SignalWireContract {
   _registerDevice: SignalWireContract['registerDevice'];
   _unregisterDevice: SignalWireContract['unregisterDevice'];
@@ -33,11 +43,13 @@ interface ISWClientRN extends SignalWireContract {
 }
 
 export default function useSignalWire(params: clientParams) {
-  const client: ISWClientRN = _useSignalWire(params) as ISWClientRN;
+  const client: ISWClientRN = _useSignalWire(params) as unknown as ISWClientRN;
   useEffect(() => {
     if (!client) return;
     client._registerDevice = client.registerDevice;
     client._unregisterDevice = client.unregisterDevice;
+    // @ts-expect-error function not assignable
+    client._handlePushNotification = client.handlePushNotification;
 
     client.registerDevice = async (registerParams: IRegisterParams) => {
       const os = getOs();
@@ -87,11 +99,11 @@ export default function useSignalWire(params: clientParams) {
       // Look at AsyncStorage only if id is not provided as a param
       if (unregisterParams.id === undefined) {
         let id = null;
-        try {
-          id = await AsyncStorage.getItem('@signalwire_registration_id');
-        } catch (e) {
-          console.error('Could not get the registration ID');
-        }
+        id = await AsyncStorage.getItem('@signalwire_registration_id');
+        if (id === null)
+          console.info(
+            'Device registration ID was not found in local storage. Make sure you have called the registerDevice() method?'
+          );
 
         if (id !== null) unregisterParams.id = id;
         else {
@@ -116,6 +128,69 @@ export default function useSignalWire(params: clientParams) {
       }
 
       return result;
+    };
+
+    client.handlePushNotification = async (
+      payload: IHandlePushNotificationParams
+    ): Promise<Call | null> => {
+      let pnKeyB64;
+      pnKeyB64 = await AsyncStorage.getItem(
+        '@signalwire_push_notification_key'
+      );
+      if (pnKeyB64 === null || pnKeyB64 === undefined) {
+        console.error(
+          "Couldn't find the push notification decryption key. Make sure you have called the registerDevice() method?"
+        );
+        return;
+      }
+
+      let corePayload;
+      if (payload?.aps?.alert) {
+        corePayload = payload.aps.alert;
+      } else {
+        if (typeof payload?.notification?.body === 'string') {
+          try {
+            corePayload = JSON.parse(payload?.notification?.body);
+          } catch (e) {}
+        }
+      }
+
+      if (corePayload === undefined || !corePayload?.invite) {
+        console.error('Push notification payload is ill-formed');
+      }
+
+      console.log('Payload extracted', corePayload);
+
+      let invite = corePayload.invite;
+
+      if (corePayload.encryption_type === 'aes_256_gcm') {
+        let inviteEncB64 = corePayload.invite;
+
+        const ivHex = Buffer.from(corePayload.iv, 'base64').toString('hex');
+        const tagHex = Buffer.from(corePayload.tag, 'base64').toString('hex');
+
+        try {
+          invite = await AesGcmCrypto.decrypt(
+            inviteEncB64,
+            pnKeyB64,
+            ivHex,
+            tagHex,
+            true
+          );
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      }
+
+      // AesGcmCrypto returns a base64 encoded binary
+      let decompressedInvite = pako.inflate(Buffer.from(invite, 'base64'));
+      console.log('The SDP invite', decompressedInvite);
+      const call = client._handlePushNotification({
+        ...corePayload,
+        decrypted: decompressedInvite,
+      });
+      return call;
     };
   }, [client]);
 

@@ -11,7 +11,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@signalwire-community/react": "file:../../packages/react/signalwire-community-react-2.0.0-dev.1.tgz",
-    "@signalwire-community/react-native": "file:../../packages/react-native/ignalwire-community-react-native-2.0.0-dev.1.tgz",
+    "@signalwire-community/react-native": "file:../../packages/react-native/signalwire-community-react-native-2.0.0-dev.1.tgz",
     "base-64": "^1.0.0",
     "expo": "~48.0.18",
     "expo-splash-screen": "~0.18.2",

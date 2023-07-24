@@ -8,15 +8,11 @@ import { StyleSheet, Text, View } from "react-native";
 import RNCallKeep from "react-native-callkeep";
 import VoipPushNotification from "react-native-voip-push-notification";
 
-import pako from "pako";
-import AesGcmCrypto from "react-native-aes-gcm-crypto";
 import {
   RemoteStream,
   useSignalWire,
 } from "@signalwire-community/react-native";
-import { decode as decodeB64, encode } from "base-64";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState } from "react/cjs/react.production.min";
+import { useState } from "react";
 
 const options = {
   ios: {
@@ -50,17 +46,14 @@ export default function App() {
   const [call, setCall] = useState(null);
 
   useEffect(() => {
-    RNCallKeep.addEventListener("didReceiveStartCallAction", (params) => {});
-
     RNCallKeep.addEventListener("answerCall", async (params) => {
       console.log("Call is answered.", params);
 
+      console.log(payload, "is the payload");
+
       if (payload) {
         try {
-          let call = await client._handlePushNotification({
-            ...payload,
-            decrypted: JSON.parse(payload.decrypted),
-          });
+          let call = await client.handlePushNotification(payload);
           setCall(call);
         } catch (e) {
           console.log("Ill formed SDP invite");
@@ -69,33 +62,16 @@ export default function App() {
     });
 
     RNCallKeep.addEventListener("endCall", ({ callUUID }) => {
-      // Do your normal `Hang Up` actions here
       console.log("Call ended");
+      call?.leave();
       setPayload(null);
     });
 
-    RNCallKeep.addEventListener(
-      "didDisplayIncomingCall",
-      ({
-        error,
-        callUUID,
-        handle,
-        localizedCallerName,
-        hasVideo,
-        fromPushKit,
-        payload,
-      }) => {
-        // you might want to do following things when receiving this event:
-        // - Start playing ringback if it is an outgoing call
-        console.log("Payload", payload);
-      }
-    );
-
     return () => {
       RNCallKeep.removeEventListener("answerCall");
-      RNCallKeep.removeEventListener("didReceiveStartCallAction");
+      RNCallKeep.removeEventListener("endCall");
     };
-  }, []);
+  }, [payload]);
 
   useEffect(() => {
     if (client === null) return;
@@ -105,37 +81,6 @@ export default function App() {
         deviceToken: token,
       });
     }
-    async function processNotification(payload) {
-      let corePayload = payload.aps.alert;
-      console.log(corePayload);
-
-      let inviteDecrypted = corePayload.invite;
-
-      if (corePayload.encryption_type === "aes_256_gcm") {
-        console.log("It's encrypted");
-        let inviteEncrypted = corePayload.invite;
-
-        const iv = Buffer.from(corePayload.iv, "base64");
-        const ivHex = iv.toString("hex");
-
-        const tag = Buffer.from(corePayload.tag, "base64");
-        const tagHex = tag.toString("hex");
-
-        inviteDecrypted = await AesGcmCrypto.decrypt(
-          inviteEncrypted,
-          "bV88zrv4+b52uLmIUCnDx7YWBTxD+3988+1rZ3O9+Qc=",
-          ivHex,
-          tagHex,
-          true
-        );
-      }
-
-      let decompressedInvite = pako.inflate(
-        Buffer.from(inviteDecrypted, "base64")
-      );
-      console.log("decompressed invite", decompressedInvite);
-      setPayload({ ...corePayload, decrypted: decompressedInvite });
-    }
 
     VoipPushNotification.addEventListener("register", (token) => {
       console.log("Token received", token);
@@ -143,7 +88,8 @@ export default function App() {
     });
 
     VoipPushNotification.addEventListener("notification", (notification) => {
-      processNotification(notification);
+      console.log(notification);
+      setPayload(notification);
 
       VoipPushNotification.onVoipNotificationCompleted(
         notification.aps.alert.notification_uuid
@@ -170,10 +116,9 @@ export default function App() {
           name ===
           VoipPushNotification.RNVoipPushRemoteNotificationReceivedEvent
         ) {
-          console.log("NOTIFICATION RECEIVED");
           // --- when receive remote voip push, register your VoIP client, show local notification ... etc
           console.log("Notification received", data);
-          processNotification(data);
+          setPayload(data);
         }
       }
     });
