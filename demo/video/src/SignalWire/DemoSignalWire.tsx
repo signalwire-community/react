@@ -1,4 +1,9 @@
-import { Call, useSignalWire, useAddresses } from "@signalwire-community/react";
+import {
+  Call,
+  useSignalWire,
+  useAddresses,
+  useMembers,
+} from "@signalwire-community/react";
 import { useEffect, useState } from "react";
 
 function DemoSignalWire() {
@@ -7,6 +12,9 @@ function DemoSignalWire() {
   });
   const addresses = useAddresses(client);
   const [address, setAddress] = useState(null);
+  const [call, setCall] = useState(null);
+
+  const { self } = useMembers(call);
 
   useEffect(() => {
     console.log(addresses);
@@ -17,13 +25,17 @@ function DemoSignalWire() {
   return (
     <div>
       {import.meta.env.VITE_FABRIC_TOKEN && client && address !== null ? (
-        <Call
-          client={client}
-          address={address}
-          onCallReady={(r: any) => {
-            console.log(r, "the Call handle");
-          }}
-        />
+        <>
+          <Call
+            client={client}
+            address={address}
+            onCallReady={(r: any) => {
+              console.log(r, "the Call handle");
+              setCall(r);
+            }}
+          />
+          <button onClick={(e) => self?.remove()}>Leave</button>
+        </>
       ) : (
         "No Token Present. Please set your env variable"
       )}

@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react-native",
-  "version": "2.0.0-dev.1",
+  "version": "2.0.0-dev.2",
   "description": "",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
