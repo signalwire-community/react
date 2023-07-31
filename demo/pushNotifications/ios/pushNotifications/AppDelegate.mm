@@ -102,17 +102,16 @@
   NSString *callerName = alert[@"incoming_caller_name"];
   NSString *handle = alert[@"incoming_caller_id"];
   NSString *uuid= alert[@"notification_uuid"];
-  Boolean hasVideo = [alert[@"withVideo"] isEqual:@"true"];
   
   [RNVoipPushNotificationManager addCompletionHandler:uuid completionHandler:completion];
-
+  
   // --- Process the received push
   [RNVoipPushNotificationManager didReceiveIncomingPushWithPayload:payload forType:(NSString *)type];
-
+  
   [RNCallKeep reportNewIncomingCall: uuid
                              handle: handle
                          handleType: @"generic"
-                           hasVideo: hasVideo
+                           hasVideo: YES
                 localizedCallerName: callerName
                     supportsHolding: YES
                        supportsDTMF: YES
@@ -122,9 +121,7 @@
                             payload: nil
               withCompletionHandler: completion];
   
-  
-  // --- You don't need to call it if you stored `completion()` and will call it on the js side.
-//  completion();
+  completion();
 }
 
 @end

@@ -11,7 +11,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@signalwire-community/react": "file:../../packages/react/signalwire-community-react-2.0.0-dev.1.tgz",
-    "@signalwire-community/react-native": "file:../../packages/react-native/signalwire-community-react-native-2.0.0-dev.1.tgz",
+    "@signalwire-community/react-native": "file:../../packages/react-native/signalwire-community-react-native-2.0.0-dev.2.tgz",
     "base-64": "^1.0.0",
     "expo": "~48.0.18",
     "expo-splash-screen": "~0.18.2",
@@ -20,6 +20,7 @@
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-aes-gcm-crypto": "^0.2.2",
+    "react-native-background-timer": "^2.4.1",
     "react-native-callkeep": "^4.3.9",
     "react-native-get-random-values": "^1.9.0",
     "react-native-voip-push-notification": "^3.3.1",
