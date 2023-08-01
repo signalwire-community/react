@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import React, { useState } from 'react';
 import { SignalWire } from '@signalwire-community/react';
-import type { Call, SignalWireContract } from './types';
+import type { Call as CallType, SignalWireContract } from './types';
 
 import { registerGlobals } from 'react-native-webrtc';
 import { RemoteStream } from '../components';
@@ -33,13 +33,13 @@ interface CallParams extends CallEvents {
   style: any;
 }
 
-export function Video({ style, onCallReady, hideVideo, ...props }: CallParams) {
-  const [callHandle, setCallHandle] = useState<Call | null>(null);
+export function Call({ style, onCallReady, hideVideo, ...props }: CallParams) {
+  const [callHandle, setCallHandle] = useState<CallType | null>(null);
 
   return (
     <SignalWire.CoreVideo
       {...props}
-      onRoomReady={(r: Call) => {
+      onRoomReady={(r: CallType) => {
         setCallHandle(r);
         onCallReady?.(r);
       }}
