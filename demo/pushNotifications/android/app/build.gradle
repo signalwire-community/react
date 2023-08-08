@@ -231,7 +231,12 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-notifications')
+    implementation 'com.google.firebase:firebase-core:16.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
 applyNativeModulesAppBuildGradle(project)

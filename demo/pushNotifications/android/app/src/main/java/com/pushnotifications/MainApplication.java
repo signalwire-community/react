@@ -1,4 +1,5 @@
 package com.pushnotifications;
+import com.wix.reactnativenotifications.RNNotificationsPackage;
 
 import android.app.Application;
 import android.content.res.Configuration;
