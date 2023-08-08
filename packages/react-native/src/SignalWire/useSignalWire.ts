@@ -1,3 +1,4 @@
+global.Buffer = require('buffer').Buffer;
 import type { Call, SignalWireContract } from './types';
 import { useSignalWire as _useSignalWire } from '@signalwire-community/react';
 import { useEffect } from 'react';
