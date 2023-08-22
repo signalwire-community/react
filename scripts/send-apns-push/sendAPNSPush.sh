@@ -25,9 +25,9 @@ curl -i --location "https://api.sandbox.push.apple.com:443/3/device/${DEVICE_TOK
       "incoming_caller_name": "Tester",
       "with_video": "true",
       "encryption_type": "aes_256_gcm",
-      "iv": "+ojw3NtIgHkHAoD5",
-      "tag": "eIkch7g8h75m2QWrvdB3UQ==",
-      "invite": "YMK3bz0VtiQvxpxWRIE="
+      "iv": "c8AsVT0SWIk9/liD",
+      "tag": "dIlkjanvmUzPe4RwQ4/+WA==",
+      "invite": "ZmRkNDFlRmw2Y3hHOTZ3ZUpwTTNnVjdZdk1vSUhNZXk1dm5QeTY0V0Jqa2hOS0grM0hUcXp3L2MvVDNSZDUybzNEbWs5KzJFQzgrL1FDMmFMdHpuUWtlcnJVOD0="
       }
     }
   }'

@@ -21,7 +21,7 @@ export default function useVoipPush(
     if (client === null) return;
 
     Notifications.events().registerRemoteNotificationsRegistered((event) => {
-      console.log("Device Token Received", event.deviceToken);
+      console.log("Token Received", event.deviceToken);
       onTokenReceived(event.deviceToken);
     });
     Notifications.events().registerRemoteNotificationsRegistrationFailed(
@@ -31,6 +31,7 @@ export default function useVoipPush(
     );
 
     function onNotificationReceived(notification, completion) {
+      console.log("Notification Received - Foreground", notification);
       const corePayload = JSON.parse(
         notification.payload["gcm.notification.body"]
       );
@@ -40,7 +41,7 @@ export default function useVoipPush(
         },
       };
       onPayloadReceived(payload);
-      console.log("Notification Received - Foreground", payload);
+      console.log("Payload parsed:", payload);
       RNCallKeep.displayIncomingCall(
         corePayload.notification_uuid,
         corePayload.incoming_caller_id,
