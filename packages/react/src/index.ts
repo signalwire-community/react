@@ -1,22 +1,3 @@
 export * from "./Video";
-
-// export * as VideoNS from "./Video";
-
-// // For backwards compatibility
-// export {
-//   Video,
-//   LocalStream,
-//   RemoteStream,
-//   RoomPreview,
-//   VideoConference,
-//   __internal,
-//   useLayouts,
-//   useMembers,
-//   usePermissions,
-//   useScreenShare,
-//   useStatus,
-//   useWebRTC,
-// } from "./Video";
-
-// // For backwards compatibility
-// export type { IVideoProps } from "./Video";
+export * as SignalWire from "./SignalWire";
+export { useAddresses, useSignalWire, Call } from "./SignalWire";

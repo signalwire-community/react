@@ -3,6 +3,7 @@ import DemoConference from "./Video/DemoConference";
 import DemoVideo from "./Video/DemoVideo";
 import DemoHooks from "./Video/DemoHooks";
 import DemoRoomPreview from "./Video/DemoRoomPreview";
+import DemoSignalWire from "./SignalWire/DemoSignalWire";
 
 function App() {
   let location = useLocation();
@@ -14,6 +15,7 @@ function App() {
           { name: "Video Conference", url: "/videoconference" },
           { name: "Room Preview", url: "/roompreview" },
           { name: "Hooks", url: "/hooks" },
+          { name: "SignalWire Client", url: "/signalwire" },
         ].map((demo, index) => (
           <li
             key={demo.name}
@@ -42,6 +44,7 @@ function App() {
         <Route path="videoconference" element={<DemoConference />} />
         <Route path="roompreview" element={<DemoRoomPreview />} />
         <Route path="hooks" element={<DemoHooks />} />
+        <Route path="signalwire" element={<DemoSignalWire />} />
       </Routes>
     </div>
   );

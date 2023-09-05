@@ -1,3 +1,11 @@
-export { default as LocalStream } from './LocalStream';
-export { default as RemoteStream } from './RemoteStream';
-export { default as Video } from './Video';
+import LocalStream from './LocalStream';
+import RemoteStream from './RemoteStream';
+import Video from './Video';
+
+export default {
+  LocalStream,
+  RemoteStream,
+  Video,
+};
+
+export { LocalStream, RemoteStream, Video };
