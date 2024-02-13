@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@signalwire-community/react": "*",
-    "@signalwire/js": "^3.23.2-dev.202307310918.af7072b.0",
+    "@signalwire/js": "^3.26.0-dev.202402121658.a58963c.0",
     "dotenv": "^16.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

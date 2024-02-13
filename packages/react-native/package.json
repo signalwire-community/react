@@ -48,7 +48,7 @@
   "devDependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/eslint-config": "^3.0.2",
-    "@signalwire/js": "^3.23.2-dev.202307310918.af7072b.0",
+    "@signalwire/js": "^3.26.0-dev.202402121658.a58963c.0",
     "@types/jest": "^28.1.2",
     "@types/lodash": "^4.14.182",
     "@types/pako": "^2.0.0",
