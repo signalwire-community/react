@@ -20,7 +20,9 @@ function DemoSignalWire() {
   useEffect(() => {
     console.log(addresses);
     setAddress(addresses?.[0] ?? null);
-  }, [addresses]);
+
+    client?.conversation.getConversations();
+  }, [client, addresses]);
 
   return (
     <div>
