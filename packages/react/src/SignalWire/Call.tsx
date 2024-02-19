@@ -28,6 +28,7 @@ export function Call({
       video={true}
       rootElement={ref}
       onRoomReady={props.onCallReady}
+      {...props}
     >
       <div
         ref={(r) => {
