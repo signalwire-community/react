@@ -5,13 +5,35 @@ import {
   useMembers,
 } from "@signalwire-community/react";
 import { useEffect, useState } from "react";
-import { time2TimeAgo as toTimeAgo } from "./util";
+import { addressUrlFromAddress, time2TimeAgo as toTimeAgo } from "./util";
+import useFirebase from "./useFirebase";
 
-function DemoSignalWire() {
+function DemoSignalWire({
+  fabricToken,
+  username,
+}: {
+  fabricToken: string;
+  username: string;
+}) {
+  const token = useFirebase();
+
   const client = useSignalWire({
-    token: import.meta.env.VITE_FABRIC_TOKEN,
+    token: fabricToken,
     host: "puc.signalwire.com",
   });
+
+  useEffect(() => {
+    if (!client || !token) return;
+    // here we can register this thing to the interwebs for messaging gathering
+    (async () => {
+      console.log("Registering device");
+      const registerData = await client.registerDevice({
+        deviceToken: token,
+        deviceType: "Desktop",
+      });
+      console.log("Registered device", registerData);
+    })();
+  }, [client, token]);
 
   const allAddresses = useAddresses(client);
   const rooms = useAddresses(client, { type: "room" });
@@ -41,13 +63,14 @@ function DemoSignalWire() {
   return (
     <div>
       <div>
-        <h1>Call</h1>
+        <h1>You are {username}</h1>
+        <h2>Call</h2>
         {addressToDial && (
           <>
             <Call
               client={client}
               address={addressToDial}
-              onCallReady={(r) => {
+              onCallReady={(r: any) => {
                 console.log("Call ready", r);
                 setOngoingCall(r);
               }}
@@ -63,7 +86,7 @@ function DemoSignalWire() {
         <h3>Rooms</h3>
         {rooms?.data.map((room: any) => (
           <div key={room.id}>
-            {room.name}, {room.channels.audio?.split("?")[0]}{" "}
+            {room.name}, {addressUrlFromAddress(room)}{" "}
             <button
               onClick={() => {
                 setAddressToDial(room);
@@ -77,8 +100,14 @@ function DemoSignalWire() {
         <h3>Subscribers</h3>
         {subscribers?.data.map((sub: any) => (
           <div key={sub.id}>
-            {sub.name}, {sub.channels.audio?.split("?")[0]}{" "}
-            <button>Call</button>
+            {sub.name}, {addressUrlFromAddress(sub)}{" "}
+            <button
+              onClick={() => {
+                setAddressToDial(sub);
+              }}
+            >
+              Call
+            </button>
           </div>
         ))}
 
