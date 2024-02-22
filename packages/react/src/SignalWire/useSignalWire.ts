@@ -18,6 +18,7 @@ export function useSignalWire(
     let _client: SignalWireContract | undefined;
     async function createClient() {
       _client = await SignalWire({
+        ...options,
         token: token,
       });
       setClient(_client);
