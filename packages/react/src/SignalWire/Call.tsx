@@ -1,15 +1,14 @@
 import React, { useRef } from "react";
 import { CoreVideo } from "./CoreVideo";
-import { SignalWireContract } from "./types";
-
-type CallEvents = {
-  onCallReady?: (call: any) => void;
-};
+import { SignalWireContract, CallEvents } from "./types";
 
 interface CallParams extends CallEvents {
   client: SignalWireContract;
   address: any;
   hideVideo?: boolean;
+  onCallReady?: (call: any) => void;
+  audio?: boolean;
+  video?: boolean;
 }
 
 export function Call({

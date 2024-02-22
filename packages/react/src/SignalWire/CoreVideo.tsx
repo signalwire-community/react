@@ -1,36 +1,18 @@
-import React, { RefObject, useCallback, useState } from "react";
-import { Call, SignalWireContract } from "./types";
+import React, { useCallback, useState } from "react";
+import { Call, IVideoProps } from "./types";
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 
-export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
-
-export interface IVideoProps
-  extends Omit<CallOptions, "rootElement" | "token" | "to"> {
-  onRoomReady?: (roomSession: Call) => void;
-  onLayoutChanged?: (e: any) => void;
-  onMemberJoined?: (e: any) => void;
-  onMemberLeft?: (e: any) => void;
-  onMemberTalking?: (e: any) => void;
-  onMemberUpdated?: (e: any) => void;
-  onMemberListUpdated?: (e: any) => void;
-  onPlaybackEnded?: (e: any) => void;
-  onPlaybackStarted?: (e: any) => void;
-  onPlaybackUpdated?: (e: any) => void;
-  onRecordingEnded?: (e: any) => void;
-  onRecordingStarted?: (e: any) => void;
-  onRecordingUpdated?: (e: any) => void;
-  onRoomJoined?: (e: any) => void;
-  onRoomLeft?: (e: any) => void;
-  onRoomUpdated?: (e: any) => void;
-
-  client: SignalWireContract;
-  address: any;
-  audio: boolean;
-  video: boolean;
-
-  children: React.ReactNode;
-  rootElement?: RefObject<HTMLElement>;
+/*
+    from input {..., channels:{audio:"/private/<xyz>?audio=true",...}}
+    to "/private/<xyz>"
+*/
+export function addressUrlFromAddress(address: any) {
+  return (
+    address?.channels?.audio?.split("?")?.[0] ??
+    address?.channels?.video?.split("?")?.[0] ??
+    null
+  );
 }
 
 export function CoreVideo({ ...props }: IVideoProps) {
@@ -57,7 +39,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
       }
 
       const currentCall = await props.client.dial({
-        to: props.address.channels.video,
+        to: addressUrlFromAddress(props.address),
 
         // @ts-expect-error undefined is not assignable to rootElement
         // rootElement: props.rootElement?.current ?? undefined,
@@ -73,7 +55,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
       props.onRoomReady?.(currentCall);
 
       // @ts-expect-error Property 'start' does not exist on type '{}'.
-      await currentCall?.start();
+      await currentCall?.start({audio:props.audio, video:props.video});
 
       return currentCall;
     }, 100),
