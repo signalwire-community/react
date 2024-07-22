@@ -1,6 +1,6 @@
 {
   "name": "@signalwire-community/react-native",
-  "version": "2.0.0-dev.6",
+  "version": "2.0.0-dev.7",
   "description": "",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/signalwire-community/react#readme",
   "dependencies": {
-    "@signalwire-community/react": "2.0.0-dev.6",
+    "@signalwire-community/react": "2.0.0-dev.7",
     "event-target-polyfill": "^0.0.3",
     "lodash": "^4.17.21"
   },

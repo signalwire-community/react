@@ -53,12 +53,8 @@ export function CoreVideo({ ...props }: IVideoProps) {
 
       props.onRoomReady?.(currentCall);
 
-<<<<<<< HEAD
       // @ts-expect-error Property 'start' does not exist on type '{}'.
       await currentCall?.start({audio:props.audio, video:props.video});
-=======
-      await currentCall?.start();
->>>>>>> 7147c24 (simple version update)
 
       return currentCall;
     }, 100),
