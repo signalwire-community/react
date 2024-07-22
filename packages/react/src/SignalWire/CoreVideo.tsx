@@ -72,7 +72,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
     // Ensure the room is in a joined state first, since we don't have a way to
     // abort an in-progress join.
     try {
-      await call.join();
+      await call.start();
     } catch (e) {
       /* empty */
     }

@@ -31,7 +31,7 @@ export function Call({
     >
       <div
         ref={(r) => {
-          // this will need a better interface
+          // todo: update to the new buildVideo interface
           if (hideVideo !== true) {
             // @ts-expect-error Property '__wsClient' does not exist on type 'SignalWireContract'
             client.__wsClient.options.rootElement = r;

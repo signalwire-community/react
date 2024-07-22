@@ -4,7 +4,7 @@ import BaseStream from '../BaseStream';
 
 export type IRemoteStreamProps = {
   style?: any;
-  roomSession?: SignalWire.Video.RoomSession;
+  roomSession?: SignalWire.Video.RoomSession | SignalWire.CallFabricRoomSession;
 };
 
 /**

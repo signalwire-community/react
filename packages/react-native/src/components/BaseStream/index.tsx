@@ -8,7 +8,7 @@ export type IBaseStreamProps = {
   style?: any;
 
   /** RoomSession from which to extract the stream. */
-  roomSession?: SignalWire.Video.RoomSession;
+  roomSession?: SignalWire.Video.RoomSession | SignalWire.CallFabricRoomSession;
 
   /**
    * This parameter defines which stream to extract.
@@ -17,7 +17,7 @@ export type IBaseStreamProps = {
 };
 
 function extractStreamUrl(
-  roomSession: SignalWire.Video.RoomSession,
+  roomSession: SignalWire.Video.RoomSession | SignalWire.CallFabricRoomSession,
   streamSource?: 'local' | 'remote'
 ): string | null {
   const stream =

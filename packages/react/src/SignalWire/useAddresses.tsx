@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { SignalWireContract } from "./types";
+import { GetAddressesResult } from "@signalwire/js";
 
 /**
  * Given a client, poll the addresses available.
@@ -11,7 +12,7 @@ export function useAddresses(
   options?: Parameters<SignalWireContract["address"]["getAddresses"]>[0]
 ) {
   const delay = 10000;
-  const [addresses, setAddresses] = useState<null | any>(null);
+  const [addresses, setAddresses] = useState<GetAddressesResult | null>(null);
   useEffect(() => {
     async function fetch() {
       if (client === undefined || client === null) return;

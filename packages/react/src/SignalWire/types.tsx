@@ -1,11 +1,11 @@
 import { RefObject } from "react";
-import type { SignalWire } from "@signalwire/js";
+import type { CallFabricRoomSession, SignalWire } from "@signalwire/js";
 export type SignalWireContract = Awaited<ReturnType<typeof SignalWire>>;
 export type SignalWireOptions = Parameters<typeof SignalWire>[0];
 
 export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
 
-export type Call = any; // Eventually this will describe the call object
+export type Call = CallFabricRoomSession;
 
 export interface CallEvents {
   onRoomReady?: (roomSession: Call) => void;
