@@ -142,7 +142,7 @@ export default function useSignalWire(params: clientParams) {
         console.error(
           "Couldn't find the push notification decryption key. Make sure you have called the registerDevice() method?"
         );
-        return;
+        return null;
       }
 
       let corePayload;
@@ -195,11 +195,11 @@ export default function useSignalWire(params: clientParams) {
       }
 
       console.log('The SDP invite', sdpJson);
-      const call = client._handlePushNotification({
+      const call = await client._handlePushNotification({
         ...corePayload,
         decrypted: sdpJson,
       });
-      return call;
+      return call as Call;
     };
   }, [client]);
 

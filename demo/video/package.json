@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "@signalwire-community/react": "*",
-    "@signalwire/js": "^3.23.2-dev.202307310918.af7072b.0",
+    "@signalwire/js": "^3.28.0-dev.202407181136.b500783.0",
     "dotenv": "^16.0.1",
+    "firebase": "^10.8.0",
+    "oidc-client-ts": "^3.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-oidc-context": "^3.1.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0"
   },

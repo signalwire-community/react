@@ -31,6 +31,8 @@ interface CallParams extends CallEvents {
   address: any;
   hideVideo: boolean;
   style: any;
+  audio: boolean;
+  video: boolean;
 }
 
 export function Call({ style, onCallReady, hideVideo, ...props }: CallParams) {
@@ -38,13 +40,11 @@ export function Call({ style, onCallReady, hideVideo, ...props }: CallParams) {
 
   return (
     <SignalWire.CoreVideo
-      {...props}
       onRoomReady={(r: CallType) => {
         setCallHandle(r);
         onCallReady?.(r);
       }}
-      audio={true}
-      video={true}
+      {...props}
     >
       {!hideVideo && (
         <RemoteStream roomSession={callHandle ?? undefined} style={style} />
