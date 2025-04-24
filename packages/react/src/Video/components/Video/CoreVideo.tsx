@@ -12,11 +12,13 @@ import { debounce } from "lodash";
 export interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
   children?: JSX.Element;
+  onError?: () => void;
 }
 
 const CoreVideo: React.FC<ICoreVideoProps> = ({
   children,
   onRoomReady,
+  onError,
   ...props
 }) => {
   const [roomSession, setRoomSession] =
@@ -33,33 +35,37 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   // prettier-ignore
   const setup = useCallback( /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: ICoreVideoProps) => {
-      if (roomSessionRef.current) {
-        await quitSession(roomSessionRef.current);
-        setRoomSession(null);
-        if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = "";
+      try {
+        if (roomSessionRef.current) {
+          await quitSession(roomSessionRef.current);
+          setRoomSession(null);
+          if (props.rootElement?.current?.innerHTML) {
+            props.rootElement.current.innerHTML = "";
+          }
         }
+
+        const curRoomSession = new SignalWire.Video.RoomSession({
+          token: props.token,
+          rootElement: props.rootElement?.current ?? undefined,
+          applyLocalVideoOverlay: props.applyLocalVideoOverlay,
+          audio: props.audio,
+          iceServers: props.iceServers,
+          logLevel: props.logLevel,
+          speakerId: props.speakerId,
+          stopCameraWhileMuted: props.stopCameraWhileMuted,
+          stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
+          video: props.video,
+        });
+        setRoomSession(curRoomSession);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
+        onRoomReady?.(curRoomSession);
+        await curRoomSession.join();
+
+        return curRoomSession;
+      } catch (error) {
+        onError?.(error);
       }
-
-      const curRoomSession = new SignalWire.Video.RoomSession({
-        token: props.token,
-        rootElement: props.rootElement?.current ?? undefined,
-        applyLocalVideoOverlay: props.applyLocalVideoOverlay,
-        audio: props.audio,
-        iceServers: props.iceServers,
-        logLevel: props.logLevel,
-        speakerId: props.speakerId,
-        stopCameraWhileMuted: props.stopCameraWhileMuted,
-        stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
-        video: props.video,
-      });
-      setRoomSession(curRoomSession);
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
-      onRoomReady?.(curRoomSession);
-      await curRoomSession.join();
-
-      return curRoomSession;
     }, 100),
     []
   );

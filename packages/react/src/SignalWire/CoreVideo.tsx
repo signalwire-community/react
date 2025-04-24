@@ -2,6 +2,7 @@ import React, { RefObject, useCallback, useState } from "react";
 import { Call, SignalWireContract } from "./types";
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
 
@@ -23,6 +24,7 @@ export interface IVideoProps
   onRoomJoined?: (e: any) => void;
   onRoomLeft?: (e: any) => void;
   onRoomUpdated?: (e: any) => void;
+  onError?: (error: any) => void;
 
   client: SignalWireContract;
   address: any;
@@ -33,7 +35,7 @@ export interface IVideoProps
   rootElement?: RefObject<HTMLElement>;
 }
 
-export function CoreVideo({ ...props }: IVideoProps) {
+export function CoreVideo({ onError, ...props }: IVideoProps) {
   const [call, setRoomSession] = useState<Call | null>(null);
 
   // This is used to access the current roomSession from useEffect without it
@@ -48,34 +50,40 @@ export function CoreVideo({ ...props }: IVideoProps) {
   const setup = useCallback(
     /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: IVideoProps) => {
-      if (roomSessionRef.current) {
-        await quitSession(roomSessionRef.current);
-        setRoomSession(null);
-        if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = "";
+      try {
+        await AsyncStorage.removeItem("init_stream");
+
+        if (roomSessionRef.current) {
+          await quitSession(roomSessionRef.current);
+          setRoomSession(null);
+          if (props.rootElement?.current?.innerHTML) {
+            props.rootElement.current.innerHTML = "";
+          }
         }
+  
+        const currentCall = await props.client.dial({
+          // to: props.address.channels.video,
+          to: props.address,
+          // @ts-expect-error undefined is not assignable to rootElement
+          // rootElement: props.rootElement?.current ?? undefined,
+          debugLevel: "debug",
+        });
+        roomSessionRef.current = currentCall;
+        setRoomSession(currentCall);
+  
+        // @ts-expect-error current call isn't described yet
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        currentCall.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
+  
+        props.onRoomReady?.(currentCall);
+  
+        // @ts-expect-error Property 'start' does not exist on type '{}'.
+        await currentCall?.start();
+  
+        return currentCall;
+      } catch (error) {
+        onError?.(error);
       }
-
-      const currentCall = await props.client.dial({
-        to: props.address.channels.video,
-
-        // @ts-expect-error undefined is not assignable to rootElement
-        // rootElement: props.rootElement?.current ?? undefined,
-        debugLevel: "debug",
-      });
-      roomSessionRef.current = currentCall;
-      setRoomSession(currentCall);
-
-      // @ts-expect-error current call isn't described yet
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      currentCall.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
-
-      props.onRoomReady?.(currentCall);
-
-      // @ts-expect-error Property 'start' does not exist on type '{}'.
-      await currentCall?.start();
-
-      return currentCall;
     }, 100),
     []
   );
@@ -116,7 +124,7 @@ export function CoreVideo({ ...props }: IVideoProps) {
     }
       // prettier-ignore
     } /* eslint-disable-next-line react-hooks/exhaustive-deps */, // changing the other props won't result in a rejoin
-    [setup, props.client, props.address.channels.video]
+    [setup, props?.client, props?.address?.channels?.video]
   );
 
   const eventMap = {
