@@ -8,13 +8,14 @@ export type IRemoteStreamProps = {
   memberStates: Record<string, { isMuted: boolean; isTalking: boolean; hasHandRaised: boolean }>;
   userPositions: Record<string, { x: number; y: number; width: number; height: number }>;
   address?: any;
+  updatedCamera?: boolean;
 };
 
 /**
  * Displays a remote RoomSession stream.
  */
 const RemoteStream = React.memo(function RemoteStream(params: IRemoteStreamProps) {
-  return <BaseStream {...params} streamSource="remote" />;
+  return <BaseStream key={params?.updatedCamera?.toString()} {...params} streamSource="remote" />;
 }, (prevProps, nextProps) => {
   // Ponovo renderuj samo ako se promeni roomSession, hideVideo ili ako se drastično promene stanja ili pozicije
   return (

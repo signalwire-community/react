@@ -27,6 +27,7 @@ interface CallParams extends CallEvents {
   audio: boolean;
   video: boolean;
   onError?: any;
+  updatedCamera?: boolean;
   onPositionsUpdated?: (positions: Record<string, { x: number; y: number; width: number; height: number }>) => void;
 }
 
@@ -61,6 +62,9 @@ export function Call({ style, onCallReady, hideVideo, onPositionsUpdated, ...pro
       onError={(err) => {
         props?.onError?.(err);
       }}
+      onRoomJoined={(session) => {
+        console.log("CALL TSX")
+      }}
       onLayoutChanged={(e) => {
         if (e.layout?.layers) {
           const positions = e.layout.layers.reduce((acc: any, layer: any) => {
@@ -84,12 +88,13 @@ export function Call({ style, onCallReady, hideVideo, onPositionsUpdated, ...pro
     >
       {!hideVideo && (
         <RemoteStream
-          key={refreshKey}
+          // key={refreshKey}
           roomSession={callHandle ?? undefined}
           style={style}
           memberStates={memberStates} 
           userPositions={userPositions}
           address={props?.address}
+          updatedCamera={props?.updatedCamera}
         />
       )}
     </SignalWire.CoreVideo>
