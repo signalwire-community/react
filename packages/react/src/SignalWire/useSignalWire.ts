@@ -1,4 +1,4 @@
-import { SignalWire } from "@signalwire/js";
+import { SignalWire } from "@signalwire/client";
 import { useEffect, useState } from "react";
 import type { SignalWireContract, SignalWireOptions } from "./types";
 

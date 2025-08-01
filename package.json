@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/signalwire-community/react/issues"
   },
-  "homepage": "https://github.com/signalwire-community/react#readme"
+  "homepage": "https://github.com/signalwire-community/react#readme",
+  "dependencies": {
+    "@signalwire/client": "^0.0.1-dev.202507301148.35933b6.0"
+  }
 }

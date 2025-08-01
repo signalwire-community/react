@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WebRTC } from "@signalwire/js";
+import { WebRTC } from "@signalwire/client";
 import { DevicePermissionName } from "@signalwire/webrtc/dist/cjs/webrtc/src/utils";
 
 /**

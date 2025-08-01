@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import type * as SignalWire from '@signalwire/js';
+import type * as SignalWire from '@signalwire/client';
 import type { MediaStream } from 'react-native-webrtc';
 import { RTCView } from 'react-native-webrtc';
 import { Card, Text } from 'react-native-paper';
@@ -16,7 +16,7 @@ const { height, width } = Dimensions.get('window');
 
 export type IBaseStreamProps = {
   style?: any;
-  roomSession?: SignalWire.Video.RoomSession | SignalWire.CallFabricRoomSession;
+  roomSession?: SignalWire.CallSession | any;
   streamSource: 'local' | 'remote';
   memberStates?: Record<string, { isMuted: boolean; isTalking: boolean; hasHandRaised: boolean }>;
   userPositions?: Record<string, { x: number; y: number; width: number; height: number }>;

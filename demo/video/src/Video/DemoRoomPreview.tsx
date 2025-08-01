@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Video } from "@signalwire/js"
+import type { Video } from "@signalwire/client"
 import { VideoConference, RoomPreview } from '@signalwire-community/react';
 
 function DemoConference() {

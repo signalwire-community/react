@@ -1,10 +1,10 @@
 import React from 'react';
-import type * as SignalWire from '@signalwire/js';
+import type * as SignalWire from '@signalwire/client';
 import BaseStream from '../BaseStream';
 
 export type IRemoteStreamProps = {
   style?: any;
-  roomSession?: SignalWire.Video.RoomSession | SignalWire.CallFabricRoomSession;
+  roomSession?: SignalWire.CallSession;
   memberStates: Record<string, { isMuted: boolean; isTalking: boolean; hasHandRaised: boolean }>;
   userPositions: Record<string, { x: number; y: number; width: number; height: number }>;
   address?: any;

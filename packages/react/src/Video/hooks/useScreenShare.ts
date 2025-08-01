@@ -1,28 +1,23 @@
-import { Video } from "@signalwire/js";
-import { RoomSessionScreenShare } from "@signalwire/js/dist/js/src/RoomSessionScreenShare";
-import { VideoMemberHandlerParams } from "@signalwire/js/dist/js/src/video";
+import { CallSession } from "@signalwire/client";
 import { useEffect, useState } from "react";
-
-type StartScreenShareOptions = NonNullable<Parameters<Video.RoomSession["startScreenShare"]>[0]>
 
 /**
  * Same as the original StartScreenShareOptions, but without the `autoJoin`
  * property since we force it to `true`.
  */
-type ScreenShareParams = Omit<StartScreenShareOptions, "autoJoin">;
 
 /**
  * Given RoomSession, returns a set of easier controls for ScreenSharing:
  * `{ start(), stop(), active, toggle() ... }`
  */
-export default function useScreenShare(roomSession: Video.RoomSession | null) {
+export default function useScreenShare(roomSession: CallSession | null) {
   const [screenShareObject, setScreenShareObject] =
-    useState<RoomSessionScreenShare | null>(null);
+    useState<any | null>(null);
   const [memberId, setMemberId] = useState<string | null>(null);
 
   useEffect(() => {
     if (memberId === null) return;
-    function onMemberLeft(e: VideoMemberHandlerParams) {
+    function onMemberLeft(e: any) {
       if (e.member.id === memberId) {
         setScreenShareObject(null);
         setMemberId(null);
@@ -34,12 +29,12 @@ export default function useScreenShare(roomSession: Video.RoomSession | null) {
     };
   }, [memberId, roomSession]);
 
-  async function start(params?: ScreenShareParams) {
+  async function start(params?: any) {
     if (roomSession === null) return;
     if (screenShareObject !== null) return; //already screen sharing
 
     // Force autoJoin
-    const screenShareOptions: StartScreenShareOptions | undefined = params
+    const screenShareOptions: any | undefined = params
     if (screenShareOptions) {
       screenShareOptions.autoJoin = true;
     }

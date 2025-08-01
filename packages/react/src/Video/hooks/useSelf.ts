@@ -1,28 +1,28 @@
 import {
-  Video,
+  CallSession,
   VideoLayout,
-  VideoMemberEntity,
-  VideoMemberTalkingEventParams,
-  VideoRoomEventParams,
-} from "@signalwire/js";
-import { VideoMemberUpdatedHandlerParams } from "@signalwire/js/dist/js/src/utils/interfaces";
+  CallMemberEntity,
+  CallMemberTalkingEventParams,
+  CallMemberEventParams,
+} from "@signalwire/client";
 import { useEffect, useRef, useState } from "react";
 import { toCamelCase } from "../../utils/camelCase";
 import { Self, addMemberMethods, addSelfMemberMethods } from "./useMembers";
+import { VideoMemberUpdatedHandlerParams } from "@signalwire/client/dist/client/src/utils/interfaces";
 
 /**
  * Given a RoomSession, returns the current member and its associated properties.
  * @param roomSession `RoomSession` or `null`
  * @returns the current member, or `null` if the RoomSession is not active.
  */
-export default function useSelf(roomSession: Video.RoomSession | null) {
+export default function useSelf(roomSession: CallSession | null) {
   const selfId = useRef<string | null>(null);
   const [member, setMember] = useState<Self | null>(null);
 
   useEffect(() => {
     if (!roomSession) return;
 
-    const onRoomJoined = (e: VideoRoomEventParams) => {
+    const onRoomJoined = (e: CallMemberEventParams) => {
       // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
       const member = e.room_session.members?.find(
@@ -67,7 +67,7 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
     };
     roomSession.on("member.updated", onMemberUpdated);
 
-    const onMemberTalking = (e: VideoMemberTalkingEventParams) => {
+    const onMemberTalking = (e: CallMemberTalkingEventParams) => {
       if (e.member.id !== selfId.current) return;
 
       setMember((member) => {
@@ -120,8 +120,8 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
  * Adds common member methods and self-specific methods to the specified member.
  */
 function addMethods(
-  roomSession: Video.RoomSession,
-  member: VideoMemberEntity
+  roomSession: CallSession,
+  member: CallMemberEntity
 ): Self {
   return addSelfMemberMethods(
     roomSession,

@@ -1,4 +1,4 @@
-import { Video } from "@signalwire/js";
+import { CallSession } from "@signalwire/client";
 import { useEffect, useState } from "react";
 
 /**
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * @param `RoomSession` or `null`
  * @returns an object with an attribute `active`
  */
-export default function useStatus(roomSession: Video.RoomSession | null) {
+export default function useStatus(roomSession: CallSession | null) {
   const [active, setActive] = useState(roomSession?.active ?? false);
 
   useEffect(() => {

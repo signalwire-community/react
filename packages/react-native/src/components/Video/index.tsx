@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 import React, { useState } from 'react';
-import type * as SignalWire from '@signalwire/js';
+import type * as SignalWire from '@signalwire/client';
 import {
   __internal as Internal,
   IVideoProps,
@@ -20,12 +20,12 @@ export default function Video({
   ...props
 }: IVideoNativeProps) {
   const [roomSession, setRoomSession] =
-    useState<SignalWire.Video.RoomSession | null>(null);
+    useState<SignalWire.CallSession | any>(null);
 
   return (
     <Internal.Video.CoreVideo
       {...props}
-      onRoomReady={(r: SignalWire.Video.RoomSession) => {
+      onRoomReady={(r: SignalWire.CallSession) => {
         setRoomSession(r);
         onRoomReady?.(r);
       }}

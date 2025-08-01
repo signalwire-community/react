@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Video } from "@signalwire/js";
+import type { Video } from "@signalwire/client";
 import {
   useMembers,
   usePermissions,
