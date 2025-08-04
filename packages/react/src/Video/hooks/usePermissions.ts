@@ -68,7 +68,7 @@ function usePermissions(roomSession: CallSession | any) {
     if (!roomSession) return;
 
     const refreshPermissions = () => {
-      const scopes = roomSession.permissions;
+      const scopes = roomSession?.permissions;
       setPermissions(permissionsFromList(scopes ?? []));
     };
 

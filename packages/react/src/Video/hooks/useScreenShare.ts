@@ -1,4 +1,4 @@
-import { CallSession } from "@signalwire/client";
+import { CallMemberLeftEventParams, CallSession, RoomSessionScreenShare, StartScreenShareOptions } from "@signalwire/client";
 import { useEffect, useState } from "react";
 
 /**
@@ -12,13 +12,13 @@ import { useEffect, useState } from "react";
  */
 export default function useScreenShare(roomSession: CallSession | null) {
   const [screenShareObject, setScreenShareObject] =
-    useState<any | null>(null);
+    useState<RoomSessionScreenShare | null>(null);
   const [memberId, setMemberId] = useState<string | null>(null);
 
   useEffect(() => {
     if (memberId === null) return;
-    function onMemberLeft(e: any) {
-      if (e.member.id === memberId) {
+    function onMemberLeft(e: CallMemberLeftEventParams | any) {
+      if (e.member?.id === memberId) {
         setScreenShareObject(null);
         setMemberId(null);
       }
@@ -29,12 +29,12 @@ export default function useScreenShare(roomSession: CallSession | null) {
     };
   }, [memberId, roomSession]);
 
-  async function start(params?: any) {
+  async function start(params?: StartScreenShareOptions) {
     if (roomSession === null) return;
     if (screenShareObject !== null) return; //already screen sharing
 
     // Force autoJoin
-    const screenShareOptions: any | undefined = params
+    const screenShareOptions: StartScreenShareOptions | undefined = params
     if (screenShareOptions) {
       screenShareOptions.autoJoin = true;
     }
