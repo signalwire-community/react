@@ -23,10 +23,9 @@ export default function useSelf(roomSession: CallSession | any) {
     if (!roomSession) return;
 
     const onRoomJoined = (e: CallRoomEventParams | any) => {
-      // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
       const member = e.room_session.members?.find(
-        (m) => m.id === selfId.current
+        (m: { id: string | null; }) => m.id === selfId.current
       );
       if (!member) {
         console.error("Unable to find current member in room.joined");

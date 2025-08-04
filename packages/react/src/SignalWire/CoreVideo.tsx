@@ -71,13 +71,11 @@ export function CoreVideo({ onError, ...props }: IVideoProps) {
         roomSessionRef.current = currentCall;
         setRoomSession(currentCall);
   
-        // @ts-expect-error current call isn't described yet
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         currentCall.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
   
         props.onRoomReady?.(currentCall);
   
-        // @ts-expect-error Property 'start' does not exist on type '{}'.
         await currentCall?.start();
   
         return currentCall;
