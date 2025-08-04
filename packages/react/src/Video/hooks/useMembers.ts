@@ -1,17 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import {
-  Video,
-  VideoLayout,
-  VideoPosition,
-  VideoRoomEventParams,
-} from "@signalwire/js";
+import { useState, useEffect, useRef } from 'react';
 import type {
-  VideoMemberEntity,
-  VideoMemberTalkingEventParams,
-} from "@signalwire/js";
-import type { SetMemberPositionParams } from "@signalwire/core/dist/core/src/rooms";
-import type { VideoMemberListUpdatedParams } from "@signalwire/js/dist/js/src/video";
-import { toCamelCase } from "../../utils/camelCase";
+  CallSession,
+  CallMemberEntity,
+  VideoPosition,
+} from '@signalwire/client';
+import { toCamelCase } from '../../utils/camelCase';
 
 type DeviceIdHolder = {
   deviceId: string;
@@ -29,7 +22,8 @@ interface SelfIOAttributes extends IOAttributes {
   setDevice: (device: DeviceIdHolder) => void;
 }
 
-interface Member extends VideoMemberEntity {
+interface Member extends CallMemberEntity {
+  id: any;
   audio: IOAttributes;
   video: IOAttributes;
   speaker: IOAttributes;
@@ -44,14 +38,7 @@ export interface Self extends Member {
   speaker: SelfIOAttributes;
 }
 
-/**
- * Given an active RoomSession, maintains a reactive list of all members, including the user themselves.
- * @param `RoomSession` or `null`
- * @return an object with `self` as a reference to the current user,
- * `members` as an array with the list of all members, and `removeAll()`
- * which removes everyone
- */
-export default function useMembers(roomSession: Video.RoomSession | null): {
+export default function useMembers(roomSession: any): {
   self: Self | null;
   members: Member[];
   removeAll: () => void;
@@ -62,143 +49,111 @@ export default function useMembers(roomSession: Video.RoomSession | null): {
   useEffect(() => {
     if (!roomSession) return;
 
-    const onRoomJoined = (e: VideoRoomEventParams) => {
-      // @ts-expect-error Property `member_id` is missing from the SDK types
-      selfId.current = e.member_id;
-      const members = e.room_session.members?.map(toCamelCase) ?? [];
-      setMembers(addMethods(roomSession, members));
+    const onRoomJoined = async () => {
+      selfId.current = roomSession.memberId;
+      const res = await roomSession.getMembers();
+      setMembers(addMethods(roomSession, res.members ?? []));
     };
-    roomSession.on("room.joined", onRoomJoined);
-    if (roomSession.active) {
-      (async () => {
-        // In case  `useMembers` is invoked after `room.joined` event.
-        selfId.current = roomSession?.memberId ?? null;
-        const members = (await roomSession?.getMembers())?.members;
-        if (members) setMembers(addMethods(roomSession, members));
-      })();
-    }
 
-    const onMemberListUpdated = (e: VideoMemberListUpdatedParams) => {
-      const members = e.members.map(toCamelCase);
-      setMembers(addMethods(roomSession, members));
+    const onMemberListUpdated = (e: any) => {
+      const mapped = e.members.map(toCamelCase);
+      setMembers(addMethods(roomSession, mapped));
     };
-    roomSession.on("memberList.updated", onMemberListUpdated);
 
-    const onMemberTalking = (e: VideoMemberTalkingEventParams) => {
-      setMembers((members) => {
-        const newMembers = [...members];
-        const member = newMembers.find((m) => m.id === e.member.id);
-        if (member) member.talking = e.member.talking;
-        return newMembers;
+    const onMemberTalking = (e: any) => {
+      setMembers((prev) => {
+        const updated = [...prev];
+        const target = updated.find((m) => m.id === e.member.id);
+        if (target) target.talking = e.member.talking;
+        return updated;
       });
     };
-    roomSession.on("member.talking", onMemberTalking);
 
-    const onLayoutChanged = (e: { layout: VideoLayout }) => {
-      setMembers((members) => {
-        const newMembers = [...members];
-        e.layout.layers.forEach((layer) => {
-          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
-          if (layer.member_id === undefined) return;
-          // @ts-expect-error Property `member_id` is actually camelCase, SDK types are wrong
-          const member = newMembers.find((m) => m.id === layer.member_id);
-          if (member !== undefined && layer.position !== undefined)
-            member.currentPosition = layer.position;
+    const onLayoutChanged = (e: any) => {
+      setMembers((prev) => {
+        const updated = [...prev];
+        e.layout.layers.forEach((layer: { member_id: any; position: any; }) => {
+          const member = updated.find((m) => m.id === layer.member_id);
+          if (member && layer.position) {
+            (member as any).currentPosition = layer.position;
+          }
         });
-        return newMembers;
+        return updated;
       });
     };
-    // `as any` is used because github.com/signalwire/cloud-product/issues/5479
-    roomSession.on("layout.changed", onLayoutChanged as any);
+
+    roomSession.on('room.joined', onRoomJoined);
+    roomSession.on('memberList.updated', onMemberListUpdated);
+    roomSession.on('member.talking', onMemberTalking);
+    roomSession.on('layout.changed', onLayoutChanged);
+
+    // Ako već aktivan poziv, inicijalno učitaj članove
+    if (roomSession.active) onRoomJoined();
 
     return () => {
-      // `as any` is used because github.com/signalwire/cloud-product/issues/5479
-      roomSession.off("layout.changed", onLayoutChanged as any);
-      roomSession.off("member.talking", onMemberTalking);
-      roomSession.off("memberList.updated", onMemberListUpdated);
-      roomSession.off("room.joined", onRoomJoined);
+      roomSession.off('room.joined', onRoomJoined);
+      roomSession.off('memberList.updated', onMemberListUpdated);
+      roomSession.off('member.talking', onMemberTalking);
+      roomSession.off('layout.changed', onLayoutChanged);
     };
   }, [roomSession]);
 
-  function getSelfMember(): null | Self {
+  function getSelfMember(): Self | null {
     if (!roomSession) return null;
-
-    const self: Self | null =
-      (members.find((m) => m.id === selfId.current) as Self) ?? null;
-    if (self) {
-      return addSelfMemberMethods(roomSession, self);
-    }
-    return null;
+    const self = members.find((m) => m.id === selfId.current) as Self;
+    return self ? addSelfMemberMethods(roomSession, self) : null;
   }
 
   return {
     self: getSelfMember(),
     members,
     removeAll: () => {
-      roomSession?.removeAllMembers();
+      roomSession?.removeAllMembers?.();
     },
   };
 }
 
-function addMethods(
-  roomSession: Video.RoomSession,
-  members: VideoMemberEntity[]
-): Member[] {
+function addMethods(roomSession: CallSession, members: any[]): any[] {
   return members.map((m) => addMemberMethods(roomSession, m));
 }
 
-export function addMemberMethods(
-  roomSession: Video.RoomSession,
-  m: VideoMemberEntity
-): Member {
+function addMemberMethods(roomSession: any, m: any): Member {
   return {
     ...m,
     audio: {
       muted: m.audioMuted,
       mute: () => roomSession.audioMute({ memberId: m.id }),
       unmute: () => roomSession.audioUnmute({ memberId: m.id }),
-      toggle: () => {
+      toggle: () =>
         m.audioMuted
           ? roomSession.audioUnmute({ memberId: m.id })
-          : roomSession.audioMute({ memberId: m.id });
-      },
+          : roomSession.audioMute({ memberId: m.id }),
     },
     video: {
       muted: m.videoMuted,
       mute: () => roomSession.videoMute({ memberId: m.id }),
       unmute: () => roomSession.videoUnmute({ memberId: m.id }),
-      toggle: () => {
+      toggle: () =>
         m.videoMuted
           ? roomSession.videoUnmute({ memberId: m.id })
-          : roomSession.videoMute({ memberId: m.id });
-      },
+          : roomSession.videoMute({ memberId: m.id }),
     },
     speaker: {
       muted: m.deaf,
+      mute: () => roomSession.deaf({ memberId: m.id }),
+      unmute: () => roomSession.undeaf({ memberId: m.id }),
       toggle: () =>
         m.deaf
           ? roomSession.undeaf({ memberId: m.id })
           : roomSession.deaf({ memberId: m.id }),
-      mute: () => roomSession.deaf({ memberId: m.id }),
-      unmute: () => roomSession.undeaf({ memberId: m.id }),
     },
-    remove: () => {
-      roomSession.removeMember({ memberId: m.id });
-    },
-    setPosition: (position: VideoPosition) => {
-      const params: SetMemberPositionParams = {
-        memberId: m.id,
-        position: position,
-      };
-      roomSession.setMemberPosition(params);
-    },
+    remove: () => roomSession.removeMember({ memberId: m.id }),
+    setPosition: (position: VideoPosition) =>
+      roomSession?.setMemberPosition({ memberId: m.id, position }),
   };
 }
 
-export function addSelfMemberMethods(
-  roomSession: Video.RoomSession,
-  m: Member
-): Self {
+function addSelfMemberMethods(roomSession: CallSession, m: Member): Self {
   return {
     ...m,
     audio: {
@@ -210,13 +165,13 @@ export function addSelfMemberMethods(
     video: {
       ...m.video,
       setDevice: (device: DeviceIdHolder) => {
-        roomSession?.updateCamera(device);
+        roomSession.updateCamera(device);
       },
     },
     speaker: {
       ...m.speaker,
       setDevice: (device: DeviceIdHolder) => {
-        roomSession?.updateSpeaker(device);
+        roomSession.updateSpeaker(device);
       },
     },
   };

@@ -1,11 +1,11 @@
 import {
-  Video,
+  CallMemberEntity,
+  CallMemberTalkingEventParams,
+  CallMemberUpdatedEventParams,
+  CallRoomEventParams,
+  CallSession,
   VideoLayout,
-  VideoMemberEntity,
-  VideoMemberTalkingEventParams,
-  VideoRoomEventParams,
-} from "@signalwire/js";
-import { VideoMemberUpdatedHandlerParams } from "@signalwire/js/dist/js/src/utils/interfaces";
+} from "@signalwire/client";
 import { useEffect, useRef, useState } from "react";
 import { toCamelCase } from "../../utils/camelCase";
 import { Self, addMemberMethods, addSelfMemberMethods } from "./useMembers";
@@ -15,14 +15,14 @@ import { Self, addMemberMethods, addSelfMemberMethods } from "./useMembers";
  * @param roomSession `RoomSession` or `null`
  * @returns the current member, or `null` if the RoomSession is not active.
  */
-export default function useSelf(roomSession: Video.RoomSession | null) {
+export default function useSelf(roomSession: CallSession | any) {
   const selfId = useRef<string | null>(null);
   const [member, setMember] = useState<Self | null>(null);
 
   useEffect(() => {
     if (!roomSession) return;
 
-    const onRoomJoined = (e: VideoRoomEventParams) => {
+    const onRoomJoined = (e: CallRoomEventParams | any) => {
       // @ts-expect-error Property `member_id` is missing from the SDK types
       selfId.current = e.member_id;
       const member = e.room_session.members?.find(
@@ -40,7 +40,7 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
       (async () => {
         selfId.current = roomSession.memberId ?? null;
         const { members } = await roomSession.getMembers();
-        const member = members.find((m) => m.id === selfId.current);
+        const member = members.find((m: { id: string | null; }) => m.id === selfId.current);
         if (!member) {
           console.error("Unable to find current member in getMembers()");
           return;
@@ -49,7 +49,7 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
       })();
     }
 
-    const onMemberUpdated = (e: VideoMemberUpdatedHandlerParams) => {
+    const onMemberUpdated = (e: CallMemberUpdatedEventParams | any) => {
       if (e.member.id !== selfId.current) return;
       const { updated: _, ...partialMember } = e.member;
 
@@ -67,7 +67,7 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
     };
     roomSession.on("member.updated", onMemberUpdated);
 
-    const onMemberTalking = (e: VideoMemberTalkingEventParams) => {
+    const onMemberTalking = (e: CallMemberTalkingEventParams | any) => {
       if (e.member.id !== selfId.current) return;
 
       setMember((member) => {
@@ -120,8 +120,8 @@ export default function useSelf(roomSession: Video.RoomSession | null) {
  * Adds common member methods and self-specific methods to the specified member.
  */
 function addMethods(
-  roomSession: Video.RoomSession,
-  member: VideoMemberEntity
+  roomSession: CallSession,
+  member: CallMemberEntity
 ): Self {
   return addSelfMemberMethods(
     roomSession,

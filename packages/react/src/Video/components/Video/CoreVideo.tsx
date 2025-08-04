@@ -5,26 +5,28 @@ import React, {
   useRef,
   useState,
 } from "react";
-import * as SignalWire from "@signalwire/js";
+import * as SignalWire from "@signalwire/client";
 import { IVideoProps } from "./IVideoProps";
 import { debounce } from "lodash";
 
 export interface ICoreVideoProps extends IVideoProps {
   rootElement?: RefObject<HTMLElement>;
   children?: JSX.Element;
+  onError?: () => void;
 }
 
 const CoreVideo: React.FC<ICoreVideoProps> = ({
   children,
   onRoomReady,
+  onError,
   ...props
 }) => {
   const [roomSession, setRoomSession] =
-    useState<SignalWire.Video.RoomSession | null>(null);
+    useState<SignalWire.CallSession | null>(null);
 
   // This is used to access the current roomSession from useEffect without it
   // becoming a dependency.
-  const roomSessionRef = useRef<SignalWire.Video.RoomSession | null>();
+  const roomSessionRef = useRef<SignalWire.CallSession | null>();
   roomSessionRef.current = roomSession;
 
   /**
@@ -33,33 +35,37 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   // prettier-ignore
   const setup = useCallback( /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: ICoreVideoProps) => {
-      if (roomSessionRef.current) {
-        await quitSession(roomSessionRef.current);
-        setRoomSession(null);
-        if (props.rootElement?.current?.innerHTML) {
-          props.rootElement.current.innerHTML = "";
+      try {
+        if (roomSessionRef.current) {
+          await quitSession(roomSessionRef.current);
+          setRoomSession(null);
+          if (props.rootElement?.current?.innerHTML) {
+            props.rootElement.current.innerHTML = "";
+          }
         }
+
+        const curRoomSession = new SignalWire.CallSession({
+          token: props.token,
+          rootElement: props.rootElement?.current ?? undefined,
+          applyLocalVideoOverlay: props.applyLocalVideoOverlay,
+          audio: props.audio,
+          iceServers: props.iceServers,
+          logLevel: props.logLevel,
+          speakerId: props.speakerId,
+          stopCameraWhileMuted: props.stopCameraWhileMuted,
+          stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
+          video: props.video,
+        });
+        setRoomSession(curRoomSession);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
+        onRoomReady?.(curRoomSession);
+        await curRoomSession.join();
+
+        return curRoomSession;
+      } catch (error) {
+        onError?.(error);
       }
-
-      const curRoomSession = new SignalWire.Video.RoomSession({
-        token: props.token,
-        rootElement: props.rootElement?.current ?? undefined,
-        applyLocalVideoOverlay: props.applyLocalVideoOverlay,
-        audio: props.audio,
-        iceServers: props.iceServers,
-        logLevel: props.logLevel,
-        speakerId: props.speakerId,
-        stopCameraWhileMuted: props.stopCameraWhileMuted,
-        stopMicrophoneWhileMuted: props.stopMicrophoneWhileMuted,
-        video: props.video,
-      });
-      setRoomSession(curRoomSession);
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      curRoomSession.on("memberList.updated", () => {}); // Workaround for cloud-product/4681 (internal)
-      onRoomReady?.(curRoomSession);
-      await curRoomSession.join();
-
-      return curRoomSession;
     }, 100),
     []
   );
@@ -92,7 +98,7 @@ const CoreVideo: React.FC<ICoreVideoProps> = ({
   /**
    * Robust way for disconnecting a RoomSession
    */
-  const quitSession = async (roomSession: SignalWire.Video.RoomSession) => {
+  const quitSession = async (roomSession: SignalWire.CallSession) => {
     // Ensure the room is in a joined state first, since we don't have a way to
     // abort an in-progress join.
     try {

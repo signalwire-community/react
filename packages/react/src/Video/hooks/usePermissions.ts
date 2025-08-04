@@ -1,5 +1,5 @@
+import { CallSession } from "@signalwire/client";
 import { useEffect, useState } from "react";
-import { Video } from "@signalwire/js";
 
 function makeBarePermissionObject(permString: string[]) {
   const permObject = {};
@@ -61,14 +61,14 @@ function permissionsFromList(scopes: string[]) {
  * @param `RoomSession` or `null`
  * @returns an object with allowed permissions. Eg: `{ screenshare:false, self: {audio_mute: true, ... }, ... }`
  */
-function usePermissions(roomSession: Video.RoomSession | null) {
+function usePermissions(roomSession: CallSession | any) {
   const [permissions, setPermissions] = useState(permissionsFromList([]));
 
   useEffect(() => {
     if (!roomSession) return;
 
     const refreshPermissions = () => {
-      const scopes = roomSession.permissions;
+      const scopes = roomSession?.permissions;
       setPermissions(permissionsFromList(scopes ?? []));
     };
 
@@ -82,13 +82,11 @@ function usePermissions(roomSession: Video.RoomSession | null) {
       const scopes = e.authorization.room.scopes;
       setPermissions(permissionsFromList(scopes ?? []));
     };
-    // @ts-expect-error "member.promoted" is not public yet
     roomSession.on("member.promoted", onMemberPromoted);
 
     const onMemberDemoted = () => {
       setPermissions(permissionsFromList([]));
     };
-    // @ts-expect-error "member.demoted" is not public yet
     roomSession.on("member.demoted", onMemberDemoted);
 
     const onRoomLeft = () => {

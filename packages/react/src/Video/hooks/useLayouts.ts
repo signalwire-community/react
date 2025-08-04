@@ -1,19 +1,19 @@
-import { Video } from "@signalwire/js";
-import { useEffect, useState } from "react";
+import type { CallSession } from '@signalwire/client';
+import { useEffect, useState } from 'react';
 
-type SetLayoutParams = Parameters<Video.RoomSession["setLayout"]>;
+type SetLayoutParams = Parameters<CallSession['setLayout']>;
 
 /**
- * Given an active RoomSession, maintains a list of all layouts, the current layout, and a function to change them
- * @param `RoomSession` or `null`
- * @returns an object with `current_layout`, `layouts` and `setLayout()`
+ * Given an active CallSession, maintains a list of all layouts, the current layout, and a function to change them
+ * @param `CallSession` or `null`
+ * @returns an object with `currentLayout`, `layouts` and `setLayout()`
  */
-export default function useLayouts(roomSession: Video.RoomSession | null) {
+export default function useLayouts(roomSession: CallSession | null) {
   const [layouts, setLayouts] = useState<string[]>([]);
-  const [currentLayout, setCurrentLayout] = useState("");
+  const [currentLayout, setCurrentLayout] = useState('');
 
   useEffect(() => {
-    if (roomSession === null || roomSession === undefined) return;
+    if (!roomSession) return;
 
     async function onRoomJoined(room: any) {
       setCurrentLayout(room.room_session.layout_name);
@@ -26,12 +26,12 @@ export default function useLayouts(roomSession: Video.RoomSession | null) {
       setCurrentLayout(e.layout.name);
     }
 
-    roomSession.on("room.joined", onRoomJoined);
-    roomSession.on("layout.changed", onLayoutChanged);
+    roomSession.on('room.joined', onRoomJoined);
+    roomSession.on('layout.changed', onLayoutChanged);
 
     return () => {
-      roomSession.off("room.joined", onRoomJoined);
-      roomSession.off("layout.changed", onLayoutChanged);
+      roomSession.off('room.joined', onRoomJoined);
+      roomSession.off('layout.changed', onLayoutChanged);
     };
   }, [roomSession]);
 

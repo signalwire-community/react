@@ -1,4 +1,4 @@
-import SignalWire from "@signalwire/js";
+import SignalWire from "@signalwire/client";
 import { LocalStream, Video } from "@signalwire-community/react";
 import { useState } from "react";
 

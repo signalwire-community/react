@@ -1,8 +1,16 @@
-import { Video } from "@signalwire/js";
-export type RoomSessionOptions = ConstructorParameters<Video.RoomSession>[0];
+import type { CallSession } from '@signalwire/client';
+import type { SDKStore } from '@signalwire/core'; // ako ti je dostupan
 
-export interface IVideoProps extends Omit<RoomSessionOptions, "rootElement"> {
-  onRoomReady?: (roomSession: Video.RoomSession) => void;
+export interface RoomSessionOptions {
+  attach?: boolean;
+  remoteSdp?: string;
+  speakerId?: string;
+  prevCallId?: string;
+  store?: SDKStore;
+}
+
+export interface IVideoProps extends RoomSessionOptions {
+  onRoomReady?: (roomSession: CallSession) => void;
   onLayoutChanged?: (e: any) => void;
   onMemberJoined?: (e: any) => void;
   onMemberLeft?: (e: any) => void;

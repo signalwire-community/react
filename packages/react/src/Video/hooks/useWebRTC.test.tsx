@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react-hooks";
-import { WebRTC } from "@signalwire/js";
+import { WebRTC } from "@signalwire/client";
 import useWebRTC from "./useWebRTC";
 
-jest.mock("@signalwire/js", () => ({
+jest.mock("@signalwire/client", () => ({
   __esModule: true,
   WebRTC: {
     createDeviceWatcher: jest.fn(async () => ({
@@ -22,7 +22,7 @@ describe("useWebRTC", () => {
   });
 
   it("subscribes to everything by default", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useWebRTC());
+    const { waitForNextUpdate } = renderHook(() => useWebRTC());
 
     await act(() => waitForNextUpdate());
 
@@ -36,7 +36,7 @@ describe("useWebRTC", () => {
   });
 
   it("subscribes to cameras only", async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { waitForNextUpdate } = renderHook(() =>
       useWebRTC({ camera: true })
     );
 
