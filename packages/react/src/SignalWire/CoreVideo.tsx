@@ -2,7 +2,6 @@ import React, { RefObject, useCallback, useState } from "react";
 import { Call, SignalWireContract } from "./types";
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
 
@@ -51,8 +50,6 @@ export function CoreVideo({ onError, ...props }: IVideoProps) {
     /* eslint-disable-line react-hooks/exhaustive-deps */
     debounce(async (props: IVideoProps) => {
       try {
-        await AsyncStorage.removeItem("init_stream");
-
         if (roomSessionRef.current) {
           await quitSession(roomSessionRef.current);
           setRoomSession(null);
