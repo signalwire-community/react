@@ -2,6 +2,7 @@ import React, { RefObject, useCallback, useState } from "react";
 import { Call, SignalWireContract } from "./types";
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type CallOptions = Parameters<SignalWireContract["dial"]>[0];
 
