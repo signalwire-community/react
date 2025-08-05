@@ -6,7 +6,7 @@ import type { SignalWireContract } from "./types";
  * @param client is the SignalWire client
  * @returns null | address[]
  */
-export function useAddresses(client: SignalWireContract | null) {
+export function useAddresses(client: SignalWireContract | any) {
   const delay = 10000;
   const [addresses, setAddresses] = useState<null | any>(null);
   useEffect(() => {

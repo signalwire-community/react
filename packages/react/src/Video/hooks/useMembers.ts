@@ -176,3 +176,6 @@ function addSelfMemberMethods(roomSession: CallSession, m: Member): Self {
     },
   };
 }
+
+export { addMemberMethods, addSelfMemberMethods };
+

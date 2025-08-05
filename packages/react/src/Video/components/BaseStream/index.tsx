@@ -1,28 +1,30 @@
-import 'react-native-get-random-values';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import type * as SignalWire from '@signalwire/client';
-import type { MediaStream } from 'react-native-webrtc';
-import { RTCView } from 'react-native-webrtc';
-import { Card, Text } from 'react-native-paper';
-import { useMembers } from '@signalwire-community/react-native';
-import MicOff from '../../../assets/mic-off.svg';
-import RaisedHand from '../../../assets/raised-hand.svg';
-import LoadingSvg from '../../../assets/auto_mode.svg';
-import { Dimensions, Animated, Easing, Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { isTablet } from 'react-native-device-info';
-
-const { height, width } = Dimensions.get('window');
+import React, { useEffect, useRef } from "react";
+import type * as SignalWire from "@signalwire/client";
 
 export type IBaseStreamProps = {
   style?: any;
+
+  /** If set, the stream is extracted from the RoomSession. */
   roomSession?: SignalWire.CallSession;
-  streamSource: 'local' | 'remote';
-  memberStates?: Record<string, { isMuted: boolean; isTalking: boolean; hasHandRaised: boolean }>;
-  userPositions?: Record<string, { x: number; y: number; width: number; height: number }>;
-  address?: any;
-  updatedCamera?: boolean;
+
+  /**
+   * If extracting the stream from the RoomSession, this parameter defines which
+   * stream to extract.
+   */
+  streamSource: "local" | "remote";
 };
+
+function extractStream(
+  roomSession: SignalWire.CallSession,
+  streamSource?: "local" | "remote"
+): MediaStream | null {
+  const stream: MediaStream | null | undefined =
+    streamSource === "local"
+      ? roomSession.localStream
+      : roomSession.remoteStream;
+
+  return stream ?? null;
+}
 
 export default function BaseStream({
   style,

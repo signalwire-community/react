@@ -5,10 +5,6 @@ import BaseStream from '../BaseStream';
 export type IRemoteStreamProps = {
   style?: any;
   roomSession?: SignalWire.CallSession;
-  memberStates: Record<string, { isMuted: boolean; isTalking: boolean; hasHandRaised: boolean }>;
-  userPositions: Record<string, { x: number; y: number; width: number; height: number }>;
-  address?: any;
-  updatedCamera?: boolean;
 };
 
 /**
